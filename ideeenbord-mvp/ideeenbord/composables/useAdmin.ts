@@ -7,7 +7,7 @@ export function useAdmin() {
 
   async function fetchPendingOwners() {
     try {
-      owners.value = await apiFetch("/brand-owners");
+      owners.value = await apiFetch("/admin/brand-owners");
     } catch (err: any) {
       error.value = err?.message || "Kon eigenaren niet laden";
     }
@@ -15,7 +15,7 @@ export function useAdmin() {
 
   async function verifyOwner(id: number) {
     try {
-      await apiFetch(`/brands/owners/${id}/verify`, {
+      await apiFetch(`/admin/brands/owners/${id}/verify`, {
         method: "POST",
       });
       await fetchPendingOwners(); // Refresh list

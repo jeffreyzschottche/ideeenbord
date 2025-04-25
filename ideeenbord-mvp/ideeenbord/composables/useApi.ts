@@ -11,7 +11,8 @@ export async function apiFetch<T>(
   } = {}
 ): Promise<T> {
   const config = useRuntimeConfig();
-  const BASE_URL = config.public.apiBaseUrl;
+  const API_VERSION = "v1";
+  const BASE_URL = `${config.public.apiBaseUrl}/${API_VERSION}`;
   const auth = useAuthStore();
 
   const url = new URL(`${BASE_URL}${endpoint}`);
