@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import type { ClaimForm } from "~/types/brand";
 import { useClaimBrand } from "~/composables/useBrand";
+import { apiFetch } from "~/composables/useApi";
 
 const form = ref<ClaimForm>({
   brandId: "",
@@ -18,14 +19,12 @@ const brands = ref<{ id: number; title: string }[]>([]);
 
 onMounted(async () => {
   try {
-    const response = await fetch("http://localhost:8000/api/brands?verified=0");
-
-    if (!response.ok) throw new Error("API Error");
-
-    const data = await response.json();
+    const data = await apiFetch<{ id: number; title: string }[]>("/brands", {
+      params: { verified: 0 },
+    });
     brands.value = data;
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    error.value = err?.message || "Merken ophalen mislukt.";
   }
 });
 

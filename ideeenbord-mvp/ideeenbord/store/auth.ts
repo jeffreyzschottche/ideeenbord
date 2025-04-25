@@ -1,4 +1,6 @@
+// ~/store/auth.ts
 import { defineStore } from "pinia";
+import { apiFetch } from "~/composables/useApi";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -20,17 +22,11 @@ export const useAuthStore = defineStore("auth", {
       if (typeof window !== "undefined") {
         const token = localStorage.getItem("token");
 
-        // ✅ Zet token direct zodat middleware het meteen ziet
         if (token) {
           this.token = token;
 
-          // 🔁 User ophalen mag async daarna gebeuren
           try {
-            const user = await $fetch("http://localhost:8000/api/me", {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
+            const user = await apiFetch("/me");
             this.user = user;
           } catch (e) {
             console.error("Kon user info niet ophalen:", e);

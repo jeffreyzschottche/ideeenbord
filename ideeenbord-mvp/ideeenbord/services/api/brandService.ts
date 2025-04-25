@@ -1,5 +1,6 @@
 import type { RequestBrandForm } from "~/types/brand";
 import type { ClaimForm } from "~/types/brand";
+import { apiFetch } from "~/composables/useApi";
 
 const BASE = "http://localhost:8000/api";
 
@@ -19,13 +20,13 @@ export const brandService = {
       formData.append("socials", JSON.stringify(form.socials));
     }
 
-    return await $fetch(`${BASE}/brands/request`, {
+    return await apiFetch("/brands/request", {
       method: "POST",
       body: formData,
     });
   },
   async claimBrand(form: ClaimForm) {
-    return await $fetch("http://localhost:8000/api/brands/claim", {
+    return await apiFetch("/brands/claim", {
       method: "POST",
       body: {
         brand_id: form.brandId,

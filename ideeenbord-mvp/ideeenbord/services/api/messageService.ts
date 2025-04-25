@@ -1,6 +1,7 @@
+import { apiFetch } from "~/composables/useApi";
 export const messageService = {
   async getGreeting(): Promise<string> {
-    const res = await $fetch<string>("http://127.0.0.1:8000/api/hi");
+    const res: string = await apiFetch("/hi");
     return res;
   },
 };

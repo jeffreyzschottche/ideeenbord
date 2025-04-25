@@ -8,6 +8,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { apiFetch } from "~/composables/useApi";
 
 const message = ref("");
 const error = ref("");
@@ -25,22 +26,10 @@ onMounted(async () => {
   }
 
   try {
-    const response = await fetch("http://localhost:8000/api/bye", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Fout ${response.status}: ${response.statusText}`);
-    }
-
-    const result = await response.json();
-    message.value = result.message;
+    let response = await apiFetch("/bye");
+    message.value = response;
   } catch (err) {
-    error.value = err.message;
+    error.value = err?.message || "Beveiligde data ophalen mislukt";
   }
 });
 </script>

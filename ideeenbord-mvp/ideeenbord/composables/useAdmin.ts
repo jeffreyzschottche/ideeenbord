@@ -1,4 +1,5 @@
 import { ref } from "vue";
+import { apiFetch } from "~/composables/useApi";
 
 export function useAdmin() {
   const error = ref<string | null>(null);
@@ -6,28 +7,20 @@ export function useAdmin() {
 
   async function fetchPendingOwners() {
     try {
-      owners.value = await $fetch("http://localhost:8000/api/brand-owners", {
-        headers: {
-          credentials: "include",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      owners.value = await apiFetch("/brand-owners");
     } catch (err: any) {
-      error.value = err?.data?.message || "Kon eigenaren niet laden";
+      error.value = err?.message || "Kon eigenaren niet laden";
     }
   }
 
   async function verifyOwner(id: number) {
     try {
-      await $fetch(`http://localhost:8000/api/brands/owners/${id}/verify`, {
+      await apiFetch(`/brands/owners/${id}/verify`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
       });
-      await fetchPendingOwners(); // refresh list
+      await fetchPendingOwners(); // Refresh list
     } catch (err: any) {
-      error.value = err?.data?.message || "Verifiëren mislukt";
+      error.value = err?.message || "Verifiëren mislukt";
     }
   }
 
