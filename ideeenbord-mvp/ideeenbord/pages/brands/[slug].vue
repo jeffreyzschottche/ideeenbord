@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from "vue";
 import { useAuthStore } from "~/store/auth";
 import { apiFetch } from "~/composables/useApi";
 import { useRoute } from "vue-router";
+import IdeaGrid from "~/components/ideas/IdeaGrid.vue";
 
 const auth = useAuthStore();
 const route = useRoute();
@@ -81,4 +82,5 @@ async function submitRating() {
   <div v-else>
     <p>Merk wordt geladen...</p>
   </div>
+  <IdeaGrid v-if="brand" :brandId="brand.id" />
 </template>

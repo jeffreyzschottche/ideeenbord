@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\BrandOwnerController;
+use App\Http\Controllers\IdeaController;
 use App\Http\Middleware\IsAdmin;
 
 /*
@@ -24,6 +25,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/hi', fn () => response()->json(['message' => 'Hello World']));
     Route::prefix('brands')->group(function () {
         Route::get('/', [BrandController::class, 'index']);
+        Route::get('/{brand}/ideas', [IdeaController::class, 'index']);
         Route::get('/{slug}', [BrandController::class, 'show']); // NIEUW
           // Beveiligde POST-routes
           Route::middleware('auth:sanctum')->group(function () {
@@ -31,6 +33,8 @@ Route::prefix('v1')->group(function () {
             Route::post('/claim', [BrandOwnerController::class, 'store']);
         });
     });
+
+
       
 
     // 🔒 Authenticated routes
@@ -39,6 +43,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/me', fn (Request $request) => $request->user());
         Route::get('/bye', fn () => response()->json(['message' => 'Protected']));
         Route::post('/brands/{brand}/rate', [BrandController::class, 'rate']);
+        Route::post('/ideas', [IdeaController::class, 'store']);
+        Route::post('/ideas/{idea}/like', [IdeaController::class, 'like']);
+        Route::post('/ideas/{idea}/dislike', [IdeaController::class, 'dislike']);
 
     });
 
