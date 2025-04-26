@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import type { ClaimForm } from "~/types/brand";
 import { useClaimBrand } from "~/composables/useBrand";
 import { apiFetch } from "~/composables/useApi";
+import { useResponseDisplay } from "~/composables/useResponseDisplay";
 
 const form = ref<ClaimForm>({
   brandId: "",
@@ -16,6 +17,7 @@ const form = ref<ClaimForm>({
 
 const { claimBrand, error } = useClaimBrand();
 const brands = ref<{ id: number; title: string }[]>([]);
+const { trigger } = useResponseDisplay();
 
 onMounted(async () => {
   try {
@@ -24,16 +26,16 @@ onMounted(async () => {
     });
     brands.value = data;
   } catch (err: any) {
-    error.value = err?.message || "Merken ophalen mislukt.";
+    trigger(err?.message || "Merken ophalen mislukt.", "error");
   }
 });
 
 async function handleSubmit() {
   try {
     await claimBrand(form.value);
-    alert("Merkclaim verstuurd!");
+    trigger("Merkclaim succesvol verstuurd!", "success");
   } catch (e) {
-    alert(error.value);
+    trigger(error.value || "Merkclaim mislukt.", "error");
   }
 }
 </script>
@@ -46,21 +48,25 @@ async function handleSubmit() {
         {{ brand.title }}
       </option>
     </select>
+
     <input v-model="form.name" placeholder="Naam" required />
     <input v-model="form.email" type="email" placeholder="Email" required />
     <input v-model="form.phone" placeholder="Telefoonnummer" />
     <input v-model="form.url" placeholder="Website" />
+
     <select v-model="form.subscriptionPlan" required>
       <option>Brons</option>
       <option>Zilver</option>
       <option>Goud</option>
     </select>
+
     <input
       v-model="form.password"
       type="password"
       placeholder="Wachtwoord"
       required
     />
+
     <button type="submit">Merk claimen</button>
   </form>
 </template>

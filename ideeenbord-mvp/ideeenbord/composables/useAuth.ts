@@ -13,7 +13,6 @@ export function useRegister() {
 
       if (token) {
         localStorage.setItem("token", token);
-        alert("Registratie succesvol!");
         return true;
       } else {
         error.value = "Geen token ontvangen.";
@@ -39,7 +38,6 @@ export function useLogin() {
 
       if (token && user) {
         authStore.setAuth(token, user);
-        alert("Login succesvol!");
         console.log(authStore.$state);
         return true;
       } else {

@@ -4,23 +4,25 @@ import { useAuthStore } from "~/store/auth";
 import { apiFetch } from "~/composables/useApi";
 import { useRoute } from "vue-router";
 import IdeaGrid from "~/components/ideas/IdeaGrid.vue";
+import { useResponseDisplay } from "~/composables/useResponseDisplay";
 
 const auth = useAuthStore();
 const route = useRoute();
+const { trigger } = useResponseDisplay();
+
+const brand = ref<any>(null);
+const rating = ref(5); // Default slider positie
 
 const averageRating = computed(() => {
   if (!brand.value || brand.value.rating_count === 0) return 0;
   return (brand.value.rating_sum / brand.value.rating_count).toFixed(1); // 1 decimaal
 });
 
-const brand = ref<any>(null);
-const rating = ref(5); // Default slider positie
-
 onMounted(async () => {
   try {
     brand.value = await apiFetch(`/brands/${route.params.slug}`);
-  } catch (err) {
-    console.error("Fout bij ophalen merk:", err);
+  } catch (err: any) {
+    trigger(err?.message || "Fout bij ophalen merk", "error");
   }
 });
 
@@ -34,21 +36,22 @@ async function submitRating() {
   if (!brand.value) return;
 
   if (hasRated.value) {
-    alert("Je hebt al een beoordeling gegeven!");
+    trigger("Je hebt al een beoordeling gegeven!", "warning");
     return;
   }
 
   try {
-    const response = await apiFetch(`/brands/${brand.value.id}/rate`, {
+    await apiFetch(`/brands/${brand.value.id}/rate`, {
       method: "POST",
       body: { rating: rating.value },
     });
-    // alert(response.message);
-
-    // Update lokale state zodat je niet opnieuw kunt stemmen
+    if (!auth.user.ratings_given) {
+      auth.user.ratings_given = [];
+    }
     auth.user.ratings_given.push(brand.value.id);
+    trigger("Je beoordeling is succesvol geplaatst!", "success");
   } catch (err: any) {
-    alert(err?.message || "Rating mislukt");
+    trigger(err?.message || "Rating mislukt", "error");
   }
 }
 </script>
@@ -82,5 +85,6 @@ async function submitRating() {
   <div v-else>
     <p>Merk wordt geladen...</p>
   </div>
+
   <IdeaGrid v-if="brand" :brandId="brand.id" />
 </template>

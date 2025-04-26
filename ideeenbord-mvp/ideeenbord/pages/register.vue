@@ -21,11 +21,15 @@ const form = ref<RegisterForm>({
 });
 
 const { register, error } = useRegister();
+const { trigger } = useResponseDisplay(); // ✨ trigger ophalen
 
 async function handleSubmit() {
   const success = await register(form.value);
-  if (!success) {
-    alert(error.value);
+
+  if (success) {
+    trigger("Registratie succesvol! Je kunt nu inloggen.", "success");
+  } else if (error.value) {
+    trigger(error.value, "error");
   }
 }
 </script>
