@@ -68,4 +68,32 @@ public function show($slug)
     $brand = Brand::where('slug', $slug)->firstOrFail();
     return response()->json($brand);
 }
+public function rate(Request $request, Brand $brand)
+{
+    $request->validate([
+        'rating' => 'required|integer|min:1|max:10',
+    ]);
+
+    $user = $request->user();
+
+    // Check of user al gerated heeft
+    if (in_array($brand->id, $user->ratings_given ?? [])) {
+        return response()->json(['message' => 'Je hebt al een rating gegeven.'], 403);
+    }
+
+    // Brand ratings bijwerken
+    $brand->rating_sum += $request->rating;
+    $brand->rating_count += 1;
+    $brand->save();
+
+    // User ratings bijwerken
+    $user->ratings_given = [...($user->ratings_given ?? []), $brand->id];
+    $user->save();
+
+    return response()->json([
+        'message' => 'Rating succesvol opgeslagen.',
+        'average_rating' => round($brand->rating_sum / $brand->rating_count, 1),
+    ]);
+}
+
 }

@@ -34,6 +34,8 @@ Route::prefix('v1')->group(function () {
         Route::get('/user', fn (Request $request) => $request->user());
         Route::get('/me', fn (Request $request) => $request->user());
         Route::get('/bye', fn () => response()->json(['message' => 'Protected']));
+        Route::post('/brands/{brand}/rate', [BrandController::class, 'rate']);
+
     });
 
     // 🔒👑 Admin routes
