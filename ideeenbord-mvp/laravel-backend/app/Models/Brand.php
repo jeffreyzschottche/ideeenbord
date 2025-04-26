@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Brand extends Model
 {
@@ -41,4 +42,17 @@ class Brand extends Model
 {
     return $this->hasOne(BrandOwner::class);
 }
+protected static function boot()
+{
+    parent::boot();
+
+    static::creating(function ($brand) {
+        $brand->slug = \Str::slug($brand->title);
+    });
+
+    static::updating(function ($brand) {
+        $brand->slug = \Str::slug($brand->title);
+    });
+}
+
 }

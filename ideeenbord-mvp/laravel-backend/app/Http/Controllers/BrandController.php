@@ -6,6 +6,7 @@ use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class BrandController extends Controller
 {
@@ -60,4 +61,11 @@ class BrandController extends Controller
 
         return Brand::all(['id', 'title']);
     }
+
+public function show($slug)
+{
+    // $brand = Brand::whereRaw('LOWER(title) = ?', [Str::slug($slug)])->firstOrFail();
+    $brand = Brand::where('slug', $slug)->firstOrFail();
+    return response()->json($brand);
+}
 }

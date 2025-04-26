@@ -22,9 +22,12 @@ Route::prefix('v1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/hi', fn () => response()->json(['message' => 'Hello World']));
-    Route::post('/brands/request', [BrandController::class, 'store']);
-    Route::post('/brands/claim', [BrandOwnerController::class, 'store']);
-    Route::get('/brands', [BrandController::class, 'index']);
+    Route::prefix('brands')->group(function () {
+        Route::post('/request', [BrandController::class, 'store']);
+        Route::post('/claim', [BrandOwnerController::class, 'store']);
+        Route::get('/', [BrandController::class, 'index']);
+        Route::get('/{slug}', [BrandController::class, 'show']); // NIEUW
+    });
 
     // 🔒 Authenticated routes
     Route::middleware('auth:sanctum')->group(function () {
