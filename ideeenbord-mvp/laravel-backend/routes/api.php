@@ -23,11 +23,15 @@ Route::prefix('v1')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/hi', fn () => response()->json(['message' => 'Hello World']));
     Route::prefix('brands')->group(function () {
-        Route::post('/request', [BrandController::class, 'store']);
-        Route::post('/claim', [BrandOwnerController::class, 'store']);
         Route::get('/', [BrandController::class, 'index']);
         Route::get('/{slug}', [BrandController::class, 'show']); // NIEUW
+          // Beveiligde POST-routes
+          Route::middleware('auth:sanctum')->group(function () {
+            Route::post('/request', [BrandController::class, 'store']);
+            Route::post('/claim', [BrandOwnerController::class, 'store']);
+        });
     });
+      
 
     // 🔒 Authenticated routes
     Route::middleware('auth:sanctum')->group(function () {
@@ -52,48 +56,3 @@ Route::prefix('v1')->group(function () {
 
 });
 
-
-// // Voorbeeld van een beveiligde route
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-// Route::middleware('auth:sanctum')->get('/bye', function (Request $request) {
-//     return response()->json(['message' => 'Sanctum Protected Message From laravel-backend/api.php']);
-// });
-
-
-// Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
-//     return $request->user();
-// });
-
-// Route::get('/hi', function (Request $request) {
-//     return response()->json(['message' => 'Viewable from laravel-backend/api.php']);
-// });
-
-// Route::post('/register', [AuthController::class, 'register']);
-// Route::post('/login', [AuthController::class, 'login']);
-
-// Route::middleware('auth:sanctum')->group(function () {
-//     Route::get('/user', function (Request $request) {
-//         return $request->user();
-//     });
-// });
-
-// Route::post('/brands/request', [BrandController::class, 'store']);
-
-// Route::post('/brands/claim', [BrandOwnerController::class, 'store']);
-
-// Route::get('/brands', [BrandController::class, 'index']);
-
-// Route::middleware(['auth:sanctum', IsAdmin::class])->group(function () {
-//     Route::post('/brands/owners/{id}/verify', function ($id) {
-//         $owner = \App\Models\BrandOwner::findOrFail($id);
-//         $owner->verified_owner = true;
-//         $owner->save(); // ➤ dit triggert de observer
-//         return response()->json(['message' => 'BrandOwner verified!']);
-//     });
-    
-//     Route::get('/brand-owners', [BrandOwnerController::class, 'index']);
-    
-// });

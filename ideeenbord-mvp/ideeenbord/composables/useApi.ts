@@ -54,7 +54,8 @@ export async function apiFetch<T>(
         navigateTo("/404");
         break;
       case 500: // Server error
-        navigateTo("/error");
+        // navigateTo("/");
+        console.error(err);
         break;
       default:
         console.error(`API Error met status ${statusCode}`);
