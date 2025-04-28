@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'brand_owner' => [
+        'driver' => 'sanctum',
+        'provider' => 'brand_owners',
+    ],
     ],
 
     /*
@@ -64,7 +68,10 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
-
+        'brand_owners' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\BrandOwner::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

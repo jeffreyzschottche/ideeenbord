@@ -91,4 +91,21 @@ class IdeaController extends Controller
 
         return response()->json(['message' => 'Je idee is nu gedisliked!']);
     }
+    public function update(Request $request, Idea $idea)
+{
+    $request->validate([
+        'status' => 'required|string|in:rejected,in_progress,completed,pending',
+    ]);
+
+    $validated = $request->validate([
+        'status' => 'required|string|in:rejected,in_progress,completed,pending',
+    ]);
+    
+    $idea->status = $validated['status'];
+    $idea->save();
+        $idea->save();
+
+    return response()->json(['message' => 'Status succesvol aangepast.']);
+}
+
 }
