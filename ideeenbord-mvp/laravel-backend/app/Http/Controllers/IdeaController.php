@@ -107,5 +107,61 @@ class IdeaController extends Controller
 
     return response()->json(['message' => 'Status succesvol aangepast.']);
 }
+public function pin(Idea $idea)
+{
+    $user = auth('brand_owner')->user();
+
+    if (!$user) {
+        return response()->json(['message' => 'Niet geautoriseerd.'], 403);
+    }
+
+    $brand = $idea->brand;
+
+    if (!$brand || $brand->id !== $user->brand_id) {
+        return response()->json(['message' => 'Geen toegang tot dit merk.'], 403);
+    }
+
+    // Update het idee als gepind
+    $idea->is_pinned = true;
+    $idea->save();
+
+    // Voeg toe aan pinned_ideas van het merk
+    $pinnedIdeas = $brand->pinned_ideas ?? [];
+    if (!in_array($idea->id, $pinnedIdeas)) {
+        $pinnedIdeas[] = $idea->id;
+        $brand->pinned_ideas = $pinnedIdeas;
+        $brand->save();
+    }
+
+    return response()->json(['message' => 'Idee succesvol gepind.']);
+}
+
+public function unpin(Idea $idea)
+{
+    $user = auth('brand_owner')->user();
+
+    if (!$user) {
+        return response()->json(['message' => 'Niet geautoriseerd.'], 403);
+    }
+
+    $brand = $idea->brand;
+
+    if (!$brand || $brand->id !== $user->brand_id) {
+        return response()->json(['message' => 'Geen toegang tot dit merk.'], 403);
+    }
+
+    // Update het idee als niet gepind
+    $idea->is_pinned = false;
+    $idea->save();
+
+    // Verwijder uit pinned_ideas
+    $pinnedIdeas = $brand->pinned_ideas ?? [];
+    $pinnedIdeas = array_filter($pinnedIdeas, fn($id) => $id != $idea->id);
+    $brand->pinned_ideas = array_values($pinnedIdeas);
+    $brand->save();
+
+    return response()->json(['message' => 'Idee succesvol ontpind.']);
+}
+
 
 }

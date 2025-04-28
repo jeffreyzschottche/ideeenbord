@@ -26,6 +26,9 @@ Route::prefix('v1')->group(function () {
        Route::post('/brand-owner/logout', [BrandOwnerAuthController::class, 'logout']);
        Route::middleware('auth:brand_owner')->get('/brand-owner/me', [BrandOwnerAuthController::class, 'me']);
        Route::middleware('auth:brand_owner')->patch('/ideas/{idea}', [IdeaController::class, 'update']);
+       Route::patch('/ideas/{idea}/pin', [IdeaController::class, 'pin']);
+Route::patch('/ideas/{idea}/unpin', [IdeaController::class, 'unpin']);
+
     });
 
     // 🌐 Publieke routes

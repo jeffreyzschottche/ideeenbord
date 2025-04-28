@@ -1,8 +1,3 @@
-// ~/composables/useManageIdeas.ts
-import { ref } from "vue";
-import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi"; // we fixen API calls als owner
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
-
 export function useManageIdeas(brandId: number) {
   const ideas = ref<any[]>([]);
   const error = ref<string | null>(null);
@@ -24,12 +19,38 @@ export function useManageIdeas(brandId: number) {
         body: JSON.stringify({ status }),
       });
       trigger("Status geüpdatet!", "success");
-      await fetchIdeas(); // Refresh na update
+      await fetchIdeas();
     } catch (err: any) {
       error.value = err?.message || "Fout bij updaten status.";
       trigger(`Fout: ${err}`, "error");
     }
   }
 
-  return { ideas, fetchIdeas, updateIdeaStatus, error };
+  async function pinIdea(ideaId: number) {
+    try {
+      await brandOwnerApiFetch(`/ideas/${ideaId}/pin`, {
+        method: "PATCH",
+      });
+      trigger("Idee vastgezet!", "success");
+      await fetchIdeas();
+    } catch (err: any) {
+      error.value = err?.message || "Fout bij vastzetten.";
+      trigger(`Fout: ${err}`, "error");
+    }
+  }
+
+  async function unpinIdea(ideaId: number) {
+    try {
+      await brandOwnerApiFetch(`/ideas/${ideaId}/unpin`, {
+        method: "PATCH",
+      });
+      trigger("Idee losgemaakt!", "success");
+      await fetchIdeas();
+    } catch (err: any) {
+      error.value = err?.message || "Fout bij losmaken.";
+      trigger(`Fout: ${err}`, "error");
+    }
+  }
+
+  return { ideas, fetchIdeas, updateIdeaStatus, pinIdea, unpinIdea, error };
 }

@@ -14,20 +14,43 @@
         <strong>Huidige status:</strong> {{ idea.status || "Nog geen status" }}
       </div>
 
+      <div class="mb-2">
+        <strong>Is vastgezet:</strong> {{ idea.is_pinned ? "Ja" : "Nee" }}
+      </div>
+
       <select v-model="idea.newStatus" class="border p-2 rounded mb-2">
         <option disabled value="">Kies nieuwe status</option>
         <option value="rejected">Afgekeurd</option>
         <option value="in_progress">In behandeling genomen</option>
         <option value="completed">Voltooid</option>
-        <option value="rejected">Tijdelijk gepauzeerd</option>
+        <option value="pending">Tijdelijk gepauzeerd</option>
+        <!-- gefixt, stond eerst weer rejected -->
       </select>
 
-      <button
-        @click="updateStatus(idea)"
-        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-      >
-        Status opslaan
-      </button>
+      <div class="flex gap-2">
+        <button
+          @click="updateStatus(idea)"
+          class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Status opslaan
+        </button>
+
+        <button
+          v-if="!idea.is_pinned"
+          @click="pinIdeaAction(idea)"
+          class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+        >
+          Zet idee vast
+        </button>
+
+        <button
+          v-else
+          @click="unpinIdeaAction(idea)"
+          class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+        >
+          Maak idee los
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -38,12 +61,21 @@ import { useManageIdeas } from "~/composables/useManageIdeas";
 
 const props = defineProps<{ brandId: number }>();
 
-const { ideas, fetchIdeas, updateIdeaStatus } = useManageIdeas(props.brandId);
+const { ideas, fetchIdeas, updateIdeaStatus, pinIdea, unpinIdea } =
+  useManageIdeas(props.brandId);
 
 onMounted(fetchIdeas);
 
 async function updateStatus(idea: any) {
   if (!idea.newStatus) return;
   await updateIdeaStatus(idea.id, idea.newStatus);
+}
+
+async function pinIdeaAction(idea: any) {
+  await pinIdea(idea.id);
+}
+
+async function unpinIdeaAction(idea: any) {
+  await unpinIdea(idea.id);
 }
 </script>
