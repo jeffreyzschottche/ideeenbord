@@ -21,7 +21,7 @@
       <p>Login om je idee te plaatsen!</p>
     </div>
 
-    <div v-for="idea in ideas" :key="idea.id">
+    <div v-for="idea in sortedIdeas" :key="idea.id">
       <IdeaCard :idea="idea" @like="likeIdea" @dislike="dislikeIdea" />
     </div>
   </div>
@@ -32,6 +32,14 @@ import { ref, onMounted } from "vue";
 import { useAuthStore } from "~/store/auth";
 import { useIdeas } from "~/composables/useIdeas";
 import IdeaCard from "~/components/ideas/IdeaCard.vue";
+
+const sortedIdeas = computed(() => {
+  return [...ideas.value].sort((a, b) => {
+    if (a.is_pinned && !b.is_pinned) return -1;
+    if (!a.is_pinned && b.is_pinned) return 1;
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
+});
 
 const props = defineProps<{ brandId: number }>();
 const auth = useAuthStore();
