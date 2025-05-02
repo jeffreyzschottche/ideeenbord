@@ -27,7 +27,7 @@ class Brand extends Model
         'dislikes',
         'quizzes',
         'giveaways',
-        'main_question',
+        'main_question_id',
         'ideas',
         'pinned_ideas',
     ];
@@ -54,5 +54,10 @@ protected static function boot()
         $brand->slug = \Str::slug($brand->title);
     });
 }
+public function mainQuestion()
+{
+    return $this->belongsTo(MainQuestion::class);
+}
+
 
 }

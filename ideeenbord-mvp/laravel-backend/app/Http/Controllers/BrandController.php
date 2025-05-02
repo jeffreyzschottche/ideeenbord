@@ -65,7 +65,8 @@ class BrandController extends Controller
 public function show($slug)
 {
     // $brand = Brand::whereRaw('LOWER(title) = ?', [Str::slug($slug)])->firstOrFail();
-    $brand = Brand::where('slug', $slug)->firstOrFail();
+    // $brand = Brand::where('slug', $slug)->firstOrFail();
+    $brand = Brand::with('mainQuestion')->where('slug', $slug)->firstOrFail();
     return response()->json($brand);
 }
 public function rate(Request $request, Brand $brand)
@@ -99,25 +100,23 @@ public function setMainQuestion(Request $request, Brand $brand)
 {
     $user = auth('brand_owner')->user();
 
-    if (!$user) {
-        return response()->json(['message' => 'Niet geautoriseerd.'], 403);
-    }
-
-    // Check of de brand die wordt aangepast echt bij deze eigenaar hoort
-    if ($brand->brand_owner_id !== $user->id) {
+    if (!$user || $brand->brand_owner_id !== $user->id) {
         return response()->json(['message' => 'Geen toegang tot dit merk.'], 403);
     }
 
     $validated = $request->validate([
-        'text' => 'required|string',
-        'answers' => 'nullable|array',
+        'main_question_id' => 'required|exists:main_questions,id',
     ]);
 
-    $brand->main_question = $validated;
+    $brand->main_question_id = $validated['main_question_id'];
     $brand->save();
 
-    return response()->json(['message' => 'Algemene vraag succesvol opgeslagen!', 'brand' => $brand]);
+    return response()->json([
+        'message' => 'Vraag gekoppeld aan merk',
+        'brand' => $brand->load('mainQuestion'),
+    ]);
 }
+
 
 
 

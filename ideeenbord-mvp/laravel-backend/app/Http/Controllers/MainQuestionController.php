@@ -12,4 +12,9 @@ class MainQuestionController extends Controller
         $questions = MainQuestion::all();
         return response()->json($questions);
     }
+    public function show(MainQuestion $mainQuestion)
+{
+    return response()->json($mainQuestion);
+}
+
 }

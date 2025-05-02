@@ -53,10 +53,7 @@ async function submit() {
   try {
     await brandOwnerApiFetch(`/brands/${brandId.value}/main-questions`, {
       method: "PATCH",
-      body: JSON.stringify({
-        text: selected.text,
-        answers: selected.answers,
-      }),
+      body: JSON.stringify({ main_question_id: selectedId.value }),
     });
     trigger("Vraag succesvol opgeslagen!", "success");
   } catch (err: any) {

@@ -9,6 +9,7 @@ use App\Http\Controllers\BrandOwnerAuthController;
 use App\Http\Controllers\IdeaController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Controllers\MainQuestionController;
+USE App\Http\Controllers\MainQuestionResponseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,7 @@ Route::prefix('v1')->group(function () {
    // BrandOwner Auth
    Route::post('/brand-owner/login', [BrandOwnerAuthController::class, 'login']);
    Route::get('/main-questions', [MainQuestionController::class, 'index']);
+   Route::get('/main-questions/{mainQuestion}', [MainQuestionController::class, 'show']);
 
     
    Route::middleware('auth:brand_owner')->group(function () { // 👈 fix hier
@@ -32,6 +34,7 @@ Route::prefix('v1')->group(function () {
        Route::patch('/ideas/{idea}/pin', [IdeaController::class, 'pin']);
        Route::patch('/ideas/{idea}/unpin', [IdeaController::class, 'unpin']);
        Route::patch('/brands/{brand}/main-questions', [BrandController::class, 'setMainQuestion']);
+       
     });
 
     // 🌐 Publieke routes
@@ -61,7 +64,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/ideas', [IdeaController::class, 'store']);
         Route::post('/ideas/{idea}/like', [IdeaController::class, 'like']);
         Route::post('/ideas/{idea}/dislike', [IdeaController::class, 'dislike']);
-
+        Route::post('/brands/{brand}/main-question-response', [MainQuestionResponseController::class, 'store']);
     });
 
     // 🔒👑 Admin routes
