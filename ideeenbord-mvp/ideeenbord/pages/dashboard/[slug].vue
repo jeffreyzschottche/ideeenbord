@@ -3,6 +3,7 @@ import { useRoute } from "vue-router";
 import { ref, onMounted, computed } from "vue";
 import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
 import ManageIdeaGrid from "~/components/dashboard/ManageIdeaGrid.vue";
+import MainQuestionSelect from "~/components/dashboard/MainQuestionSelect.vue";
 
 definePageMeta({
   middleware: "brand-owner", // 🔒 alleen toegankelijk als ingelogd
@@ -54,4 +55,5 @@ onMounted(async () => {
     </div>
   </div>
   <ManageIdeaGrid :brandId="owner?.brand?.id" />
+  <MainQuestionSelect />
 </template>

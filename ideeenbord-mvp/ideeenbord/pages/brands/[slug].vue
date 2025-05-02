@@ -5,6 +5,7 @@ import { apiFetch } from "~/composables/useApi";
 import { useRoute } from "vue-router";
 import IdeaGrid from "~/components/ideas/IdeaGrid.vue";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import BrandMainQuestion from "~/components/BrandMainQuestion.vue";
 
 const auth = useAuthStore();
 const route = useRoute();
@@ -85,6 +86,6 @@ async function submitRating() {
   <div v-else>
     <p>Merk wordt geladen...</p>
   </div>
-
   <IdeaGrid v-if="brand" :brandId="brand.id" />
+  <BrandMainQuestion v-if="brand" :brand="brand" />
 </template>

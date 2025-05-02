@@ -32,5 +32,4 @@ class BrandOwnerController extends Controller
         {
             return BrandOwner::where('verified_owner', false)->get();
         }
-
 }

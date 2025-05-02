@@ -95,5 +95,30 @@ public function rate(Request $request, Brand $brand)
         'average_rating' => round($brand->rating_sum / $brand->rating_count, 1),
     ]);
 }
+public function setMainQuestion(Request $request, Brand $brand)
+{
+    $user = auth('brand_owner')->user();
+
+    if (!$user) {
+        return response()->json(['message' => 'Niet geautoriseerd.'], 403);
+    }
+
+    // Check of de brand die wordt aangepast echt bij deze eigenaar hoort
+    if ($brand->brand_owner_id !== $user->id) {
+        return response()->json(['message' => 'Geen toegang tot dit merk.'], 403);
+    }
+
+    $validated = $request->validate([
+        'text' => 'required|string',
+        'answers' => 'nullable|array',
+    ]);
+
+    $brand->main_question = $validated;
+    $brand->save();
+
+    return response()->json(['message' => 'Algemene vraag succesvol opgeslagen!', 'brand' => $brand]);
+}
+
+
 
 }

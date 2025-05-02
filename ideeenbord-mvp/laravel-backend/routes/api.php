@@ -8,6 +8,7 @@ use App\Http\Controllers\BrandOwnerController;
 use App\Http\Controllers\BrandOwnerAuthController;
 use App\Http\Controllers\IdeaController;
 use App\Http\Middleware\IsAdmin;
+use App\Http\Controllers\MainQuestionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,14 +22,16 @@ use App\Http\Middleware\IsAdmin;
 Route::prefix('v1')->group(function () {
    // BrandOwner Auth
    Route::post('/brand-owner/login', [BrandOwnerAuthController::class, 'login']);
+   Route::get('/main-questions', [MainQuestionController::class, 'index']);
+
     
    Route::middleware('auth:brand_owner')->group(function () { // 👈 fix hier
        Route::post('/brand-owner/logout', [BrandOwnerAuthController::class, 'logout']);
        Route::middleware('auth:brand_owner')->get('/brand-owner/me', [BrandOwnerAuthController::class, 'me']);
        Route::middleware('auth:brand_owner')->patch('/ideas/{idea}', [IdeaController::class, 'update']);
        Route::patch('/ideas/{idea}/pin', [IdeaController::class, 'pin']);
-Route::patch('/ideas/{idea}/unpin', [IdeaController::class, 'unpin']);
-
+       Route::patch('/ideas/{idea}/unpin', [IdeaController::class, 'unpin']);
+       Route::patch('/brands/{brand}/main-questions', [BrandController::class, 'setMainQuestion']);
     });
 
     // 🌐 Publieke routes
