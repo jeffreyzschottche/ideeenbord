@@ -2,12 +2,12 @@
   <div class="mt-8">
     <h2 class="text-xl font-bold mb-4">Kies een algemene vraag</h2>
 
-    <div v-if="currentQuestion" class="mb-4 text-gray-700">
+    <!-- <div v-if="currentQuestion" class="mb-4 text-gray-700">
       <strong>Huidige vraag:</strong> {{ currentQuestion.text }}
-    </div>
+    </div> -->
 
     <select v-model="selectedId" class="w-full border rounded p-2 mb-4">
-      <option disabled value="">Selecteer een vraag</option>
+      <option disabled value="">{{ currentQuestion.text }}</option>
       <option v-for="q in questions" :key="q.id" :value="q.id">
         {{ q.text }}
       </option>
@@ -34,10 +34,12 @@ const brandId = computed(() => brandOwnerAuth.owner?.brand?.id);
 const { questions, fetchMainQuestions } = useMainQuestions();
 const { trigger } = useResponseDisplay();
 const brandOwnerAuth = useBrandOwnerAuthStore();
-const selectedId = ref<string | null>(null);
+const selectedId = ref<string>("");
 
 const currentQuestion = computed(() => {
-  return brandOwnerAuth.owner?.brand?.main_question || null;
+  const id = brandOwnerAuth.owner?.brand?.main_question_id;
+  if (!id) return null;
+  return questions.value.find((q) => q.id === id) || null;
 });
 
 onMounted(fetchMainQuestions);
