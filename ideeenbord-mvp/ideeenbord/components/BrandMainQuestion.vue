@@ -5,7 +5,7 @@ import { useRoute } from "vue-router";
 import { useAuthStore } from "~/store/auth";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import { ref, onMounted } from "vue";
-import { apiFetch } from "~/composables/useApi";
+import { useMainQuestions } from "~/composables/useMainQuestions";
 
 const props = defineProps<{
   brand: {
@@ -18,15 +18,11 @@ const props = defineProps<{
 
 const question = ref<any | null>(null);
 
+const { fetchMainQuestionById } = useMainQuestions();
+
 onMounted(async () => {
   if (props.brand.main_question_id) {
-    try {
-      question.value = await apiFetch(
-        `/main-questions/${props.brand.main_question_id}`
-      );
-    } catch (err: any) {
-      console.error("Kon main question niet laden", err);
-    }
+    question.value = await fetchMainQuestionById(props.brand.main_question_id);
   }
 });
 
@@ -47,30 +43,6 @@ const parsed = computed(() => {
   };
 });
 
-// const parsed = computed(() => {
-//   if (!props.brand.main_question_id) return null;
-
-//   let q: any = props.brand.main_question_id;
-
-//   if (typeof q === "string") {
-//     try {
-//       q = JSON.parse(q);
-//     } catch (e) {
-//       console.warn("Kon main_question niet parsen als JSON:", q);
-//       return null;
-//     }
-//   }
-
-//   if (!q?.text) return null;
-
-//   return {
-//     id: q.id, // nodig om op te slaan
-//     text: q.text
-//       .replace(/\[merknaam\]/gi, props.brand.title)
-//       .replace(/\[categorie\]/gi, props.brand.category),
-//     answers: q.answers,
-//   };
-// });
 function handleAnswerInput(event: Event) {
   const target = event.target as HTMLTextAreaElement;
   if (target?.value) {

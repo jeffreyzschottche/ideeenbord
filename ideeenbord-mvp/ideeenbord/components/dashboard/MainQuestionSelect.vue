@@ -7,7 +7,9 @@
     </div> -->
 
     <select v-model="selectedId" class="w-full border rounded p-2 mb-4">
-      <option disabled value="">{{ currentQuestion.text }}</option>
+      <option disabled value="" v-if="currentQuestion?.text">
+        {{ currentQuestion.text }}
+      </option>
       <option v-for="q in questions" :key="q.id" :value="q.id">
         {{ q.text }}
       </option>
@@ -26,12 +28,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useMainQuestions } from "~/composables/useMainQuestions";
-import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
+// import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
 import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 const brandId = computed(() => brandOwnerAuth.owner?.brand?.id);
+const { questions, fetchMainQuestions, setMainQuestionForBrand } =
+  useMainQuestions();
 
-const { questions, fetchMainQuestions } = useMainQuestions();
 const { trigger } = useResponseDisplay();
 const brandOwnerAuth = useBrandOwnerAuthStore();
 const selectedId = ref<string>("");
@@ -43,23 +46,33 @@ const currentQuestion = computed(() => {
 });
 
 onMounted(fetchMainQuestions);
-
 async function submit() {
   if (!selectedId.value) return;
 
-  const selected = questions.value.find(
-    (q) => q.id === Number(selectedId.value)
-  );
-  if (!selected) return;
-
   try {
-    await brandOwnerApiFetch(`/brands/${brandId.value}/main-questions`, {
-      method: "PATCH",
-      body: JSON.stringify({ main_question_id: selectedId.value }),
-    });
+    await setMainQuestionForBrand(brandId.value, Number(selectedId.value));
     trigger("Vraag succesvol opgeslagen!", "success");
   } catch (err: any) {
     trigger("Fout bij opslaan vraag: " + err.message, "error");
   }
 }
+
+// async function submit() {
+//   if (!selectedId.value) return;
+
+//   const selected = questions.value.find(
+//     (q) => q.id === Number(selectedId.value)
+//   );
+//   if (!selected) return;
+
+//   try {
+//     await brandOwnerApiFetch(`/brands/${brandId.value}/main-questions`, {
+//       method: "PATCH",
+//       body: JSON.stringify({ main_question_id: selectedId.value }),
+//     });
+//     trigger("Vraag succesvol opgeslagen!", "success");
+//   } catch (err: any) {
+//     trigger("Fout bij opslaan vraag: " + err.message, "error");
+//   }
+// }
 </script>
