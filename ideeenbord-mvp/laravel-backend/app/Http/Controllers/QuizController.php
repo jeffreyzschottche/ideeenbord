@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Quiz;
+use App\Models\User;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -105,14 +106,37 @@ $quiz->winner_id = $request->winner_id;
     return response()->json($quiz);
 }
 
+// public function getParticipants(Brand $brand)
+// {
+//     $quiz = Quiz::where('brand_id', $brand->id)->where('status', 'open')->latest()->first();
+//     if (!$quiz) {
+//         return response()->json(['message' => 'Geen actieve quiz'], 404);
+//     }
+
+//     return response()->json($quiz->participants ?? []);
+// }
+
 public function getParticipants(Brand $brand)
 {
-    $quiz = Quiz::where('brand_id', $brand->id)->where('status', 'open')->latest()->first();
-    if (!$quiz) {
-        return response()->json(['message' => 'Geen actieve quiz'], 404);
+    $quiz = Quiz::where('brand_id', $brand->id)
+        ->where('status', 'open')
+        ->latest()
+        ->first();
+
+    if (!$quiz || !$quiz->participants || count($quiz->participants) === 0) {
+        return response()->json([]);
     }
 
-    return response()->json($quiz->participants ?? []);
+    $participants = collect($quiz->participants)->map(function ($p) {
+        $user = User::find($p['user_id']);
+        return [
+            'user_id' => $p['user_id'],
+            'name' => $user?->name ?? 'Onbekende gebruiker',
+            'answers' => $p['answers'] ?? [],
+        ];
+    });
+
+    return response()->json($participants);
 }
 
 }

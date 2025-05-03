@@ -12,7 +12,7 @@
         :key="participant.id"
         class="mb-2 p-2 border rounded flex justify-between items-center"
       >
-        <span>{{ participant.name || `User ${participant.id}` }}</span>
+        <span>{{ participant.name || `User ${participant.user_id}` }}</span>
         <button
           @click="selectWinner(participant.id)"
           class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
@@ -38,6 +38,8 @@ const participants = ref<any[]>([]);
 const winnerId = ref<number | null>(null);
 const brandId = useBrandOwnerAuthStore().owner?.brand?.id;
 const { trigger } = useResponseDisplay();
+
+console.log(participants);
 
 onMounted(async () => {
   if (!brandId) return;
