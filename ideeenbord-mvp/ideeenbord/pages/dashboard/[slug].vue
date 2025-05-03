@@ -4,6 +4,9 @@ import { ref, onMounted, computed } from "vue";
 import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
 import ManageIdeaGrid from "~/components/dashboard/ManageIdeaGrid.vue";
 import MainQuestionSelect from "~/components/dashboard/MainQuestionSelect.vue";
+import QuizBuilder from "~/components/dashboard/QuizBuilder.vue";
+// import QuizWinner from "~/components/dashboard/QuizWinner.vue";
+import QuizWinner from "@/components/dashboard/QuizWinner.vue";
 
 definePageMeta({
   middleware: "brand-owner", // 🔒 alleen toegankelijk als ingelogd
@@ -56,4 +59,6 @@ onMounted(async () => {
   </div>
   <ManageIdeaGrid :brandId="owner?.brand?.id" />
   <MainQuestionSelect />
+  <QuizBuilder />
+  <QuizWinner />
 </template>

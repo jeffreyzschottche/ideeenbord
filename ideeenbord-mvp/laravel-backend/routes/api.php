@@ -10,6 +10,8 @@ use App\Http\Controllers\IdeaController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Controllers\MainQuestionController;
 USE App\Http\Controllers\MainQuestionResponseController;
+use App\Http\Controllers\QuizController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +28,10 @@ Route::prefix('v1')->group(function () {
    Route::get('/main-questions', [MainQuestionController::class, 'index']);
    Route::get('/main-questions/{mainQuestion}', [MainQuestionController::class, 'show']);
 
+   Route::get('/brands/{brand}/quiz', [QuizController::class, 'activeForBrand']);
+Route::get('/brands/{brand}/quiz/participants', [QuizController::class, 'getParticipants']);
+
+
     
    Route::middleware('auth:brand_owner')->group(function () { // 👈 fix hier
        Route::post('/brand-owner/logout', [BrandOwnerAuthController::class, 'logout']);
@@ -34,7 +40,10 @@ Route::prefix('v1')->group(function () {
        Route::patch('/ideas/{idea}/pin', [IdeaController::class, 'pin']);
        Route::patch('/ideas/{idea}/unpin', [IdeaController::class, 'unpin']);
        Route::patch('/brands/{brand}/main-questions', [BrandController::class, 'setMainQuestion']);
-       
+       Route::post('/quizzes', [QuizController::class, 'store']);
+       Route::patch('/quizzes/{quiz}', [QuizController::class, 'update']);
+       Route::post('/quizzes/{quiz}/close', [QuizController::class, 'close']);
+       Route::post('/quizzes/{quiz}/select-winner', [QuizController::class, 'selectWinner']);
     });
 
     // 🌐 Publieke routes
@@ -65,6 +74,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/ideas/{idea}/like', [IdeaController::class, 'like']);
         Route::post('/ideas/{idea}/dislike', [IdeaController::class, 'dislike']);
         Route::post('/brands/{brand}/main-question-response', [MainQuestionResponseController::class, 'store']);
+        Route::get('/quizzes/{quiz}', [QuizController::class, 'show']);
+        Route::post('/quizzes/{quiz}/submit', [QuizController::class, 'submit']);
     });
 
     // 🔒👑 Admin routes
@@ -75,7 +86,6 @@ Route::prefix('v1')->group(function () {
             $owner->save();
             return response()->json(['message' => 'BrandOwner verified']);
         });
-
         Route::get('/brand-owners', [BrandOwnerController::class, 'index']);
     });
 

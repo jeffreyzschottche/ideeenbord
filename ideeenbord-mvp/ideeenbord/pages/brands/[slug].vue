@@ -6,6 +6,7 @@ import { useRoute } from "vue-router";
 import IdeaGrid from "~/components/ideas/IdeaGrid.vue";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import BrandMainQuestion from "~/components/BrandMainQuestion.vue";
+import QuizParticipant from "~/components/QuizParticipant.vue";
 
 const auth = useAuthStore();
 const route = useRoute();
@@ -88,4 +89,5 @@ async function submitRating() {
   </div>
   <IdeaGrid v-if="brand" :brandId="brand.id" />
   <BrandMainQuestion v-if="brand" :brand="brand" />
+  <QuizParticipant v-if="brand" :brand="brand" />
 </template>
