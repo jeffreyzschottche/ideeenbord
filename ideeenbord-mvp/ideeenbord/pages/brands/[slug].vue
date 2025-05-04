@@ -8,6 +8,10 @@ import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import BrandMainQuestion from "~/components/BrandMainQuestion.vue";
 import QuizParticipant from "~/components/QuizParticipant.vue";
 
+const rawApiBase = useRuntimeConfig().public.apiBase;
+const apiBase = (rawApiBase || "http://localhost:8000/api") as string;
+const imageBase = apiBase.replace("/api", "/storage");
+
 const auth = useAuthStore();
 const route = useRoute();
 const { trigger } = useResponseDisplay();
@@ -61,6 +65,13 @@ async function submitRating() {
 <template>
   <div v-if="brand">
     <h1>{{ brand.title }}</h1>
+    <img
+      v-if="brand.logo_path"
+      :src="`${imageBase}/${brand.logo_path}`"
+      alt="Logo van merk"
+      class="w-48 h-auto mb-4 rounded"
+    />
+
     <p>{{ brand.intro }}</p>
     <p>Email: {{ brand.email }}</p>
     <a :href="brand.website_url" target="_blank">Website</a>

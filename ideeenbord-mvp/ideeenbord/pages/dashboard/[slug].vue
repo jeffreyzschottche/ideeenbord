@@ -6,6 +6,9 @@ import ManageIdeaGrid from "~/components/dashboard/ManageIdeaGrid.vue";
 import MainQuestionSelect from "~/components/dashboard/MainQuestionSelect.vue";
 import QuizBuilder from "~/components/dashboard/QuizBuilder.vue";
 import QuizOverview from "~/components/dashboard/QuizOverview.vue";
+const rawApiBase = useRuntimeConfig().public.apiBase;
+const apiBase = (rawApiBase || "http://localhost:8000/api") as string;
+const imageBase = apiBase.replace("/api", "/storage");
 
 definePageMeta({
   middleware: "brand-owner", // 🔒 alleen toegankelijk als ingelogd
@@ -29,7 +32,6 @@ onMounted(async () => {
     <h1 class="text-3xl font-bold mb-6">
       Dashboard voor {{ route.params.slug }}
     </h1>
-
     <div v-if="loading">
       <p>Bezig met laden...</p>
       <!-- of spinner -->
@@ -43,6 +45,12 @@ onMounted(async () => {
       <p class="mb-4">
         Merk: <strong>{{ owner.brand.title }}</strong>
       </p>
+      <img
+        v-if="owner.brand.logo_path"
+        :src="`${imageBase}/${owner.brand.logo_path}`"
+        alt="Logo van merk"
+        class="w-48 h-auto mb-4 rounded"
+      />
 
       <button
         @click="logout"
