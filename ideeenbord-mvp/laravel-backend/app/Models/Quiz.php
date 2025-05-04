@@ -10,7 +10,7 @@ class Quiz extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'brand_id', 'title', 'slug', 'status',
+        'brand_id', 'title', 'slug', 'description', 'prize', 'status',
         'quiz_questions', 'quiz_answers', 'participants', 'winner_id'
     ];
     protected $casts = [

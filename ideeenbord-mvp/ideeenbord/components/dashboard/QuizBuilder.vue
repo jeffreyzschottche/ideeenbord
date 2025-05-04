@@ -8,6 +8,19 @@
       class="w-full border p-2 mb-4 rounded"
     />
 
+    <textarea
+      v-model="description"
+      placeholder="Korte beschrijving van de quiz"
+      class="w-full border p-2 mb-4 rounded"
+      rows="3"
+    ></textarea>
+
+    <input
+      v-model="prize"
+      placeholder="Wat kunnen deelnemers winnen?"
+      class="w-full border p-2 mb-4 rounded"
+    />
+
     <div
       v-for="(question, qIndex) in questions"
       :key="qIndex"
@@ -66,6 +79,9 @@ const { createQuiz } = useQuizBuilder();
 const brandOwnerAuth = useBrandOwnerAuthStore();
 
 const title = ref("");
+const description = ref("");
+const prize = ref("");
+
 const questions = ref([
   {
     title: "",
@@ -94,13 +110,20 @@ async function submitQuiz() {
   try {
     const brandId = brandOwnerAuth.owner?.brand?.id;
     if (!brandId) return;
+
     await createQuiz({
       brand_id: brandId,
       title: title.value,
+      description: description.value,
+      prize: prize.value,
       questions: questions.value,
     });
+
     trigger("Quiz succesvol aangemaakt!", "success");
+
     title.value = "";
+    description.value = "";
+    prize.value = "";
     questions.value = [
       {
         title: "",

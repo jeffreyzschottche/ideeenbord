@@ -6,7 +6,6 @@ import ManageIdeaGrid from "~/components/dashboard/ManageIdeaGrid.vue";
 import MainQuestionSelect from "~/components/dashboard/MainQuestionSelect.vue";
 import QuizBuilder from "~/components/dashboard/QuizBuilder.vue";
 import QuizOverview from "~/components/dashboard/QuizOverview.vue";
-import QuizWinner from "@/components/dashboard/QuizWinner.vue";
 
 definePageMeta({
   middleware: "brand-owner", // 🔒 alleen toegankelijk als ingelogd

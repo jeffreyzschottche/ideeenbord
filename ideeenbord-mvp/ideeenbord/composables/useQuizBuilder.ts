@@ -2,6 +2,8 @@ export function useQuizBuilder() {
   async function createQuiz(quiz: {
     brand_id: number;
     title: string;
+    description: string;
+    prize: string;
     questions: {
       title: string;
       answers: { text: string; correct: boolean }[];
@@ -25,6 +27,8 @@ export function useQuizBuilder() {
       body: JSON.stringify({
         brand_id: quiz.brand_id,
         title: quiz.title,
+        prize: quiz.prize,
+        description: quiz.description,
         quiz_questions,
         quiz_answers,
       }),

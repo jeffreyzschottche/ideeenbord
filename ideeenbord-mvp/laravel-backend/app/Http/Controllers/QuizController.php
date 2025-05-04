@@ -14,6 +14,8 @@ class QuizController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string',
+            'description' => 'nullable|string',
+            'prize' => 'nullable|string',
             'quiz_questions' => 'required|array',
             'quiz_answers' => 'required|array',
         ]);
@@ -25,6 +27,8 @@ class QuizController extends Controller
             'brand_id' => $brand->id,
             'title' => $validated['title'],
             'slug' => Str::slug($validated['title']),
+            'description' => $validated['description'] ?? null,
+            'prize' => $validated['prize'] ?? null,
             'quiz_questions' => $validated['quiz_questions'],
             'quiz_answers' => $validated['quiz_answers'],
         ]);
@@ -35,7 +39,7 @@ class QuizController extends Controller
     public function update(Request $request, Quiz $quiz)
     {
         $this->authorizeOwner($quiz);
-        $quiz->update($request->only(['title', 'quiz_questions', 'quiz_answers']));
+        $quiz->update($request->only([  'title', 'description', 'prize', 'quiz_questions', 'quiz_answers']));
         return response()->json(['quiz' => $quiz]);
     }
 

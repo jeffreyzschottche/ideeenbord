@@ -8,6 +8,8 @@
       <h2 class="text-2xl font-bold mb-4">
         Quiz: {{ quiz.title }} van {{ brand.title }}
       </h2>
+      <h3>Description {{ quiz.description }}</h3>
+      <h4>Prijs : {{ quiz.prize }}</h4>
 
       <form @submit.prevent="submitQuiz(quiz.id)">
         <div
@@ -57,16 +59,7 @@ import { ref, onMounted } from "vue";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import { apiFetch } from "~/composables/useApi";
 import { useAuthStore } from "~/store/auth";
-
-type Quiz = {
-  id: number;
-  title: string;
-  status: string;
-  quiz_questions: { id: number; title: string }[];
-  quiz_answers: { idQuestion: number; answers: Record<string, boolean> }[];
-  participants?: { user_id: number }[];
-};
-
+import type { Quiz } from "~/types/quiz";
 const props = defineProps<{ brand: { id: number; title: string } }>();
 const { trigger } = useResponseDisplay();
 const user = useAuthStore().user;

@@ -31,7 +31,7 @@
             :key="participant.user_id"
             class="mb-2 p-2 border rounded flex justify-between items-center"
           >
-            <span>User ID: {{ participant.name }}</span>
+            <span>User: {{ participant.name }}</span>
             <button
               @click="selectWinner(quiz.id, participant.user_id)"
               class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
