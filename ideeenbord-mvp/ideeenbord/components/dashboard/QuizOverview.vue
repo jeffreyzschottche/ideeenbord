@@ -50,6 +50,7 @@ import { ref, onMounted } from "vue";
 import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
 import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import type { Quiz } from "~/types/quiz";
 
 const { trigger } = useResponseDisplay();
 const brandId = useBrandOwnerAuthStore().owner?.brand?.id;

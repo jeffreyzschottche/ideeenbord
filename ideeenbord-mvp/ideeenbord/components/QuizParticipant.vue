@@ -64,10 +64,10 @@ const props = defineProps<{ brand: { id: number; title: string } }>();
 const { trigger } = useResponseDisplay();
 const user = useAuthStore().user;
 const quizzes = ref<Quiz[]>([]);
-const answers = ref<Record<number, Record<number, string>>>({});
 const availableQuizzes = ref<Quiz[]>([]);
+const answers = ref<Record<number, Record<number, string>>>({});
 
-function getAnswersForQuestion(quiz: any, questionId: number): string[] {
+function getAnswersForQuestion(quiz: Quiz, questionId: number): string[] {
   const match = quiz.quiz_answers?.find(
     (a: any) => a.idQuestion === questionId
   );
