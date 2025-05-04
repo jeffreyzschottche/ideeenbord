@@ -31,6 +31,7 @@ Route::prefix('v1')->group(function () {
    Route::get('/brands/{brand}/quiz', [QuizController::class, 'activeForBrand']);
 Route::get('/brands/{brand}/quiz/participants', [QuizController::class, 'getParticipants']);
 
+Route::get('/brands/{brand}/quizzes', [QuizController::class, 'listForBrand']);
 
     
    Route::middleware('auth:brand_owner')->group(function () { // 👈 fix hier
@@ -44,6 +45,8 @@ Route::get('/brands/{brand}/quiz/participants', [QuizController::class, 'getPart
        Route::patch('/quizzes/{quiz}', [QuizController::class, 'update']);
        Route::post('/quizzes/{quiz}/close', [QuizController::class, 'close']);
        Route::post('/quizzes/{quiz}/select-winner', [QuizController::class, 'selectWinner']);
+       Route::get('/quizzes/{quiz}/participants', [QuizController::class, 'participantsByQuiz']);
+
     });
 
     // 🌐 Publieke routes

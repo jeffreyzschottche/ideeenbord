@@ -138,5 +138,64 @@ public function getParticipants(Brand $brand)
 
     return response()->json($participants);
 }
+public function listForBrand(Brand $brand)
+{
+    $quizzes = Quiz::where('brand_id', $brand->id)->latest()->get();
+
+    // Voeg optioneel user-namen toe aan elke quiz
+    foreach ($quizzes as $quiz) {
+        if (is_array($quiz->participants)) {
+            $userIds = collect($quiz->participants)->pluck('user_id')->unique();
+            $users = \App\Models\User::whereIn('id', $userIds)->get()->keyBy('id');
+
+            $quiz->participants = collect($quiz->participants)->map(function ($p) use ($users) {
+                $p['name'] = $users[$p['user_id']]->name ?? null;
+                return $p;
+            })->toArray();
+        }
+    }
+
+    return response()->json($quizzes);
+}
+
+// public function listForBrand(Brand $brand)
+// {
+//     // $this->authorize('view', $brand); // eventueel extra beveiliging
+//     $quizzes = Quiz::with('participants')->where('brand_id', $brand->id)->latest()->get();
+//     // $quizzes = Quiz::where('brand_id', $brand->id)->latest()->get();
+//     return response()->json($quizzes);
+// }
+// public function participantsByQuiz(Quiz $quiz)
+// {
+//     // Auth check?
+//     $this->authorizeOwner($quiz);
+
+//     return response()->json($quiz->participants ?? []);
+// }
+public function participantsByQuiz(Quiz $quiz)
+{
+    $this->authorizeOwner($quiz);
+
+    $participants = $quiz->participants ?? [];
+
+    $userIds = collect($participants)->pluck('user_id')->unique()->values();
+
+    // Haal gebruikers op
+    $users = User::whereIn('id', $userIds)->get()->keyBy('id');
+
+    // Voeg naam toe aan elke participant
+    $enriched = collect($participants)->map(function ($participant) use ($users) {
+        $user = $users->get($participant['user_id']);
+        return [
+            ...$participant,
+            'name' => $user ? $user->name : 'Onbekende gebruiker',
+        ];
+    });
+
+    return response()->json($enriched);
+}
+
+
+
 
 }
