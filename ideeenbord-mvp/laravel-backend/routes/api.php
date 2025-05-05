@@ -36,7 +36,7 @@ Route::get('/brands/{brand}/quizzes', [QuizController::class, 'listForBrand']);
     
    Route::middleware('auth:brand_owner')->group(function () { // 👈 fix hier
        Route::post('/brand-owner/logout', [BrandOwnerAuthController::class, 'logout']);
-       Route::middleware('auth:brand_owner')->get('/brand-owner/me', [BrandOwnerAuthController::class, 'me']);
+       Route::get('/brand-owner/me', [BrandOwnerAuthController::class, 'me']);
        Route::middleware('auth:brand_owner')->patch('/ideas/{idea}', [IdeaController::class, 'update']);
        Route::patch('/ideas/{idea}/pin', [IdeaController::class, 'pin']);
        Route::patch('/ideas/{idea}/unpin', [IdeaController::class, 'unpin']);
@@ -46,7 +46,7 @@ Route::get('/brands/{brand}/quizzes', [QuizController::class, 'listForBrand']);
        Route::post('/quizzes/{quiz}/close', [QuizController::class, 'close']);
        Route::post('/quizzes/{quiz}/select-winner', [QuizController::class, 'selectWinner']);
        Route::get('/quizzes/{quiz}/participants', [QuizController::class, 'participantsByQuiz']);
-
+       Route::patch('/brands/{brand}', [BrandController::class, 'update']);
     });
 
     // 🌐 Publieke routes

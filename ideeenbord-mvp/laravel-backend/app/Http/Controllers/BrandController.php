@@ -116,6 +116,30 @@ public function setMainQuestion(Request $request, Brand $brand)
         'brand' => $brand->load('mainQuestion'),
     ]);
 }
+public function update(Request $request, Brand $brand)
+{
+    $user = auth('brand_owner')->user();
+
+    if (!$user || $brand->brand_owner_id !== $user->id) {
+        return response()->json(['message' => 'Geen toegang tot dit merk.'], 403);
+    }
+
+    $validated = $request->validate([
+        'title' => 'sometimes|string|max:255',
+        'category' => 'sometimes|string|max:255',
+        'website_url' => 'nullable|url',
+        'intro' => 'nullable|string',
+        'intro_short' => 'nullable|string|max:160',
+        'email' => 'nullable|email',
+        'subscription' => 'nullable|string',
+        'socials' => 'nullable|array',
+    ]);
+
+    $brand->update($validated);
+
+    return response()->json(['message' => 'Merk bijgewerkt.', 'brand' => $brand]);
+}
+
 
 
 

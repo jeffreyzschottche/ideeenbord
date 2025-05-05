@@ -1,10 +1,12 @@
-// ~/composables/useBrandOwnerApi.ts
+import { useRuntimeConfig } from "#app";
 import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
 
 export async function brandOwnerApiFetch<T = any>(
   url: string,
   options: RequestInit = {}
 ): Promise<T> {
+  const config = useRuntimeConfig();
+  const baseUrl = config.public.apiBaseUrl; // Gebruik env
   const store = useBrandOwnerAuthStore();
   const token = store.token || localStorage.getItem("brand-owner-token");
 
@@ -14,13 +16,14 @@ export async function brandOwnerApiFetch<T = any>(
     "Content-Type": "application/json",
   };
 
-  const res = await fetch(`http://localhost:8000/api/v1${url}`, {
+  const res = await fetch(`${baseUrl}/v1${url}`, {
     ...options,
     headers,
   });
 
   if (!res.ok) {
-    throw new Error("API error");
+    const errText = await res.text();
+    throw new Error(`API error: ${errText}`);
   }
 
   return await res.json();

@@ -6,10 +6,41 @@ import ManageIdeaGrid from "~/components/dashboard/ManageIdeaGrid.vue";
 import MainQuestionSelect from "~/components/dashboard/MainQuestionSelect.vue";
 import QuizBuilder from "~/components/dashboard/QuizBuilder.vue";
 import QuizOverview from "~/components/dashboard/QuizOverview.vue";
+import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import { useBrandUpdater } from "~/composables/useBrandUpdater";
+import BrandEditModal from "~/components/dashboard/BrandEditModal.vue";
+
+const { trigger } = useResponseDisplay();
+
+const showModal = ref(false);
+
 const rawApiBase = useRuntimeConfig().public.apiBase;
 const apiBase = (rawApiBase || "http://localhost:8000/api") as string;
 const imageBase = apiBase.replace("/api", "/storage");
+const editing = ref<Record<string, boolean>>({});
+const { updateBrand } = useBrandUpdater();
+const brand = ref<any>(null); // of met type
 
+function toggleEdit(field: string) {
+  editing.value[field] = !editing.value[field];
+}
+
+async function saveEdit(field: string) {
+  if (!brand.value?.id) return;
+  try {
+    await updateBrand(brand.value.id, { [field]: brand.value[field] });
+    trigger("Bijgewerkt!", "success");
+    editing.value[field] = false;
+  } catch (e) {
+    trigger("Bijwerken mislukt", "error");
+  }
+}
+
+async function reloadData() {
+  loading.value = true;
+  await initAuth();
+  loading.value = false;
+}
 definePageMeta({
   middleware: "brand-owner", // 🔒 alleen toegankelijk als ingelogd
 });
@@ -24,6 +55,7 @@ const loading = ref(true);
 onMounted(async () => {
   await initAuth();
   loading.value = false;
+  console.log("🔍 owner.brand.id = ", owner.value?.brand?.id);
 });
 </script>
 
@@ -45,6 +77,16 @@ onMounted(async () => {
       <p class="mb-4">
         Merk: <strong>{{ owner.brand.title }}</strong>
       </p>
+      <button @click="showModal = true" class="text-blue-600">
+        ✏️ Bewerk alles
+      </button>
+      <BrandEditModal
+        :open="showModal"
+        :brand="owner.brand"
+        @close="showModal = false"
+        @updated="reloadData()"
+      />
+
       <img
         v-if="owner.brand.logo_path"
         :src="`${imageBase}/${owner.brand.logo_path}`"
@@ -64,7 +106,9 @@ onMounted(async () => {
       <p>Je bent niet ingelogd.</p>
     </div>
   </div>
-  <ManageIdeaGrid :brandId="owner?.brand?.id" />
+  <client-only>
+    <ManageIdeaGrid :brandId="owner.brand.id" v-if="owner?.brand?.id" />
+  </client-only>
   <MainQuestionSelect />
   <QuizBuilder />
   <!-- <QuizWinner /> -->
