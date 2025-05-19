@@ -31,4 +31,5 @@ onMounted(async () => {
     <p>Gebruikersnaam: {{ auth.user.username }}</p>
   </div>
   <UserRatingsInsights></UserRatingsInsights>
+  <UserQuizzes />
 </template>

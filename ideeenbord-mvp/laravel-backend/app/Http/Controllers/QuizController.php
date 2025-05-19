@@ -62,6 +62,15 @@ class QuizController extends Controller
         $quiz->participants = $participants;
         $quiz->save();
 
+        // Voeg quiz_id + brand_id toe aan user.quiz_submissions
+        $submissions = $user->quiz_submissions ?? [];
+        $submissions[] = [
+            'quiz_id' => $quiz->id,
+            'brand_id' => $quiz->brand_id,
+        ];
+        $user->quiz_submissions = $submissions;
+        $user->save();
+
         return response()->json(['message' => 'Deelname opgeslagen.']);
     }
 
@@ -198,6 +207,27 @@ public function participantsByQuiz(Quiz $quiz)
 
     return response()->json($enriched);
 }
+public function quizzesForUser($username)
+{
+    $user = User::where('username', $username)->firstOrFail();
+    $submissions = $user->quiz_submissions ?? [];
+
+    if (empty($submissions)) {
+        return response()->json(['current' => [], 'past' => []]);
+    }
+
+    $quizIds = collect($submissions)->pluck('quiz_id')->toArray();
+
+    $quizzes = Quiz::whereIn('id', $quizIds)->with('brand')->get();
+
+    $grouped = [
+        'current' => $quizzes->where('status', 'open')->values(),
+        'past' => $quizzes->where('status', '!=', 'open')->values(),
+    ];
+
+    return response()->json($grouped);
+}
+
 
 
 

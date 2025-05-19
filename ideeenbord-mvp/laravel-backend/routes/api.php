@@ -117,7 +117,6 @@ Route::get('/brands/{brand}/quizzes', [QuizController::class, 'listForBrand']);
             Route::post('/claim', [BrandOwnerController::class, 'store']);
         });
     });
-    Route::get('/ideas', [IdeaController::class, 'getMultipleByIds']);
 
 
 
@@ -135,6 +134,9 @@ Route::get('/brands/{brand}/quizzes', [QuizController::class, 'listForBrand']);
         Route::post('/brands/{brand}/main-question-response', [MainQuestionResponseController::class, 'store']);
         Route::get('/quizzes/{quiz}', [QuizController::class, 'show']);
         Route::post('/quizzes/{quiz}/submit', [QuizController::class, 'submit']);
+        Route::get('/users/{username}/quiz-submissions', [QuizController::class, 'quizzesForUser']);
+        Route::get('/ideas', [IdeaController::class, 'getMultipleByIds']);
+
     });
 
     // 🔒👑 Admin routes
