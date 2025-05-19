@@ -11,6 +11,12 @@ use App\Http\Middleware\IsAdmin;
 use App\Http\Controllers\MainQuestionController;
 USE App\Http\Controllers\MainQuestionResponseController;
 use App\Http\Controllers\QuizController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Facades\URL;
+use App\Models\User;
+
 
 
 /*
@@ -23,6 +29,54 @@ use App\Http\Controllers\QuizController;
 |
 */
 Route::prefix('v1')->group(function () {
+ 
+    Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
+        $user = User::findOrFail($id);
+    
+        if (! URL::hasValidSignature($request)) {
+            throw new AuthorizationException('Ongeldige of verlopen link.');
+        }
+    
+        if (! hash_equals($hash, sha1($user->getEmailForVerification()))) {
+            throw new AuthorizationException('Hash mismatch.');
+        }
+    
+        if (! $user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+            event(new Verified($user));
+        }
+    
+        $query = http_build_query([
+            'id' => $id,
+            'hash' => $hash,
+            'expires' => $request->query('expires'),
+            'signature' => $request->query('signature'),
+        ]);
+        
+        return redirect("http://localhost:3000/email-verification?$query");
+        
+    })->middleware('signed')->name('verification.verify');
+
+
+Route::get('/verify-email', function (Request $request) {
+    $user = User::findOrFail($request->query('id'));
+
+    if (! URL::hasValidSignature($request)) {
+        throw new AuthorizationException('Ongeldige of verlopen link');
+    }
+
+    if (!$user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+        event(new Verified($user));
+    }
+
+    return response()->json(['message' => 'Email succesvol geverifieerd.']);
+});
+    
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return response()->json(['message' => 'Verificatie-email verstuurd']);
+    });
    // BrandOwner Auth
    Route::post('/brand-owner/login', [BrandOwnerAuthController::class, 'login']);
    Route::get('/main-questions', [MainQuestionController::class, 'index']);

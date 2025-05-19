@@ -27,7 +27,10 @@ async function handleSubmit() {
   const success = await register(form.value);
 
   if (success) {
-    trigger("Registratie succesvol! Je kunt nu inloggen.", "success");
+    trigger(
+      "Registratie gelukt! Bevestig je e-mailadres via de mail.",
+      "success"
+    );
   } else if (error.value) {
     trigger(error.value, "error");
   }

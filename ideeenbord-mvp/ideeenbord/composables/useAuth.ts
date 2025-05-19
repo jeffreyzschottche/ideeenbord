@@ -37,8 +37,12 @@ export function useLogin() {
       const user = response?.user;
 
       if (token && user) {
+        if (!user.email_verified_at) {
+          error.value = "Bevestig eerst je e-mailadres.";
+          return false;
+        }
         authStore.setAuth(token, user);
-        console.log(authStore.$state);
+        // console.log(authStore.$state);
         return true;
       } else {
         error.value = "Geen token of gebruiker ontvangen.";

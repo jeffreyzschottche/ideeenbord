@@ -37,7 +37,10 @@ class AuthController extends Controller
 
         $user = User::create($data);
 
+
         $token = $user->createToken('auth_token')->plainTextToken;
+        $user->sendEmailVerificationNotification();
+
 
         return response()->json(['access_token' => $token, 'user' => $user], 201);
     }
