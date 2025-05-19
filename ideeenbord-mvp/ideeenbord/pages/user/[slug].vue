@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import UserProfileEdit from "~/components/user/UserProfileEdit.vue";
 import UserRatingsInsights from "~/components/user/UserRatingsInsights.vue";
 import { useAuthStore } from "~/store/auth";
 
@@ -32,4 +33,5 @@ onMounted(async () => {
   </div>
   <UserRatingsInsights></UserRatingsInsights>
   <UserQuizzes />
+  <UserProfileEdit />
 </template>

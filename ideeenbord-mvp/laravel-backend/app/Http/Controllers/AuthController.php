@@ -62,4 +62,37 @@ class AuthController extends Controller
 
         return response()->json(['access_token' => $token, 'user' => $user]);
     }
+    public function update(Request $request, $username)
+{
+    $user = $request->user();
+
+    // Alleen eigen profiel mag aangepast worden
+    if ($user->username !== $username) {
+        return response()->json(['message' => 'Unauthorized'], 403);
+    }
+
+    $validated = $request->validate([
+        'name' => 'sometimes|string|max:255',
+        'email' => 'sometimes|email|unique:users,email,' . $user->id,
+        'password' => 'sometimes|string|min:6',
+        'username' => 'sometimes|string|unique:users,username,' . $user->id,
+        'gender' => 'nullable|string',
+        'education_level' => 'nullable|string',
+        'education' => 'nullable|string',
+        'job' => 'nullable|string',
+        'sector' => 'nullable|string',
+        'city' => 'nullable|string',
+        'relationship_status' => 'nullable|string',
+        'postal_code' => 'nullable|string',
+    ]);
+
+    if (isset($validated['password'])) {
+        $validated['password'] = Hash::make($validated['password']);
+    }
+
+    $user->update($validated);
+
+    return response()->json(['message' => 'Gegevens bijgewerkt', 'user' => $user]);
+}
+
 }

@@ -136,6 +136,7 @@ Route::get('/brands/{brand}/quizzes', [QuizController::class, 'listForBrand']);
         Route::post('/quizzes/{quiz}/submit', [QuizController::class, 'submit']);
         Route::get('/users/{username}/quiz-submissions', [QuizController::class, 'quizzesForUser']);
         Route::get('/ideas', [IdeaController::class, 'getMultipleByIds']);
+        Route::patch('/users/{username}', [AuthController::class, 'update']);
 
     });
 
