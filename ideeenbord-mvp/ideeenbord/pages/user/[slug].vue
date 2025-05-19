@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import UserRatingsInsights from "~/components/user/UserRatingsInsights.vue";
 import { useAuthStore } from "~/store/auth";
 
 const auth = useAuthStore();
@@ -29,4 +30,5 @@ onMounted(async () => {
     <h1>Welkom, {{ auth.user.name }} 👋</h1>
     <p>Gebruikersnaam: {{ auth.user.username }}</p>
   </div>
+  <UserRatingsInsights></UserRatingsInsights>
 </template>

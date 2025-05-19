@@ -162,6 +162,19 @@ public function unpin(Idea $idea)
 
     return response()->json(['message' => 'Idee succesvol ontpind.']);
 }
+public function getMultipleByIds(Request $request)
+{
+    $ids = $request->query('ids');
+
+    if (!is_array($ids)) {
+        $ids = explode(',', $ids);
+    }
+
+    $ideas = \App\Models\Idea::with('brand')->whereIn('id', $ids)->get();
+
+    return response()->json($ideas);
+}
+
 
 
 }

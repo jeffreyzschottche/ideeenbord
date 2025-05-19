@@ -117,6 +117,8 @@ Route::get('/brands/{brand}/quizzes', [QuizController::class, 'listForBrand']);
             Route::post('/claim', [BrandOwnerController::class, 'store']);
         });
     });
+    Route::get('/ideas', [IdeaController::class, 'getMultipleByIds']);
+
 
 
       
