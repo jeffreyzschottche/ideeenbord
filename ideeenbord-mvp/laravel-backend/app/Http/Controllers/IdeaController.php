@@ -32,6 +32,10 @@ class IdeaController extends Controller
             'title' => $request->title,
             'description' => $request->description,
         ]);
+        $created = $user->created_posts ?? [];
+        $created[] = $idea->id;
+        $user->created_posts = $created;
+        $user->save();
 
         return response()->json(['message' => 'Idee succesvol geplaatst', 'idea' => $idea]);
     }
@@ -174,6 +178,17 @@ public function getMultipleByIds(Request $request)
 
     return response()->json($ideas);
 }
+public function getIdeasByUser($username)
+{
+    $user = \App\Models\User::where('username', $username)->firstOrFail();
+
+    $ideas = \App\Models\Idea::where('user_id', $user->id)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return response()->json($ideas);
+}
+
 
 
 

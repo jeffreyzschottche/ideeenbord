@@ -94,5 +94,17 @@ class AuthController extends Controller
 
     return response()->json(['message' => 'Gegevens bijgewerkt', 'user' => $user]);
 }
+public function showByUsername($username)
+{
+    $user = \App\Models\User::where('username', $username)->firstOrFail();
+
+    return response()->json([
+        'id' => $user->id,
+        'username' => $user->username,
+        'name' => $user->name,
+        'created_posts' => $user->created_posts ?? [],
+    ]);
+}
+
 
 }

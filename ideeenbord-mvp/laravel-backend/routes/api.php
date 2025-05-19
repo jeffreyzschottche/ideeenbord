@@ -137,6 +137,9 @@ Route::get('/brands/{brand}/quizzes', [QuizController::class, 'listForBrand']);
         Route::get('/users/{username}/quiz-submissions', [QuizController::class, 'quizzesForUser']);
         Route::get('/ideas', [IdeaController::class, 'getMultipleByIds']);
         Route::patch('/users/{username}', [AuthController::class, 'update']);
+        Route::get('/users/{username}', [AuthController::class, 'showByUsername']);
+        Route::get('/users/{username}/ideas', [IdeaController::class, 'getIdeasByUser']);
+
 
     });
 
