@@ -182,7 +182,8 @@ public function getIdeasByUser($username)
 {
     $user = \App\Models\User::where('username', $username)->firstOrFail();
 
-    $ideas = \App\Models\Idea::where('user_id', $user->id)
+    $ideas = \App\Models\Idea::with('brand')
+        ->where('user_id', $user->id)
         ->orderBy('created_at', 'desc')
         ->get();
 

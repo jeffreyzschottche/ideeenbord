@@ -10,7 +10,7 @@ const auth = useAuthStore();
 const route = useRoute();
 const router = useRouter();
 
-const routeUsername = route.params.slug; // let op: jouw bestand heet [slug].vue
+const routeUsername = route.params.slug;
 
 onMounted(async () => {
   // ✅ Initieel auth ophalen

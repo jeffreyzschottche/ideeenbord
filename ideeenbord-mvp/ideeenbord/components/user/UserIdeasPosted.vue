@@ -31,9 +31,25 @@ onMounted(async () => {
 
     <ul v-if="ideas.length">
       <li v-for="idea in ideas" :key="idea.id" class="mb-2">
-        <strong>{{ idea.title }}</strong>
+        <NuxtLink
+          :to="`/brands/${idea.brand?.slug}`"
+          class="font-bold text-lg text-blue-800 hover:underline"
+        >
+          {{ idea.title }}
+        </NuxtLink>
         <br />
         <i> Status : {{ idea.status }}</i>
+        <i> Likes : {{ idea.likes }}</i>
+        <i> Dislikes : {{ idea.dislikes }}</i>
+        <i>
+          Bij merk:
+          <NuxtLink
+            :to="`/brands/${idea.brand?.slug}`"
+            class="text-blue-600 underline"
+          >
+            {{ idea.brand?.slug }}
+          </NuxtLink>
+        </i>
         <br />
         <span class="text-sm text-gray-600">{{ idea.description }}</span>
       </li>

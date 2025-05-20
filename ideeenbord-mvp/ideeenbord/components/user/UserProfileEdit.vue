@@ -39,9 +39,18 @@ async function updateProfile() {
   saving.value = true;
 
   try {
+    // Alleen velden meesturen die ingevuld zijn of niet leeg zijn
+    const filteredBody = Object.fromEntries(
+      Object.entries(form.value).filter(([key, value]) => {
+        // Laat lege wachtwoordvelden weg
+        if (key === "password" && value === "") return false;
+        return value !== null && value !== undefined;
+      })
+    );
+
     const updated: any = await apiFetch(`/users/${auth.user.username}`, {
       method: "PATCH",
-      body: form.value,
+      body: filteredBody,
     });
 
     auth.user = updated.user;
