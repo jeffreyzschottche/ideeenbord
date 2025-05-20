@@ -85,8 +85,33 @@ class QuizController extends Controller
     public function selectWinner(Request $request, Quiz $quiz)
     {
         $this->authorizeOwner($quiz);
-//         $request->validate(['winner_id' => 'required|integer']);
-// $quiz->winner_id = $request->winner_id;
+        $request->validate(['winner_id' => 'required|integer']);
+        $quiz->winner_id = $request->winner_id;
+        $quiz->status = 'closed';
+        $quiz->save();
+        
+        // Notificaties sturen
+        $participants = $quiz->participants ?? [];
+        
+        foreach ($participants as $p) {
+            $user = \App\Models\User::find($p['user_id']);
+            if (!$user) continue;
+        
+            $message = $p['user_id'] === $quiz->winner_id
+                ? "🎉 Je hebt de quiz '{$quiz->title}' gewonnen bij {$quiz->brand->title}!"
+                : "❌ Je hebt helaas niet gewonnen bij de quiz '{$quiz->title}' van {$quiz->brand->title}.";
+        
+            $notifications = $user->notifications ?? [];
+            $notifications[] = [
+                'type' => 'quiz',
+                'quiz_id' => $quiz->id,
+                'message' => $message,
+                'timestamp' => now(),
+            ];
+            $user->notifications = $notifications;
+            $user->save();
+        }
+        
 $request->validate(['winner_id' => 'required|integer']);
 $quiz->winner_id = $request->winner_id;
         $quiz->save();

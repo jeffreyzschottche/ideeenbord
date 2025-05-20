@@ -70,6 +70,18 @@ class IdeaController extends Controller
         $user->liked_posts = [...($user->liked_posts ?? []), $idea->id];
         $user->save();
 
+        $user = $idea->user;
+$notifications = $user->notifications ?? [];
+$notifications[] = [
+    'type' => 'idea_like',
+    'idea_id' => $idea->id,
+    'message' => "👍 Je idee '{$idea->title}' heeft een nieuwe like gekregen!",
+    'timestamp' => now(),
+];
+$user->notifications = $notifications;
+$user->save();
+
+
         return response()->json(['message' => 'Je idee is nu geliked!']);
     }
 
@@ -97,18 +109,31 @@ class IdeaController extends Controller
     }
     public function update(Request $request, Idea $idea)
 {
-    $request->validate([
-        'status' => 'required|string|in:rejected,in_progress,completed,pending',
-    ]);
 
     $validated = $request->validate([
         'status' => 'required|string|in:rejected,in_progress,completed,pending',
     ]);
+
+    $oldStatus = $idea->status;
+
     
     $idea->status = $validated['status'];
     $idea->save();
         $idea->save();
 
+        if ($idea->status !== $oldStatus) {
+            $user = $idea->user;
+            $notifications = $user->notifications ?? [];
+            $notifications[] = [
+                'type' => 'idea_status',
+                'idea_id' => $idea->id,
+                'message' => "🔄 De status van je idee '{$idea->title}' is gewijzigd naar '{$idea->status}'.",
+                'timestamp' => now(),
+            ];
+            $user->notifications = $notifications;
+            $user->save();
+        }
+        
     return response()->json(['message' => 'Status succesvol aangepast.']);
 }
 public function pin(Idea $idea)

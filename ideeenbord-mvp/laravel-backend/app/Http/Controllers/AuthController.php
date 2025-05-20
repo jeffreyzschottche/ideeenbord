@@ -105,6 +105,18 @@ public function showByUsername($username)
         'created_posts' => $user->created_posts ?? [],
     ]);
 }
+public function notifications($username)
+{
+    $auth = auth()->user();
+    if (!$auth || $auth->username !== $username) {
+        abort(403);
+    }
+
+    return response()->json([
+        'notifications' => $auth->notifications ?? [],
+    ]);
+}
+
 
 
 }

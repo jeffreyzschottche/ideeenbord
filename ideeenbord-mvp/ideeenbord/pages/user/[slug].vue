@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import Inbox from "~/components/user/Inbox.vue";
 import UserIdeasPosted from "~/components/user/UserIdeasPosted.vue";
 import UserProfileEdit from "~/components/user/UserProfileEdit.vue";
 import UserRatingsInsights from "~/components/user/UserRatingsInsights.vue";
@@ -36,4 +37,5 @@ onMounted(async () => {
   <UserQuizzes />
   <UserProfileEdit />
   <UserIdeasPosted />
+  <Inbox />
 </template>

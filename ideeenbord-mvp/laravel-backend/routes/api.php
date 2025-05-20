@@ -139,8 +139,7 @@ Route::get('/brands/{brand}/quizzes', [QuizController::class, 'listForBrand']);
         Route::patch('/users/{username}', [AuthController::class, 'update']);
         Route::get('/users/{username}', [AuthController::class, 'showByUsername']);
         Route::get('/users/{username}/ideas', [IdeaController::class, 'getIdeasByUser']);
-
-
+        Route::get('/users/{username}/notifications', [AuthController::class, 'notifications']);
     });
 
     // 🔒👑 Admin routes

@@ -41,7 +41,7 @@ class User extends Authenticatable implements MustVerifyEmail
     'quiz_submissions',
     ];
 
-    
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -69,6 +69,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'birthdate' => 'date',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'notifications' => 'array'
         ];
     }
 }
