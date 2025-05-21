@@ -16,7 +16,8 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\URL;
 use App\Models\User;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\IdeaStatusChangedMail;
 
 
 /*
@@ -29,6 +30,13 @@ use App\Models\User;
 |
 */
 Route::prefix('v1')->group(function () {
+
+    Route::get('/mail-test', function () {
+        $user = User::first(); // of specifieke gebruiker
+        $idea = $user->ideas()->first();
+        Mail::to($user->email)->send(new IdeaStatusChangedMail($idea));
+        return 'Mail verzonden!';
+    });
  
     Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
         $user = User::findOrFail($id);

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Idea;
 use Illuminate\Http\Request;
+use App\Mail\IdeaStatusChangedMail;
+use Illuminate\Support\Facades\Mail;
 
 class IdeaController extends Controller
 {
@@ -108,21 +110,22 @@ $user->save();
         return response()->json(['message' => 'Je idee is nu gedisliked!']);
     }
     public function update(Request $request, Idea $idea)
-{
-
-    $validated = $request->validate([
-        'status' => 'required|string|in:rejected,in_progress,completed,pending',
-    ]);
-
-    $oldStatus = $idea->status;
-
+    {
+        $validated = $request->validate([
+            'status' => 'required|string|in:rejected,in_progress,completed,pending',
+        ]);
     
-    $idea->status = $validated['status'];
-    $idea->save();
+        $oldStatus = $idea->status;
+    
+        // Status updaten
+        $idea->status = $validated['status'];
         $idea->save();
-
+    
+        // Als status is veranderd, verstuur mail en sla notificatie op
         if ($idea->status !== $oldStatus) {
             $user = $idea->user;
+    
+            // Notificatie
             $notifications = $user->notifications ?? [];
             $notifications[] = [
                 'type' => 'idea_status',
@@ -132,10 +135,16 @@ $user->save();
             ];
             $user->notifications = $notifications;
             $user->save();
+    
+            // E-mail verzenden (alleen als e-mailadres bestaat)
+            if ($user->email) {
+                Mail::to($user->email)->send(new IdeaStatusChangedMail($idea));
+            }
         }
-        
-    return response()->json(['message' => 'Status succesvol aangepast.']);
-}
+    
+        return response()->json(['message' => 'Status succesvol aangepast.']);
+    }
+    
 public function pin(Idea $idea)
 {
     $user = auth('brand_owner')->user();

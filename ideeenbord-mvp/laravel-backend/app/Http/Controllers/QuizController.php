@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Mail\QuizWinnerMail;
+use Illuminate\Support\Facades\Mail;
 
 class QuizController extends Controller
 {
@@ -89,6 +91,11 @@ class QuizController extends Controller
         $quiz->winner_id = $request->winner_id;
         $quiz->status = 'closed';
         $quiz->save();
+
+        $winner = \App\Models\User::find($quiz->winner_id);
+        if ($winner && $winner->email) {
+            Mail::to($winner->email)->send(new QuizWinnerMail($quiz));
+        }
         
         // Notificaties sturen
         $participants = $quiz->participants ?? [];
