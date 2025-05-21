@@ -6,6 +6,7 @@ use App\Models\Brand;
 use App\Models\BrandOwner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\Registered;
 
 class BrandOwnerController extends Controller
 {
@@ -26,7 +27,7 @@ class BrandOwnerController extends Controller
             'verified_owner' => false,
         ]);
 
-        return response()->json(['owner' => $brandOwner], 201);
+        return response()->json(['message' => 'Registratie gelukt. Verifieer je e-mail.'], 201);
     }
     public function index()
         {

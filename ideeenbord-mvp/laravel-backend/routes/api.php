@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\URL;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\IdeaStatusChangedMail;
+use Illuminate\Auth\Events\Registered;
+
 
 
 /*
@@ -31,12 +33,28 @@ use App\Mail\IdeaStatusChangedMail;
 */
 Route::prefix('v1')->group(function () {
 
-    Route::get('/mail-test', function () {
-        $user = User::first(); // of specifieke gebruiker
-        $idea = $user->ideas()->first();
-        Mail::to($user->email)->send(new IdeaStatusChangedMail($idea));
-        return 'Mail verzonden!';
-    });
+    
+Route::get('/brand-owner/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $owner = \App\Models\BrandOwner::findOrFail($request->id);
+
+    if (!hash_equals((string) $request->hash, sha1($owner->getEmailForVerification()))) {
+        throw new \Illuminate\Auth\Access\AuthorizationException('Invalid verification link');
+    }
+
+    if (!$owner->hasVerifiedEmail()) {
+        $owner->markEmailAsVerified();
+        $owner->verified_owner = true; // ✅ Dit is jouw extra check
+        $owner->save();
+        event(new Verified($owner));
+    }
+
+    return redirect('http://localhost:3000/brand-owner/verify-success');
+})->middleware('signed')->name('brandowner.verification.verify');
+
+Route::post('/brand-owner/email/resend', function (Request $request) {
+    $request->user('brand_owner')->sendEmailVerificationNotification();
+    return response()->json(['message' => 'Verificatie opnieuw verzonden']);
+})->middleware('auth:brand_owner');
  
     Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
         $user = User::findOrFail($id);
@@ -152,12 +170,28 @@ Route::get('/brands/{brand}/quizzes', [QuizController::class, 'listForBrand']);
 
     // 🔒👑 Admin routes
     Route::middleware(['auth:sanctum', IsAdmin::class])->prefix('admin')->group(function () {
+        // Route::post('/brands/owners/{id}/verify', function ($id) {
+        //     $owner = \App\Models\BrandOwner::findOrFail($id);
+        //     $owner->verified_owner = true;
+        //     $owner->save();
+        //     return response()->json(['message' => 'BrandOwner verified']);
+        // });
         Route::post('/brands/owners/{id}/verify', function ($id) {
-            $owner = \App\Models\BrandOwner::findOrFail($id);
-            $owner->verified_owner = true;
-            $owner->save();
-            return response()->json(['message' => 'BrandOwner verified']);
-        });
+    $owner = \App\Models\BrandOwner::findOrFail($id);
+
+    if ($owner->hasVerifiedEmail()) {
+        return response()->json(['message' => 'Deze eigenaar is al geverifieerd.']);
+    }
+
+    $owner->verified_owner = true;
+    $owner->save();
+
+    // ✅ Verificatie-e-mail sturen
+    event(new Registered($owner));
+
+    return response()->json(['message' => 'BrandOwner verified & verificatiemail verzonden.']);
+});
+
         Route::get('/brand-owners', [BrandOwnerController::class, 'index']);
     });
 
