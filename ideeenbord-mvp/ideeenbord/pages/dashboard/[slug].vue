@@ -9,6 +9,7 @@ import QuizOverview from "~/components/dashboard/QuizOverview.vue";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import { useBrandUpdater } from "~/composables/useBrandUpdater";
 import BrandEditModal from "~/components/dashboard/BrandEditModal.vue";
+import AccountEditModal from "~/components/dashboard/AccountEditModal.vue";
 
 const { trigger } = useResponseDisplay();
 
@@ -113,4 +114,5 @@ onMounted(async () => {
   <QuizBuilder />
   <!-- <QuizWinner /> -->
   <QuizOverview />
+  <AccountEditModal />
 </template>

@@ -19,7 +19,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\IdeaStatusChangedMail;
 use Illuminate\Auth\Events\Registered;
-
+use Illuminate\Support\Facades\Hash;
 
 
 /*
@@ -114,7 +114,7 @@ Route::get('/brands/{brand}/quiz/participants', [QuizController::class, 'getPart
 Route::get('/brands/{brand}/quizzes', [QuizController::class, 'listForBrand']);
 
     
-   Route::middleware('auth:brand_owner')->group(function () { // 👈 fix hier
+   Route::middleware('auth:brand_owner')->group(function () {
        Route::post('/brand-owner/logout', [BrandOwnerAuthController::class, 'logout']);
        Route::get('/brand-owner/me', [BrandOwnerAuthController::class, 'me']);
        Route::middleware('auth:brand_owner')->patch('/ideas/{idea}', [IdeaController::class, 'update']);
@@ -127,6 +127,27 @@ Route::get('/brands/{brand}/quizzes', [QuizController::class, 'listForBrand']);
        Route::post('/quizzes/{quiz}/select-winner', [QuizController::class, 'selectWinner']);
        Route::get('/quizzes/{quiz}/participants', [QuizController::class, 'participantsByQuiz']);
        Route::patch('/brands/{brand}', [BrandController::class, 'update']);
+
+       Route::patch('/brand-owner/account', function (Request $request) {
+    $owner = auth('brand_owner')->user();
+
+    $data = $request->validate([
+        'email' => 'required|email|unique:brand_owners,email,' . $owner->id,
+        'phone' => 'nullable|string',
+        'subscription_plan' => 'required|in:Brons,Zilver,Goud',
+        'password' => 'nullable|confirmed|min:6',
+    ]);
+
+    if (!empty($data['password'])) {
+        $data['password'] = Hash::make($data['password']);
+    } else {
+        unset($data['password']);
+    }
+
+    $owner->update($data);
+
+    return response()->json(['message' => 'Gegevens bijgewerkt']);
+});
     });
 
     // 🌐 Publieke routes
