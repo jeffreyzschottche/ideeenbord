@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
+import type { LoginForm } from "~/types/auth";
 
 const brandOwnerAuth = useBrandOwnerAuthStore();
 const error = ref<string | null>(null);
 
-const form = ref({
-  email: "",
-  password: "",
-});
+const form = ref<LoginForm>({ email: "", password: "" });
 
 async function handleSubmit() {
   try {
