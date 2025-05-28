@@ -2,19 +2,20 @@
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { apiFetch } from "~/composables/useApi";
+import type { UserNotification } from "~/types/user";
 
 const route = useRoute();
 const username = route.params.slug as string;
 
-const notifications = ref([]);
+const notifications = ref<UserNotification[]>([]);
 const loading = ref(true);
 
 onMounted(async () => {
   try {
-    const data: any = await apiFetch(`/users/${username}/notifications`);
-    notifications.value = data.notifications.filter(
-      (n: any) => n.type === "quiz"
+    const data: UserNotification[] = await apiFetch(
+      `/users/${username}/notifications`
     );
+    notifications.value = data.filter((n: any) => n.type === "quiz");
   } finally {
     loading.value = false;
   }

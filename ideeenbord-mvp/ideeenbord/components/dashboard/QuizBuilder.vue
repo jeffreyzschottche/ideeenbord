@@ -73,6 +73,7 @@ import { ref } from "vue";
 import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import { useQuizBuilder } from "~/composables/useQuizBuilder";
+import type { NewQuizForm } from "~/types/quiz";
 
 const { trigger } = useResponseDisplay();
 const { createQuiz } = useQuizBuilder();
@@ -111,13 +112,15 @@ async function submitQuiz() {
     const brandId = brandOwnerAuth.owner?.brand?.id;
     if (!brandId) return;
 
-    await createQuiz({
+    const quizData: NewQuizForm = {
       brand_id: brandId,
       title: title.value,
       description: description.value,
       prize: prize.value,
       questions: questions.value,
-    });
+    };
+
+    await createQuiz(quizData);
 
     trigger("Quiz succesvol aangemaakt!", "success");
 

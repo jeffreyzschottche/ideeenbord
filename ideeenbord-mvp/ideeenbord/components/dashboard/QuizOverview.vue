@@ -50,19 +50,18 @@ import { ref, onMounted } from "vue";
 import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
 import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
-import type { Quiz } from "~/types/quiz";
+import type { Quiz, QuizWithParticipants } from "~/types/quiz";
 
 const { trigger } = useResponseDisplay();
 const brandId = useBrandOwnerAuthStore().owner?.brand?.id;
-const quizzes = ref<any[]>([]);
+const quizzes = ref<QuizWithParticipants[]>([]);
 
 async function loadQuizzes() {
   if (!brandId) return;
   try {
     const response = await brandOwnerApiFetch(`/brands/${brandId}/quizzes`);
-    // Voor elke quiz ook deelnemers ophalen
-    const detailed = await Promise.all(
-      response.map(async (quiz: any) => {
+    const detailed: QuizWithParticipants[] = await Promise.all(
+      response.map(async (quiz: Quiz) => {
         const participants =
           quiz.status === "open"
             ? await brandOwnerApiFetch(
@@ -72,6 +71,7 @@ async function loadQuizzes() {
         return { ...quiz, participants };
       })
     );
+
     quizzes.value = detailed;
   } catch (err) {
     trigger("Fout bij laden quizzen", "error");

@@ -78,9 +78,10 @@ onMounted(async () => {
   try {
     const all = await apiFetch<Quiz[]>(`/brands/${props.brand.id}/quizzes`);
     quizzes.value = all;
-    availableQuizzes.value = all.filter((quiz: any) => {
+
+    availableQuizzes.value = all.filter((quiz) => {
       const alreadyParticipated = quiz.participants?.some(
-        (p: any) => p.user_id === user?.id
+        (p) => p.user_id === user?.id
       );
       return quiz.status === "open" && !alreadyParticipated;
     });

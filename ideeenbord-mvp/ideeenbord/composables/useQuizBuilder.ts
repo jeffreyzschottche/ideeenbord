@@ -1,20 +1,14 @@
+import type { NewQuizForm, QuizAnswerMap } from "~/types/quiz";
+import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
+
 export function useQuizBuilder() {
-  async function createQuiz(quiz: {
-    brand_id: number;
-    title: string;
-    description: string;
-    prize: string;
-    questions: {
-      title: string;
-      answers: { text: string; correct: boolean }[];
-    }[];
-  }) {
+  async function createQuiz(quiz: NewQuizForm) {
     const quiz_questions = quiz.questions.map((q, i) => ({
       id: i + 1,
       title: q.title,
     }));
 
-    const quiz_answers = quiz.questions.map((q, i) => ({
+    const quiz_answers: QuizAnswerMap[] = quiz.questions.map((q, i) => ({
       idQuestion: i + 1,
       answers: q.answers.reduce((acc, answer) => {
         acc[answer.text] = answer.correct;
