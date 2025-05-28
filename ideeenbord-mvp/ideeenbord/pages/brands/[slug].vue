@@ -7,6 +7,7 @@ import IdeaGrid from "~/components/ideas/IdeaGrid.vue";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import BrandMainQuestion from "~/components/BrandMainQuestion.vue";
 import QuizParticipant from "~/components/QuizParticipant.vue";
+import type { Brand } from "~/types/brand";
 
 const rawApiBase = useRuntimeConfig().public.apiBase;
 const apiBase = (rawApiBase || "http://localhost:8000/api") as string;
@@ -16,7 +17,7 @@ const auth = useAuthStore();
 const route = useRoute();
 const { trigger } = useResponseDisplay();
 
-const brand = ref<any>(null);
+const brand = ref<Brand>(null);
 const rating = ref(5); // Default slider positie
 
 const averageRating = computed(() => {

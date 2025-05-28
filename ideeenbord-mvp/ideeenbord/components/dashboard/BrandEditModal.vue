@@ -67,8 +67,9 @@
 import { ref, watch } from "vue";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import { useBrandUpdater } from "~/composables/useBrandUpdater";
+import type { Brand, SocialItem } from "~/types/brand";
 
-const props = defineProps<{ open: boolean; brand: any }>();
+const props = defineProps<{ open: boolean; brand: Brand }>();
 const emit = defineEmits(["close", "updated"]);
 const { trigger } = useResponseDisplay();
 const { updateBrand } = useBrandUpdater();
@@ -96,7 +97,7 @@ watch(
         intro_short: newBrand.intro_short || "",
         email: newBrand.email || "",
         subscription: newBrand.subscription || "",
-        socials: JSON.stringify(newBrand.socials || {}, null, 2),
+        socials: "",
       };
     }
   },
@@ -107,7 +108,7 @@ function closeModal() {
   emit("close");
 }
 
-let socialsParsed: any = [];
+let socialsParsed: SocialItem[] = [];
 
 try {
   socialsParsed = JSON.parse(form.value.socials);

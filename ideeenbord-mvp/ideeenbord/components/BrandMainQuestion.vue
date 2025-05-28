@@ -6,15 +6,9 @@ import { useAuthStore } from "~/store/auth";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import { ref, onMounted } from "vue";
 import { useMainQuestions } from "~/composables/useMainQuestions";
+import type { Brand } from "~/types/brand";
 
-const props = defineProps<{
-  brand: {
-    id: number;
-    title: string;
-    category: string;
-    main_question_id: string | null;
-  };
-}>();
+const props = defineProps<{ brand: Brand }>();
 
 const question = ref<any | null>(null);
 
