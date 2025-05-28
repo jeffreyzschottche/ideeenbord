@@ -1,0 +1,259 @@
+- app
+  - Http
+    - Controllers
+        - AuthController.php
+            Verantwoordelijk voor authenticatie van reguliere gebruikers. Behandelt login, registratie, logout en `me()`-functionaliteit. Werkt via Laravel Sanctum met token-based authenticatie. Returnt JSON responses met user info of foutmeldingen. Wordt gebruikt voor frontend user-auth flows.
+
+        - BrandController.php
+            Beheert alle publieke en adminacties rond merken. Regelt ophalen van merken, tonen van specifieke merken, aanmaken van nieuwe merken via verzoeken (`request`), merk-claimen, en admin-verificatie van merken. Ondersteunt ook updates van merkdata en het koppelen van een `main_question`.
+
+        - BrandOwnerAuthController.php
+            Richt zich op authenticatie voor brandowners. Heeft eigen login-, registratie- en `me()`-methode, los van gewone users. Returnt een persoonlijke access token voor beveiligde API-toegang. Gebruikt Laravel Sanctum authenticatie. Wordt aangeroepen vanuit het dashboard op de frontend.
+
+        - BrandOwnerController.php
+            Beheert profielgegevens van de brandowner (zoals e-mail, telefoon, abonnement). Laat brandowners hun eigen gegevens ophalen en updaten via `GET` en `PATCH`. Ondersteunt dus bewerking van eigen account via dashboardfunctionaliteit.
+
+        - Controller.php
+            De centrale base controller waarvan andere controllers erven. Bevat generieke functionaliteit (zoals response helpers of authorization logic). In dit project waarschijnlijk vooral placeholder of voor uitbreiding bedoeld.
+
+        - IdeaController.php
+            Verantwoordelijk voor alles rond ideeën: ophalen, indienen, status updaten, pinnen en unpinnen. Behandelt zowel gebruikersinzendingen als beheeracties door brandowners. Wordt gebruikt op zowel publieke merkpagina’s als in het dashboard.
+
+        - MainQuestionController.php
+            Beheert de algemene vragen die gekoppeld kunnen worden aan een merk. Ondersteunt CRUD-acties op deze vragen en biedt endpoints aan voor brandowners om een vraag te selecteren voor hun merk. Gebruikt in combinatie met `useMainQuestions`.
+
+        - MainQuestionResponseController.php
+            Verwerkt antwoorden van gebruikers op de geselecteerde algemene vraag van een merk. Zorgt ervoor dat een gebruiker slechts één keer antwoordt per merk-vraag-combinatie. Wordt getriggerd vanuit de publieke merkpagina via `QuizParticipant.vue`.
+
+        - QuizController.php
+            Regelt quizfunctionaliteit voor merken: quiz aanmaken, ophalen, sluiten, en winnaar kiezen. Verwerkt structuur met quizvragen en bijbehorende antwoordmogelijkheden. Behandelt ook deelnemersbeheer. Belangrijk voor de interactieve engagementlaag van het platform.
+
+
+- app
+  - Http
+    - Middleware
+        - Authenticate.php
+            Standaard Laravel middleware die controleert of een gebruiker is ingelogd (via Sanctum of session). Wordt automatisch toegepast op routes die authenticatie vereisen. Indien de gebruiker niet geauthenticeerd is, returnt deze middleware een `401 Unauthorized`.
+
+        - IsAdmin.php
+            Aangepaste middleware die controleert of de ingelogde gebruiker een admin is. Gebruikt de `role`-eigenschap op het `User`-model om dit te bepalen. Alleen toegankelijk als `auth()->user()->role === 'admin'`. Wordt toegepast op adminroutes zoals merkverificatie.
+
+  - Mail
+        - IdeaStatusChangedMail.php
+            E-mailnotificatie die verstuurd wordt naar een gebruiker wanneer de status van hun idee is gewijzigd. De mail bevat info zoals de titel van het idee en de nieuwe status. Gebruikt een `Blade`-template (`idea_status.blade.php`) als inhoud.
+
+        - QuizWinnerMail.php
+            Mailklasse die een notificatie verstuurt naar een gebruiker die een quiz gewonnen heeft. Bevat dynamische content over de quiz (zoals naam en prijs) en gebruikt een aparte `Blade`-template (`quiz_winner.blade.php`) om de boodschap op te maken.
+
+- app
+  - Models
+      - Brand.php
+          Vertegenwoordigt een merk dat beheerd wordt door een brandowner. Bevat relaties zoals:
+            - `brandOwner()` → één eigenaar
+            - `ideas()` → meerdere ideeën
+            - `quizzes()` → meerdere quizzen
+            - `mainQuestion()` → koppelbare algemene vraag
+          Bevat logica voor status, validatie en metadata (zoals slug, categorie, socials).
+
+      - BrandOwner.php
+          Het gebruikersmodel voor brandowners. Gebruikt Laravel Sanctum voor token-authenticatie via `HasApiTokens`. Heeft een één-op-één relatie met een `Brand`. Bevat extra velden zoals telefoonnummer, abonnementstype en e-mailverificatie.
+
+      - Idea.php
+          Vertegenwoordigt een idee dat is ingediend door een gebruiker op een merkpagina. Heeft velden voor status, pin-status, beschrijving, en een relatie met het `Brand`-model. Wordt beheerd via `IdeaController`. Er kunnen mailnotificaties gekoppeld zijn aan statuswijziging.
+
+      - MainQuestion.php
+          Model voor algemene vragen die gekoppeld kunnen worden aan een merk. Bevat alleen een `text`-veld en timestamps. Heeft een `hasMany` relatie met `MainQuestionResponse`, en wordt geselecteerd per merk via `main_question_id`.
+
+      - MainQuestionResponse.php
+          Bewaart het antwoord van een gebruiker op een specifieke algemene vraag van een merk. Bevat een combinatie van `user_id`, `brand_id` en `main_question_id` om duplicatie te voorkomen. Wordt gebruikt in de frontend bij het invullen van antwoorden.
+
+      - Quiz.php
+          Model voor quizzen die gekoppeld zijn aan merken. Bevat velden als `title`, `description`, `prize`, en `status`. Quizvragen en antwoorden worden opgeslagen als JSON-velden. Heeft relaties met een `Brand` en met deelnemers (`user_id`). Beheert ook de `winner_id`.
+
+      - User.php
+          Standaard Laravel gebruikersmodel met ondersteuning voor Sanctum-authenticatie. Bevat extra velden zoals `ratings_given`, `notifications`, en `role` (voor adminrechten). Heeft relaties met ideeën, quizdeelnames en antwoorden op merkvragen.
+
+
+- app
+  - Observers
+      - BrandOwnerObserver.php
+          Wordt automatisch aangeroepen bij events op het `BrandOwner`-model (zoals `created`, `updated`, `deleted`). In dit project wordt hij o.a. gebruikt om automatisch een merk aan te maken wanneer een nieuwe brandowner zich registreert. Deze koppeling verhoogt de automatisering en consistentie bij accountbeheer.
+
+  - Providers
+      - AppServiceProvider.php
+          Algemene Laravel service provider, geladen bij elke request. Wordt vaak gebruikt voor app-brede configuratie zoals custom validators, macro’s of het binden van interfaces aan implementaties. In dit project wordt hier eventueel ook observables geregistreerd zoals `BrandOwner::observe(...)`.
+
+      - AuthServiceProvider.php
+          Registreert policies en authenticatie-logica. In dit project zou het gebruikt kunnen worden om toegang tot resources op basis van gebruikersrollen of modellen te controleren. Hier definieer je bijvoorbeeld of een gebruiker een merk mag bijwerken.
+
+      - BrandOwnerServiceProvider.php
+          Een custom service provider specifiek voor extra logica rond brandowners. Kan gebruikt worden om globale instellingen te laden, dependency injection bindings te maken, of aangepaste helpers te registreren die exclusief voor de brandowner-flow gelden. Wordt automatisch geladen via `config/app.php`.
+
+- config
+    - app.php
+        Hoofdconfiguratiebestand voor de applicatie. Bevat instellingen zoals de naam van de app, tijdzone, locale, fallback locale, key, debugmode en geladen serviceproviders. Deze file stuurt veel basisgedrag aan binnen de hele Laravel-app.
+
+    - auth.php
+        Bevat alle instellingen voor authenticatie. Definieert guards zoals `web` (session) en `sanctum` (API token). Koppelt gebruikersproviders zoals `users` en `brand_owners` aan modellen. Ook policies kunnen hier indirect mee samenhangen.
+
+    - cache.php
+        Beheert instellingen voor caching. Bepaalt welke driver gebruikt wordt (`file`, `redis`, etc.), cacheprefixes, en standaardwaarden. Essentieel voor performance en het vermijden van dure rekenoperaties.
+
+    - cors.php
+        Cross-Origin Resource Sharing (CORS) instellingen. Bepaalt welke frontends toegang hebben tot de backend-API. Wordt automatisch toegepast via middleware. Typisch nodig voor frontend-communicatie vanaf localhost of domeinen.
+
+    - database.php
+        Bevat configuratie van databaseverbindingen zoals SQLite, MySQL of PostgreSQL. Je definieert hier je standaardverbinding en opties zoals host, poort, gebruikersnaam en wachtwoord (meestal uit `.env` gehaald).
+
+    - filesystems.php
+        Instellingen voor bestandsopslag, zoals lokale schijf, cloud (S3), of symbolische links. Wordt o.a. gebruikt bij opslag van geüploade bestanden of gegenereerde content. Bevat default driver en rootpaths.
+
+    - logging.php
+        Bepaalt hoe logs worden geschreven: stack, daily, single, Slack, etc. Je configureert hier het logkanaal, formattering, en opslaglocatie (zoals `storage/logs/laravel.log`). Belangrijk voor debuggen en monitoring.
+
+    - mail.php
+        Configuratie voor maildrivers (`smtp`, `log`, `mailgun`, etc.). Bevat de standaard afzender (`from`) en SMTP-instellingen. Wordt gebruikt in combinatie met mailable classes zoals `QuizWinnerMail`.
+
+    - queue.php
+        Bevat configuratie voor queued jobs. Je stelt hier in of je `sync` (direct uitvoeren), `database`, `redis` of een andere driver gebruikt. Wordt gebruikt bij mailverzending, background processing en batch-taken.
+
+    - sanctum.php
+        Instellingen specifiek voor Laravel Sanctum (API-authenticatie). Bepaalt welke domeinen als `stateful` worden beschouwd, welke middleware wordt toegepast, en token lifespan. Essentieel voor veilige SPA-auth.
+
+    - services.php
+        Opslagplaats voor externe services (zoals Mailgun, Stripe, etc.). Je plaatst hier credentials en endpoints voor externe API's. Wordt veel gebruikt in combinatie met `.env` en packages.
+
+    - session.php
+        Beheert sessie-instellingen. Bepaalt session driver (zoals `file`, `cookie`, `redis`), encryptie, levensduur, en opslaglocaties. Heeft invloed op loginstatus, CSRF en flash-messages.
+
+- database
+  - migrations
+      - 0001_01_01_000000_create_users_table.php  
+          Maakt de standaard `users`-tabel met velden zoals naam, e-mail, wachtwoord en timestamps.
+
+      - 0001_01_01_000001_create_cache_table.php  
+          Maakt een tabel voor Laravel's cachingmechanisme (zoals `database` cache driver).
+
+      - 0001_01_01_000002_create_jobs_table.php  
+          Tabel waarin queued jobs worden opgeslagen bij gebruik van de `database` queue driver.
+
+      - 2025_04_11_175627_create_personal_access_tokens_table.php  
+          Maakt de tabel waarin persoonlijke toegangstokens voor Laravel Sanctum worden opgeslagen.
+
+      - 2025_04_13_201149_create_personal_access_tokens_table.php  
+          Mogelijke dubbele of alternatieve versie van bovenstaande, wellicht test- of migratiefout.
+
+      - 2025_04_25_110304_create_brands_table.php  
+          Maakt de `brands`-tabel met info zoals titel, categorie, slug en relationele koppeling met `brand_owners`.
+
+      - 2025_04_25_112729_create_brand_owners_table.php  
+          Maakt een aparte tabel voor brandowners, met velden zoals e-mail, naam, telefoon, wachtwoord en verificatie.
+
+      - 2025_04_25_141437_add_role_to_users_table.php  
+          Voegt een `role`-veld toe aan de `users`-tabel, meestal om adminrechten te onderscheiden.
+
+      - 2025_04_26_114544_add_slug_to_brands_table.php  
+          Voegt een `slug`-veld toe aan de `brands`-tabel, gebruikt voor SEO-vriendelijke URL’s.
+
+      - 2025_04_26_120251_add_brand_ratings_to_users_table.php  
+          Eerste poging om rating-informatie (bijv. stemmen) toe te voegen aan gebruikersprofielen.
+
+      - 2025_04_26_120655_add_rating_fields_to_brands_table.php  
+          Voegt `average_rating`, `ratings_count`, etc. toe aan merken zelf, voor inzichten op merkpagina’s.
+
+      - 2025_04_26_121120_rename_brand_ratings_to_ratings_given_in_users_table.php  
+          Hernoemt de ratingkolom in `users` naar een betere naam (bijv. `ratings_given`), voor duidelijkheid.
+
+      - 2025_04_26_140624_create_ideas_table.php  
+          Maakt de `ideas`-tabel waarin gebruikersideeën worden opgeslagen. Bevat status, beschrijving, pin-status, en merkrelatie.
+
+      - 2025_04_29_175231_create_main_questions_table.php  
+          Maakt de tabel met algemene vragen waaruit merken er één kunnen kiezen (denk aan: “Wat vind jij belangrijk in...?”).
+
+      - 2025_05_02_125147_main_question_responses.php  
+          Maakt een tabel om antwoorden van gebruikers op algemene merkvragen op te slaan. Bevat koppeling met user, brand en vraag.
+
+      - 2025_05_02_130738_add_main_question_id_to_brands_table.php  
+          Voegt een foreign key `main_question_id` toe aan `brands`, zodat een merk een actieve vraag kan tonen.
+
+      - 2025_05_02_154454_remove_main_question_column_from_brands_table.php  
+          Verwijdert een oude of verouderde kolom voor vragen, na herstructurering naar relationeel model.
+
+      - 2025_05_03_171002_create_quizzes_table.php  
+          Maakt een `quizzes`-tabel met titel, status, merkrelatie, vragen en antwoorden (vaak opgeslagen als JSON).
+
+      - 2025_05_04_155601_add_description_and_prize_to_quizzes_table.php  
+          Breidt `quizzes` uit met `description` en `prize`, zodat quizdetails zichtbaar zijn voor deelnemers.
+
+      - 2025_05_20_170703_add_notifications_to_users_table.php  
+          Voegt een kolom toe voor gebruikersnotificaties (bijv. quizuitslagen of statusupdates), mogelijk als JSON-array.
+
+      - 2025_05_21_202213_add_email_verified_at_to_brand_owners_table.php  
+          Maakt verificatie van brandowner-accounts mogelijk via timestamp (net zoals bij `users` standaard gebeurt).
+
+- database
+  - seeders
+      - DatabaseSeeder.php
+          De centrale seeder die wordt uitgevoerd wanneer je `php artisan db:seed` draait. Deze roept andere seeders aan zoals `MainQuestionSeeder`. Wordt gebruikt om de database te vullen met startdata of testdata. Je kunt hier extra seeders aanroepen voor merken, users of andere tabellen.
+
+      - MainQuestionSeeder.php
+          Seedert de `main_questions`-tabel met een reeks standaardvragen waaruit merken kunnen kiezen. Wordt typisch gebruikt om vragen zoals “Wat vind jij belangrijk in een [categorie]?” beschikbaar te maken in het systeem vanaf het begin.
+
+- public/storage/brands
+    Opslagmap voor geüploade merkbestanden, zoals logo’s of bijlagen die door brandowners zijn geüpload. 
+    Wordt meestal gesymlinked vanuit `storage/app/brands` via:
+    `php artisan storage:link`
+
+    Doel:
+    - Publieke toegang tot merkafbeeldingen via URL's
+    - Frontend kan logo’s laden met `<img src="/storage/brands/logo123.png">`
+
+- api.php
+    De kern van alle API-functionaliteit in jouw Laravel backend. Alle routes zijn gegroepeerd onder het `/api/v1` prefix. De routes zijn gestructureerd in 4 lagen:
+
+    1. ✅ **Publieke routes** (geen login nodig)
+       - User- en BrandOwner-auth: login/register/verificatie
+       - Main questions ophalen
+       - Merken en ideeën bekijken
+       - Actieve quiz bekijken
+       
+    2. 🔐 **Geverifieerde gebruikersroutes** (`auth:sanctum`)
+       - Profieldata ophalen
+       - Ideeën indienen, liken, disliken
+       - Merken beoordelen
+       - Meedoen aan quizzen
+       - Reacties geven op de 'main question'
+       - Notificaties ophalen
+       - Profiel updaten
+
+    3. 🔐 **BrandOwner-routes** (`auth:brand_owner`)
+       - Accountinstellingen aanpassen
+       - Merkgegevens bijwerken
+       - Algemene vraag instellen
+       - Quizbeheer (aanmaken, sluiten, winnaar kiezen)
+       - Ideeënstatus updaten, pin/unpin
+       - Eigen gegevens ophalen
+
+    4. 👑 **Admin-routes** (`auth:sanctum` + `IsAdmin`)
+       - BrandOwners ophalen
+       - BrandOwners verifiëren via ID en eventueel een e-mail triggeren
+
+    ✉️ **E-mailverificatie voor zowel users als brandowners** is ingebouwd, met `signed` middleware en redirect naar frontend (`localhost:3000/...`). Zowel automatisch als handmatig opnieuw te triggeren.
+
+    ✅ **Extra’s:**
+    - `hi` en `bye` zijn testroutes voor connectiviteit en protected status
+    - Quiz-routes zijn goed verdeeld: publieke info via GET; deelname, winnaarselectie en beheer via POST/PATCH
+    - Data-integriteit is gegarandeerd via middleware, modelvalidatie en Hashing van wachtwoorden in PATCH-routes
+
+- web.php
+    Klassieke Laravel web route. Wordt alleen gebruikt voor SSR-views of statische pagina’s.
+    In dit project is er maar één route:
+    - GET `/` → toont `resources/views/welcome.blade.php` via `return view('welcome')`
+
+    Wordt niet gebruikt voor frontendverkeer (frontend draait op Nuxt).
+- console.php
+    Registert artisan-commando’s. In dit project slechts één:
+    - `php artisan inspire` → toont een motiverende quote via `Inspiring::quote()`
+
+    Dit bestand is handig voor custom artisan scripts zoals batchverwerking, cleanup-taken of rapportgeneratie.
+

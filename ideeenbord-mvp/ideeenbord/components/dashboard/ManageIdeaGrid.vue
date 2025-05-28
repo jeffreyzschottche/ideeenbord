@@ -24,7 +24,6 @@
         <option value="in_progress">In behandeling genomen</option>
         <option value="completed">Voltooid</option>
         <option value="pending">Tijdelijk gepauzeerd</option>
-        <!-- gefixt, stond eerst weer rejected -->
       </select>
 
       <div class="flex gap-2">

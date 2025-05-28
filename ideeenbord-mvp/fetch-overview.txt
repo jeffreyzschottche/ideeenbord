@@ -1,0 +1,186 @@
+Hier volgt een duidelijk overzicht van hoe elke frontend-bestand (composables, componenten, pages en services) verbinding maakt met de corresponderende API-routes in de Laravel backend.
+
+### Frontend Fetch Overview (Nuxt 3) → API Routes (Laravel)
+
+---
+
+## Components
+
+### Dashboard
+
+* **AccountEditModal.vue**
+  PATCH `/api/v1/brand-owner/account` (middleware: `auth:brand_owner`)
+
+* **BrandEditModal.vue**
+  PATCH `/api/v1/brands/{brand}` (middleware: `auth:brand_owner`)
+
+* **MainQuestionSelect.vue**
+  GET `/api/v1/main-questions` (public)
+  PATCH `/api/v1/brands/{brand}/main-questions` (middleware: `auth:brand_owner`)
+
+* **ManageIdeaGrid.vue**
+  GET `/api/v1/brands/{brand}/ideas` (public)
+  PATCH `/api/v1/ideas/{idea}` (middleware: `auth:brand_owner`)
+  PATCH `/api/v1/ideas/{idea}/pin` (middleware: `auth:brand_owner`)
+  PATCH `/api/v1/ideas/{idea}/unpin` (middleware: `auth:brand_owner`)
+
+* **QuizBuilder.vue**
+  POST `/api/v1/quizzes` (middleware: `auth:brand_owner`)
+
+* **QuizOverview\.vue**
+  GET `/api/v1/brands/{brand}/quizzes` (public)
+  POST `/api/v1/quizzes/{quiz}/close` (middleware: `auth:brand_owner`)
+
+* **QuizWinner.vue**
+  GET `/api/v1/quizzes/{quiz}/participants` (middleware: `auth:brand_owner`)
+  POST `/api/v1/quizzes/{quiz}/select-winner` (middleware: `auth:brand_owner`)
+
+### Ideas
+
+* **IdeaGrid.vue** (Geen directe API, krijgt data via props)
+* **IdeaCard.vue** (Geen directe API, krijgt data via props)
+
+### User
+
+* **IdeaNotifier.vue** (Geen directe API, krijgt data via props)
+
+* **Inbox.vue**
+  GET `/api/v1/users/{username}/notifications` (middleware: `auth:sanctum`)
+
+* **QuizNotifier.vue** (Geen directe API, krijgt data via props)
+
+* **UserIdeasPosted.vue**
+  GET `/api/v1/users/{username}/ideas` (middleware: `auth:sanctum`)
+
+* **UserProfileEdit.vue**
+  PATCH `/api/v1/users/{username}` (middleware: `auth:sanctum`)
+
+* **UserQuizzes.vue**
+  GET `/api/v1/users/{username}/quiz-submissions` (middleware: `auth:sanctum`)
+
+* **UserRatingInsight.vue** (Geen directe API, verwerkt data via props)
+
+### Overige Componenten
+
+* **BrandMainQuestion.vue** (Geen directe API, krijgt data via props)
+
+* **MessageDisplay.vue** (Geen directe API, krijgt data via props)
+
+* **QuizParticipant.vue**
+  POST `/api/v1/quizzes/{quiz}/submit` (middleware: `auth:sanctum`)
+
+* **ResponseDisplay.vue** (Globale feedbackcomponent, geen directe API)
+
+---
+
+## Composables
+
+* **useAdmin.ts** (Geen directe API-call, gebruikt `useAuth` composable)
+
+* **useApi.ts** (centrale wrapper voor alle API-calls)
+
+* **useAuth.ts**
+  POST `/api/v1/login`
+  POST `/api/v1/register`
+
+* **useBrand.ts**
+  GET `/api/v1/brands/{slug}`
+  GET `/api/v1/brands`
+
+* **useBrandOwnerApi.ts** (centrale wrapper met token-authenticatie voor brand-owner API-calls)
+
+* **useBrandOwnerAuth.ts**
+  POST `/api/v1/brand-owner/login`
+
+* **useBrandUpdater.ts**
+  PATCH `/api/v1/brands/{brand}`
+
+* **useIdeas.ts**
+  GET `/api/v1/brands/{brand}/ideas`
+
+* **useMainQuestionResponse.ts**
+  POST `/api/v1/brands/{brand}/main-question-response`
+
+* **useMainQuestion.ts**
+  GET `/api/v1/main-questions`
+  PATCH `/api/v1/brands/{brand}/main-questions`
+
+* **useManageIdeas.ts**
+  GET `/api/v1/brands/{brand}/ideas`
+  PATCH `/api/v1/ideas/{idea}`
+  PATCH `/api/v1/ideas/{idea}/pin`
+  PATCH `/api/v1/ideas/{idea}/unpin`
+
+* **useMessage.ts**
+  GET `/api/v1/hi`
+
+* **useQuizBuilder.ts**
+  POST `/api/v1/quizzes`
+
+* **useResponseDisplay.ts** (Geen API, UI-feedback composable)
+
+---
+
+## Middleware
+
+* **admin.ts** (Geen API, lokale authenticatie check)
+* **auth.ts** (Geen API, lokale authenticatie check)
+* **brand-owner.ts** (Geen API, lokale authenticatie check)
+
+---
+
+## Pages
+
+* **Admin/verify.vue** (Admin route, maakt gebruik van backend `/admin/brands/owners/{id}/verify`)
+
+* **Brands/\[slug].vue**
+  GET `/api/v1/brands/{slug}`
+
+* **Brands/claim.vue**
+  POST `/api/v1/brands/claim`
+
+* **Brands/index.vue**
+  GET `/api/v1/brands`
+
+* **Brands/request.vue**
+  POST `/api/v1/brands/request`
+
+* **Dashboard/\[slug].vue** (Gebruikt meerdere composables, voornamelijk via `useBrandOwnerApi.ts`)
+
+* **Dashboard/index.vue** (Geen directe API-call)
+
+* **Dashboard/Verify-success.vue** (Geen directe API-call)
+
+* **User/\[slug].vue** (Meerdere composables: `useAuth`, `useIdeas`, etc.)
+
+* **email-verification.vue** (Wordt gebruikt voor verificatieprocessen via backend links)
+
+* **index.vue**
+  GET `/api/v1/hi`
+
+* **login.vue**
+  POST `/api/v1/login`
+
+* **register.vue**
+  POST `/api/v1/register`
+
+---
+
+## Services
+
+* **authService.ts**
+  POST `/api/v1/login`
+  POST `/api/v1/register`
+  POST `/api/v1/brand-owner/login`
+
+* **brandService.ts**
+  GET `/api/v1/brands`, `/api/v1/brands/{slug}`
+  POST `/api/v1/brands/request`, `/api/v1/brands/claim`
+  PATCH `/api/v1/brands/{brand}`
+
+* **messageService.ts**
+  GET `/api/v1/hi`
+
+---
+
+Dit overzicht garandeert dat elk frontend-bestand duidelijk gekoppeld is aan zijn respectievelijke API-route(s) in de backend.

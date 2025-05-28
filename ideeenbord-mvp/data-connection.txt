@@ -1,0 +1,86 @@
+### Data-Connection Overview: Frontend ↔️ Backend
+
+Hieronder volgt een gedetailleerd overzicht van hoe frontend componenten, composables, middleware, stores en pages gekoppeld zijn aan backend API routes, controllers, middleware en toegangsrechten.
+
+| Frontend Component/Service | Backend API Route                 | Backend Controller & Methode                      | Backend Middleware | Rechten           |
+| -------------------------- | --------------------------------- | ------------------------------------------------- | ------------------ | ----------------- |
+| **authService.ts**         | POST `/login`<br>POST `/register` | AuthController\@login<br>AuthController\@register | Publiek            | Geen auth vereist |
+|                            | POST `/brand-owner/login`         | BrandOwnerAuthController\@login                   | Publiek            | Geen auth vereist |
+
+\| **useAuth.ts**<br>**auth.ts store** | POST `/login`<br>POST `/register`<br>GET `/user` | AuthController\@login<br>AuthController\@register<br>AuthController\@me | auth\:sanctum | User authenticatie vereist |
+
+\| **useBrandOwnerAuth.ts**<br>**brandOwnerAuth.ts store** | POST `/brand-owner/login`<br>GET `/brand-owner/me` | BrandOwnerAuthController\@login<br>BrandOwnerAuthController\@me | auth\:brand\_owner | BrandOwner authenticatie vereist |
+
+\| **BrandEditModal.vue**<br>**useBrandUpdater.ts** | PATCH `/brands/{brand}` | BrandController\@update | auth\:brand\_owner | BrandOwner authenticatie vereist |
+
+\| **AccountEditModal.vue** | PATCH `/brand-owner/account` | BrandOwnerController\@update | auth\:brand\_owner | BrandOwner authenticatie vereist |
+
+\| **MainQuestionSelect.vue**<br>**useMainQuestion.ts** | GET `/main-questions`<br>PATCH `/brands/{brand}/main-questions` | MainQuestionController\@index<br>BrandController\@setMainQuestion | auth\:brand\_owner | BrandOwner authenticatie vereist |
+
+\| **ManageIdeaGrid.vue**<br>**useManageIdeas.ts** | PATCH `/ideas/{idea}`<br>PATCH `/ideas/{idea}/pin`<br>PATCH `/ideas/{idea}/unpin` | IdeaController\@update<br>IdeaController\@pin<br>IdeaController\@unpin | auth\:brand\_owner | BrandOwner authenticatie vereist |
+
+\| **QuizBuilder.vue**<br>**useQuizBuilder.ts** | POST `/quizzes` | QuizController\@store | auth\:brand\_owner | BrandOwner authenticatie vereist |
+
+\| **QuizOverview\.vue** | GET `/brands/{brand}/quizzes`<br>POST `/quizzes/{quiz}/close` | QuizController\@listForBrand<br>QuizController\@close | auth\:brand\_owner | BrandOwner authenticatie vereist |
+
+\| **QuizWinner.vue** | POST `/quizzes/{quiz}/select-winner` | QuizController\@selectWinner | auth\:brand\_owner | BrandOwner authenticatie vereist |
+
+\| **IdeaGrid.vue**<br>**useIdeas.ts** | GET `/brands/{brand}/ideas` | IdeaController\@index | Publiek | Geen auth vereist |
+
+\| **IdeaCard.vue** | POST `/ideas/{idea}/like`<br>POST `/ideas/{idea}/dislike` | IdeaController\@like<br>IdeaController\@dislike | auth\:sanctum | User authenticatie vereist |
+
+\| **QuizParticipant.vue** | POST `/quizzes/{quiz}/submit` | QuizController\@submit | auth\:sanctum | User authenticatie vereist |
+
+\| **BrandMainQuestion.vue**<br>**useMainQuestionResponse.ts** | POST `/brands/{brand}/main-question-response` | MainQuestionResponseController\@store | auth\:sanctum | User authenticatie vereist |
+
+\| **UserProfileEdit.vue** | PATCH `/users/{username}` | AuthController\@update | auth\:sanctum | User authenticatie vereist |
+
+\| **UserIdeasPosted.vue** | GET `/users/{username}/ideas` | IdeaController\@getIdeasByUser | auth\:sanctum | User authenticatie vereist |
+
+\| **UserQuizzes.vue** | GET `/users/{username}/quiz-submissions` | QuizController\@quizzesForUser | auth\:sanctum | User authenticatie vereist |
+
+\| **Inbox.vue**<br>**IdeaNotifier.vue**<br>**QuizNotifier.vue** | GET `/users/{username}/notifications` | AuthController\@notifications | auth\:sanctum | User authenticatie vereist |
+
+\| **Admin verify.vue**<br>**useAdmin.ts** | POST `/admin/brands/owners/{id}/verify` | BrandOwnerController\@verify | auth\:sanctum, IsAdmin | Admin vereist |
+
+\| **Brands claim.vue** | POST `/brands/claim` | BrandOwnerController\@store | auth\:sanctum | User authenticatie vereist |
+
+\| **Brands request.vue** | POST `/brands/request` | BrandController\@store | auth\:sanctum | User authenticatie vereist |
+
+\| **Brands index.vue**<br>**useBrand.ts** | GET `/brands` | BrandController\@index | Publiek | Geen auth vereist |
+
+\| **Brands \[slug].vue**<br>**useBrand.ts** | GET `/brands/{slug}` | BrandController\@show | Publiek | Geen auth vereist |
+
+\| **Dashboard \[slug].vue**<br>**brand-owner middleware** | GET `/brand-owner/me`<br>GET `/brands/{slug}` | BrandOwnerAuthController\@me<br>BrandController\@show | auth\:brand\_owner | BrandOwner authenticatie vereist |
+
+\| **Login.vue** | POST `/login` | AuthController\@login | Publiek | Geen auth vereist |
+
+\| **Register.vue** | POST `/register` | AuthController\@register | Publiek | Geen auth vereist |
+
+\| **Email-verification.vue** | GET `/email/verify/{id}/{hash}` | AuthController\@verifyEmail | signed | Email verificatie vereist |
+
+\| **Verify-success.vue** | GET `/brand-owner/email/verify/{id}/{hash}` | BrandOwnerAuthController\@verifyEmail | signed | Email verificatie vereist |
+
+### Middleware Overview:
+
+* **Frontend Middleware:**
+
+  * `admin.ts`: Redirect niet-admin gebruikers naar `/`.
+  * `auth.ts`: Redirect niet-ingelogde gebruikers naar `/login`.
+  * `brand-owner.ts`: Redirect niet-authentieke brandowners naar `/login`.
+
+* **Backend Middleware:**
+
+  * `auth:sanctum`: Voor beveiligde gebruikersroutes.
+  * `auth:brand_owner`: Voor beveiligde brandowner routes.
+  * `IsAdmin`: Voor admin-rechten.
+  * `signed`: Voor beveiliging email-verificatie routes.
+
+### Rechten Samenvatting:
+
+* **Publiek**: Routes zonder authenticatie.
+* **Gebruiker**: Routes beveiligd met Sanctum (gewone gebruikers).
+* **BrandOwner**: Routes beveiligd voor merk-eigenaren.
+* **Admin**: Routes exclusief toegankelijk voor admins.
+
+Dit overzicht garandeert een heldere en traceerbare structuur van dataflows tussen frontend en backend.

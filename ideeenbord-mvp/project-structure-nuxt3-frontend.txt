@@ -1,0 +1,76 @@
+Frontend - Nuxt 3 with Typescript
+- Components
+    - Dashboard
+        - AccountEditModal.vue
+        - BrandEditModal.vue
+        - MainQuestionSelect.vue
+        - ManageIdeaGrid.vue
+        - QuizBuilder.vue
+        - QuizOverview.vue
+        - QuizWinner.vue
+    - Ideas
+        - IdeaCard.vue
+        - IdeaGrid.vue
+    - User
+        - IdeaNotifier.vue
+        - Inbox.vue
+        - QuizNotifier.vue
+        - UserIdeasPosted.vue
+        - UserProfileEdit.vue
+        - UserQuizzes.vue
+        - UserRatingInsight.vue
+    - BrandMainQuestion.vue
+    - MessageDisplay.vue
+    - QuizParticipant.vue
+    - ResponseDisplay.vue
+- Composables
+    - useAdmin.ts
+    - useApi.ts
+    - useAuth.ts
+    - useBrand.ts
+    - useBrandOwnerApi.ts
+    - useBrandOwnerAuth.ts
+    - useBrandUpdater.ts
+    - useIdeas.ts
+    - useMainQuestionResponse.ts
+    - useMainQuestion.ts
+    - useManageIdeas.ts
+    - useMessage.ts
+    - useQuizBuilder.ts
+    - useResponseDisplay.ts
+- Middleware
+    - admin.ts
+    - auth.ts
+    - brand-owner.ts
+- Pages
+    - Admin
+		- verify.vue
+    - Brands
+        - [slug].vue
+        - claim.vue
+        - index.vue
+        - request.vue
+    - Dashboard
+        - [slug].vue
+        - index.vue
+        - Verify-success.vue
+    - User
+        - [slug].vue
+    - email-verfication.vue
+    - index.vue
+    - login.vue
+    - register.vue
+- Services
+    - Api
+        - authService.ts
+        - brandService.ts
+        - messageService.ts
+        - userService.ts
+- Store
+    - auth.ts
+    - brandOwnerAuth.ts
+- Types
+    - auth.ts
+    - brand.ts
+    - quiz.ts
+    - user.ts

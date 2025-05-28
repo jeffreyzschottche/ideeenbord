@@ -1,11 +1,6 @@
 <template>
   <div class="mt-8">
     <h2 class="text-xl font-bold mb-4">Kies een algemene vraag</h2>
-
-    <!-- <div v-if="currentQuestion" class="mb-4 text-gray-700">
-      <strong>Huidige vraag:</strong> {{ currentQuestion.text }}
-    </div> -->
-
     <select v-model="selectedId" class="w-full border rounded p-2 mb-4">
       <option disabled value="" v-if="currentQuestion?.text">
         {{ currentQuestion.text }}
@@ -28,7 +23,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useMainQuestions } from "~/composables/useMainQuestions";
-// import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
 import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 const brandId = computed(() => brandOwnerAuth.owner?.brand?.id);
@@ -56,23 +50,4 @@ async function submit() {
     trigger("Fout bij opslaan vraag: " + err.message, "error");
   }
 }
-
-// async function submit() {
-//   if (!selectedId.value) return;
-
-//   const selected = questions.value.find(
-//     (q) => q.id === Number(selectedId.value)
-//   );
-//   if (!selected) return;
-
-//   try {
-//     await brandOwnerApiFetch(`/brands/${brandId.value}/main-questions`, {
-//       method: "PATCH",
-//       body: JSON.stringify({ main_question_id: selectedId.value }),
-//     });
-//     trigger("Vraag succesvol opgeslagen!", "success");
-//   } catch (err: any) {
-//     trigger("Fout bij opslaan vraag: " + err.message, "error");
-//   }
-// }
 </script>
