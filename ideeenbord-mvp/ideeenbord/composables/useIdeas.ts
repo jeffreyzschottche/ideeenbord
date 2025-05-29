@@ -1,16 +1,16 @@
-// ~/composables/useIdeas.ts
 import { ref } from "vue";
 import { apiFetch } from "~/composables/useApi";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import type { Idea, NewIdeaForm } from "~/types/idea";
 
 export function useIdeas(brandId: number) {
-  const ideas = ref<any[]>([]);
+  const ideas = ref<Idea[]>([]);
   const error = ref<string | null>(null);
   const { trigger } = useResponseDisplay();
 
   async function fetchIdeas() {
     try {
-      ideas.value = await apiFetch(`/brands/${brandId}/ideas`);
+      ideas.value = await apiFetch<Idea[]>(`/brands/${brandId}/ideas`);
     } catch (err: any) {
       error.value = err?.message || "Kon ideeën niet laden.";
       trigger(`Mistake fetching ideas : ${err}`, "error");
@@ -18,14 +18,15 @@ export function useIdeas(brandId: number) {
   }
 
   async function submitIdea(title: string, description: string) {
+    const payload: NewIdeaForm = {
+      brand_id: brandId,
+      title,
+      description,
+    };
     try {
       await apiFetch("/ideas", {
         method: "POST",
-        body: {
-          brand_id: brandId,
-          title,
-          description,
-        },
+        body: payload,
       });
       await fetchIdeas(); // refresh na plaatsen
       trigger(`Succesfully posted your idea!`, "success");

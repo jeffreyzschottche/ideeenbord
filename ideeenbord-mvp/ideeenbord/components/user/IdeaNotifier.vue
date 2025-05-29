@@ -2,16 +2,19 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { apiFetch } from "~/composables/useApi";
+import type { Idea, IdeaNotification } from "~/types/idea";
 
 const route = useRoute();
 const username = route.params.slug as string;
 
-const notifications = ref([]);
+const notifications = ref<IdeaNotification[]>([]);
 const loading = ref(true);
 
 onMounted(async () => {
   try {
-    const data: any = await apiFetch(`/users/${username}/notifications`);
+    const data = await apiFetch<{ notifications: IdeaNotification[] }>(
+      `/users/${username}/notifications`
+    );
     notifications.value = data.notifications.filter((n: any) =>
       ["idea_status", "idea_like"].includes(n.type)
     );

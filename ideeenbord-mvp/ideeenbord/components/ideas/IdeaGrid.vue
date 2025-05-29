@@ -32,8 +32,9 @@ import { ref, onMounted } from "vue";
 import { useAuthStore } from "~/store/auth";
 import { useIdeas } from "~/composables/useIdeas";
 import IdeaCard from "~/components/ideas/IdeaCard.vue";
+import type { Idea } from "~/types/idea";
 
-const sortedIdeas = computed(() => {
+const sortedIdeas = computed<readonly Idea[]>(() => {
   return [...ideas.value].sort((a, b) => {
     if (a.is_pinned && !b.is_pinned) return -1;
     if (!a.is_pinned && b.is_pinned) return 1;

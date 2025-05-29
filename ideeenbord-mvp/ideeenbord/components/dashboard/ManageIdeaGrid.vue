@@ -57,6 +57,8 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useManageIdeas } from "~/composables/useManageIdeas";
+import type { Idea } from "~/types/idea";
+type EditableIdea = Idea & { newStatus?: string };
 
 const props = defineProps<{ brandId: number }>();
 
@@ -65,16 +67,16 @@ const { ideas, fetchIdeas, updateIdeaStatus, pinIdea, unpinIdea } =
 
 onMounted(fetchIdeas);
 
-async function updateStatus(idea: any) {
+async function updateStatus(idea: EditableIdea) {
   if (!idea.newStatus) return;
   await updateIdeaStatus(idea.id, idea.newStatus);
 }
 
-async function pinIdeaAction(idea: any) {
+async function pinIdeaAction(idea: Idea) {
   await pinIdea(idea.id);
 }
 
-async function unpinIdeaAction(idea: any) {
+async function unpinIdeaAction(idea: Idea) {
   await unpinIdea(idea.id);
 }
 </script>

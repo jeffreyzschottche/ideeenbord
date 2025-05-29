@@ -1,11 +1,16 @@
+import type { Idea } from "~/types/idea";
+
 export function useManageIdeas(brandId: number) {
-  const ideas = ref<any[]>([]);
+  type EditableIdea = Idea & { newStatus?: string };
+  const ideas = ref<EditableIdea[]>([]);
   const error = ref<string | null>(null);
   const { trigger } = useResponseDisplay();
 
   async function fetchIdeas() {
     try {
-      ideas.value = await brandOwnerApiFetch(`/brands/${brandId}/ideas`);
+      ideas.value = await brandOwnerApiFetch<Idea[]>(
+        `/brands/${brandId}/ideas`
+      );
     } catch (err: any) {
       error.value = err?.message || "Kon ideeën niet laden.";
       trigger(`Fout bij ophalen ideeën: ${err}`, "error");

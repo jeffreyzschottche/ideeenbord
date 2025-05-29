@@ -30,12 +30,15 @@
 </template>
 
 <script setup lang="ts">
+import type { Idea, IdeaStatus } from "~/types/idea";
 const props = defineProps<{
-  idea: any;
+  idea: Idea;
 }>();
 
+const status = computed<IdeaStatus>(() => props.idea.status);
+
 const statusColor = computed(() => {
-  switch (props.idea.status) {
+  switch (status.value) {
     case "pending":
       return "bg-orange-200 text-orange-800";
     case "rejected":
@@ -50,7 +53,7 @@ const statusColor = computed(() => {
 });
 
 const statusLabel = computed(() => {
-  switch (props.idea.status) {
+  switch (status.value) {
     case "pending":
       return "In afwachting";
     case "rejected":
