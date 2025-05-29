@@ -3,17 +3,8 @@ import { useRouter } from "vue-router";
 import { apiFetch } from "~/composables/useApi";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
-
-interface BrandOwner {
-  id: number;
-  name: string;
-  email: string;
-  brand: {
-    id: number;
-    slug: string;
-    title: string;
-  };
-}
+import type { BrandOwner } from "~/types/brand-owner";
+import type { BrandOwnerLoginResponse } from "~/types/brand-owner";
 
 export function useBrandOwnerAuth() {
   const router = useRouter();
@@ -22,14 +13,13 @@ export function useBrandOwnerAuth() {
 
   async function login(credentials: { email: string; password: string }) {
     try {
-      const res = await apiFetch<{
-        message: string;
-        owner: BrandOwner;
-        token: string;
-      }>("/brand-owner/login", {
-        method: "POST",
-        body: credentials,
-      });
+      const res = await apiFetch<BrandOwnerLoginResponse>(
+        "/brand-owner/login",
+        {
+          method: "POST",
+          body: credentials,
+        }
+      );
 
       // 🔥🔥 Store goed vullen
       brandOwnerAuth.setAuth(res.token, res.owner);

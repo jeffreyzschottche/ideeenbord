@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
+import type { BrandOwner } from "~/types/brand-owner";
 
 export const useBrandOwnerAuthStore = defineStore("brandOwnerAuth", {
   state: () => ({
     token: null as string | null,
-    owner: null as any,
+    owner: null as BrandOwner | null,
   }),
   actions: {
     setAuth(token: string, owner: any) {

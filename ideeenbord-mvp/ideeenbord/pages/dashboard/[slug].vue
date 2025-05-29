@@ -10,6 +10,8 @@ import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import { useBrandUpdater } from "~/composables/useBrandUpdater";
 import BrandEditModal from "~/components/dashboard/BrandEditModal.vue";
 import AccountEditModal from "~/components/dashboard/AccountEditModal.vue";
+import type { BrandOwner } from "~/types/brand-owner";
+import type { Brand } from "~/types/brand";
 
 const { trigger } = useResponseDisplay();
 
@@ -20,7 +22,8 @@ const apiBase = (rawApiBase || "http://localhost:8000/api") as string;
 const imageBase = apiBase.replace("/api", "/storage");
 const editing = ref<Record<string, boolean>>({});
 const { updateBrand } = useBrandUpdater();
-const brand = ref<any>(null); // of met type
+const brand = ref<Brand>(null);
+const fullBrand = ref<Brand | null>(null);
 
 function toggleEdit(field: string) {
   editing.value[field] = !editing.value[field];
@@ -48,7 +51,7 @@ definePageMeta({
 
 const route = useRoute();
 const brandOwnerAuth = useBrandOwnerAuthStore();
-const owner = computed(() => brandOwnerAuth.owner);
+const owner = computed<BrandOwner | null>(() => brandOwnerAuth.owner);
 const logout = brandOwnerAuth.logout;
 const initAuth = brandOwnerAuth.initAuth;
 const loading = ref(true);
@@ -56,7 +59,15 @@ const loading = ref(true);
 onMounted(async () => {
   await initAuth();
   loading.value = false;
-  console.log("🔍 owner.brand.id = ", owner.value?.brand?.id);
+  if (owner.value?.brand?.slug) {
+    try {
+      fullBrand.value = await apiFetch<Brand>(
+        `/brands/${owner.value.brand.slug}`
+      );
+    } catch (err) {
+      trigger("Fout bij laden van volledige merkdata", "error");
+    }
+  }
 });
 </script>
 
@@ -83,7 +94,7 @@ onMounted(async () => {
       </button>
       <BrandEditModal
         :open="showModal"
-        :brand="owner.brand"
+        :brand="fullBrand"
         @close="showModal = false"
         @updated="reloadData()"
       />

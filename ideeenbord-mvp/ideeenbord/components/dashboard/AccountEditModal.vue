@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from "vue";
 import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
 import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import type { BrandOwner, UpdateBrandOwnerForm } from "~/types/brand-owner";
 
 definePageMeta({
   middleware: "brand-owner",
@@ -10,12 +11,12 @@ definePageMeta({
 
 const authStore = useBrandOwnerAuthStore();
 const { trigger } = useResponseDisplay();
-const owner = computed(() => authStore.owner);
+const owner = computed<BrandOwner | null>(() => authStore.owner);
 
-const form = ref({
+const form = ref<UpdateBrandOwnerForm>({
   email: "",
   phone: "",
-  subscription_plan: "",
+  subscription_plan: "Brons",
   password: "",
   password_confirmation: "",
 });
@@ -32,7 +33,7 @@ async function handleSubmit() {
   try {
     await brandOwnerApiFetch("/brand-owner/account", {
       method: "PATCH",
-      body: JSON.stringify(form.value),
+      body: JSON.stringify(form.value as UpdateBrandOwnerForm),
     });
     trigger("Gegevens bijgewerkt!", "success");
     await authStore.initAuth(); // opnieuw laden
