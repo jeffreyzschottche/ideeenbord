@@ -58,11 +58,11 @@
 import { ref, onMounted } from "vue";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import { apiFetch } from "~/composables/useApi";
-import { useAuthStore } from "~/store/auth";
+import { useUserAuthStore } from "~/store/useUserAuthStore";
 import type { Quiz } from "~/types/quiz";
 const props = defineProps<{ brand: { id: number; title: string } }>();
 const { trigger } = useResponseDisplay();
-const user = useAuthStore().user;
+const user = useUserAuthStore().user;
 const quizzes = ref<Quiz[]>([]);
 const availableQuizzes = ref<Quiz[]>([]);
 const answers = ref<Record<number, Record<number, string>>>({});

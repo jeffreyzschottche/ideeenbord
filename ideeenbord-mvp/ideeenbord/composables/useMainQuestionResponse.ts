@@ -1,4 +1,4 @@
-import { useAuthStore } from "~/store/auth";
+import { useUserAuthStore } from "~/store/useUserAuthStore";
 import { apiFetch } from "~/composables/useApi";
 import type { MainQuestionResponse } from "~/types/main-question";
 

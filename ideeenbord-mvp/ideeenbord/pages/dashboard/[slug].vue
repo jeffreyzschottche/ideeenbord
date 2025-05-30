@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import { ref, onMounted, computed } from "vue";
-import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
+import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 import ManageIdeaGrid from "~/components/dashboard/ManageIdeaGrid.vue";
 import MainQuestionSelect from "~/components/dashboard/MainQuestionSelect.vue";
 import QuizBuilder from "~/components/dashboard/QuizBuilder.vue";

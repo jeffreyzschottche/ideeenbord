@@ -5,9 +5,9 @@ import Inbox from "~/components/user/Inbox.vue";
 import UserIdeasPosted from "~/components/user/UserIdeasPosted.vue";
 import UserProfileEdit from "~/components/user/UserProfileEdit.vue";
 import UserRatingsInsights from "~/components/user/UserRatingsInsights.vue";
-import { useAuthStore } from "~/store/auth";
+import { useUserAuthStore } from "~/store/useUserAuthStore";
 
-const auth = useAuthStore();
+const auth = useUserAuthStore();
 const route = useRoute();
 const router = useRouter();
 

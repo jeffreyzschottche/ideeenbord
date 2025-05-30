@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import { useAuthStore } from "~/store/auth";
+import { useUserAuthStore } from "~/store/useUserAuthStore";
 import { apiFetch } from "~/composables/useApi";
 import { useRoute } from "vue-router";
 import IdeaGrid from "~/components/ideas/IdeaGrid.vue";
@@ -13,7 +13,7 @@ const rawApiBase = useRuntimeConfig().public.apiBase;
 const apiBase = (rawApiBase || "http://localhost:8000/api") as string;
 const imageBase = apiBase.replace("/api", "/storage");
 
-const auth = useAuthStore();
+const auth = useUserAuthStore();
 const route = useRoute();
 const { trigger } = useResponseDisplay();
 

@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { useMainQuestionResponse } from "~/composables/useMainQuestionResponse";
 import { useRoute } from "vue-router";
-import { useAuthStore } from "~/store/auth";
+import { useUserAuthStore } from "~/store/useUserAuthStore";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import { ref, onMounted } from "vue";
 import { useMainQuestions } from "~/composables/useMainQuestions";
@@ -24,7 +24,7 @@ onMounted(async () => {
 const { submitMainQuestionResponse } = useMainQuestionResponse();
 const { trigger } = useResponseDisplay();
 const route = useRoute();
-const auth = useAuthStore();
+const auth = useUserAuthStore();
 
 const parsed = computed(() => {
   if (!question.value) return null;

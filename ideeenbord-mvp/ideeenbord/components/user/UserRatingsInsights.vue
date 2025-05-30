@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useAuthStore } from "~/store/auth";
+import { useUserAuthStore } from "~/store/useUserAuthStore";
 import { apiFetch } from "~/composables/useApi";
 
-const auth = useAuthStore();
+const auth = useUserAuthStore();
 const likedIdeas = ref<any[]>([]);
 const dislikedIdeas = ref<any[]>([]);
 

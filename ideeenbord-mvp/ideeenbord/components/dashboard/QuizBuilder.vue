@@ -70,7 +70,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
+import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import { useQuizBuilder } from "~/composables/useQuizBuilder";
 import type { NewQuizForm } from "~/types/quiz";

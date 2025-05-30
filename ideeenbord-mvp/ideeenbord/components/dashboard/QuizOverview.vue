@@ -48,7 +48,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
-import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
+import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import type { Quiz, QuizWithParticipants } from "~/types/quiz";
 

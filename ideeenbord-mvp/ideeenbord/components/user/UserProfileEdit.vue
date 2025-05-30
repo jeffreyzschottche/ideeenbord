@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { useAuthStore } from "~/store/auth";
+import { useUserAuthStore } from "~/store/useUserAuthStore";
 import { apiFetch } from "~/composables/useApi";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 
-const auth = useAuthStore();
+const auth = useUserAuthStore();
 const { trigger } = useResponseDisplay();
 
 const form = ref<Record<string, any>>({});

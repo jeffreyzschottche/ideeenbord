@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useAuthStore } from "~/store/auth";
+import { useUserAuthStore } from "~/store/useUserAuthStore";
 import { onMounted, ref } from "vue";
 import QuizNotifier from "~/components/user/QuizNotifier.vue";
 import IdeaNotifier from "~/components/user/IdeaNotifier.vue";
 
-const auth = useAuthStore();
+const auth = useUserAuthStore();
 const loaded = ref(false);
 
 onMounted(async () => {

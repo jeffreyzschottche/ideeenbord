@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
+import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 import type { LoginForm } from "~/types/auth";
 
 const brandOwnerAuth = useBrandOwnerAuthStore();

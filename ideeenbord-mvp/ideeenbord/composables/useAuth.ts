@@ -1,7 +1,8 @@
 import { ref } from "vue";
 import { authService } from "~/services/api/authService";
 import type { RegisterForm, LoginForm } from "~/types/auth";
-import { useAuthStore } from "~/store/auth";
+
+import { useUserAuthStore } from "~/store/useUserAuthStore";
 
 export function useRegister() {
   const error = ref<string | null>(null);
@@ -12,7 +13,7 @@ export function useRegister() {
       const token = response?.access_token;
 
       if (token) {
-        localStorage.setItem("token", token);
+        useCookie("token").value = token;
         return true;
       } else {
         error.value = "Geen token ontvangen.";
@@ -28,7 +29,7 @@ export function useRegister() {
 }
 export function useLogin() {
   const error = ref<string | null>(null);
-  const authStore = useAuthStore();
+  const authStore = useUserAuthStore();
 
   async function login(form: LoginForm) {
     try {
@@ -41,8 +42,14 @@ export function useLogin() {
           error.value = "Bevestig eerst je e-mailadres.";
           return false;
         }
-        authStore.setAuth(token, user);
-        // console.log(authStore.$state);
+
+        authStore.setAuth(token, user); // 🔐 zet ook cookies via store
+
+        // Optioneel: redirect op basis van rol
+        if (user.role === "admin") {
+          return navigateTo("/admin/verify");
+        }
+
         return true;
       } else {
         error.value = "Geen token of gebruiker ontvangen.";

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
-import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
+import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import type { BrandOwner, UpdateBrandOwnerForm } from "~/types/brand-owner";

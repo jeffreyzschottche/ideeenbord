@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useMainQuestions } from "~/composables/useMainQuestions";
-import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
+import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import type { MainQuestion } from "~/types/main-question";
 

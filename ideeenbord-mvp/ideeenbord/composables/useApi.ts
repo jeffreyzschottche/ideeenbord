@@ -1,5 +1,5 @@
 // ~/composables/useApi.ts
-import { useAuthStore } from "~/store/auth";
+import { useUserAuthStore } from "~/store/useUserAuthStore";
 
 export async function apiFetch<T>(
   endpoint: string,
@@ -13,7 +13,7 @@ export async function apiFetch<T>(
   const config = useRuntimeConfig();
   const API_VERSION = "v1";
   const BASE_URL = `${config.public.apiBaseUrl}/${API_VERSION}`;
-  const auth = useAuthStore();
+  const auth = useUserAuthStore();
 
   const url = new URL(`${BASE_URL}${endpoint}`);
 

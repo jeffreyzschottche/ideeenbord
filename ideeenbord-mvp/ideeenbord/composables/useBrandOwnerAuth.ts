@@ -2,7 +2,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { apiFetch } from "~/composables/useApi";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
-import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
+import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 import type { BrandOwner } from "~/types/brand-owner";
 import type { BrandOwnerLoginResponse } from "~/types/brand-owner";
 
