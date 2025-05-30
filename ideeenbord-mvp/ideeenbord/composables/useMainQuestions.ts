@@ -2,15 +2,16 @@
 import { ref } from "vue";
 import { apiFetch } from "~/composables/useApi";
 import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
+import type { MainQuestion } from "~/types/main-question";
 
-const questions = ref<any[]>([]);
+const questions = ref<MainQuestion[]>([]);
 const error = ref<string | null>(null);
 
 export function useMainQuestions() {
   // 📥 Alle vragen ophalen (voor dropdown, etc.)
   async function fetchMainQuestions() {
     try {
-      const res = await brandOwnerApiFetch("/main-questions");
+      const res = await brandOwnerApiFetch<MainQuestion[]>("/main-questions");
       questions.value = res;
     } catch (err: any) {
       error.value = err.message || "Kon vragen niet laden.";
@@ -18,9 +19,11 @@ export function useMainQuestions() {
   }
 
   // 📥 Eén vraag ophalen op ID (voor frontend gebruikersweergave)
-  async function fetchMainQuestionById(id: number | string) {
+  async function fetchMainQuestionById(
+    id: number | string
+  ): Promise<MainQuestion | null> {
     try {
-      return await apiFetch(`/main-questions/${id}`);
+      return await apiFetch<MainQuestion>(`/main-questions/${id}`);
     } catch (err: any) {
       console.error("Kon main question niet laden", err);
       return null;

@@ -25,6 +25,8 @@ import { ref, computed, onMounted } from "vue";
 import { useMainQuestions } from "~/composables/useMainQuestions";
 import { useBrandOwnerAuthStore } from "~/store/brandOwnerAuth";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import type { MainQuestion } from "~/types/main-question";
+
 const brandId = computed(() => brandOwnerAuth.owner?.brand?.id);
 const { questions, fetchMainQuestions, setMainQuestionForBrand } =
   useMainQuestions();
@@ -33,7 +35,7 @@ const { trigger } = useResponseDisplay();
 const brandOwnerAuth = useBrandOwnerAuthStore();
 const selectedId = ref<string>("");
 
-const currentQuestion = computed(() => {
+const currentQuestion = computed<MainQuestion | null>(() => {
   const id = brandOwnerAuth.owner?.brand?.main_question_id;
   if (!id) return null;
   return questions.value.find((q) => q.id === id) || null;

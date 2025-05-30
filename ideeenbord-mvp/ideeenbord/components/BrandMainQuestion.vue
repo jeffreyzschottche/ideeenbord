@@ -7,10 +7,11 @@ import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import { ref, onMounted } from "vue";
 import { useMainQuestions } from "~/composables/useMainQuestions";
 import type { Brand } from "~/types/brand";
+import type { MainQuestion } from "~/types/main-question";
 
 const props = defineProps<{ brand: Brand }>();
 
-const question = ref<any | null>(null);
+const question = ref<MainQuestion | null>(null);
 
 const { fetchMainQuestionById } = useMainQuestions();
 
