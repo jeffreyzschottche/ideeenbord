@@ -1,4 +1,3 @@
-// ~/composables/brandOwnerApiFetch.ts
 import { useRuntimeConfig, useCookie } from "#app";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 
