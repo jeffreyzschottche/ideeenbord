@@ -51,6 +51,7 @@ import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import type { Quiz, QuizWithParticipants } from "~/types/quiz";
 import { brandOwnerService } from "~/services/api/brandOwnerService";
+import { quizService } from "~/services/api/quizService";
 
 const { trigger } = useResponseDisplay();
 const brandId = useBrandOwnerAuthStore().owner?.brand?.id;
@@ -59,14 +60,12 @@ const quizzes = ref<QuizWithParticipants[]>([]);
 async function loadQuizzes() {
   if (!brandId) return;
   try {
-    const baseQuizzes = await brandOwnerService.getQuizzes(brandId);
+    const baseQuizzes = await quizService.getQuizzes(brandId);
     const detailed: QuizWithParticipants[] = await Promise.all(
       baseQuizzes.map(async (quiz: Quiz) => {
         const participants =
           quiz.status === "open"
-            ? await brandOwnerService
-                .getQuizParticipants(quiz.id)
-                .catch(() => [])
+            ? await quizService.getParticipants(quiz.id).catch(() => [])
             : [];
         return { ...quiz, participants };
       })
@@ -82,7 +81,7 @@ onMounted(loadQuizzes);
 
 async function closeQuiz(quizId: number) {
   try {
-    await brandOwnerService.closeQuiz(quizId);
+    await quizService.closeQuiz(quizId);
     trigger("Quiz gesloten!", "success");
     await loadQuizzes(); // herladen
   } catch (err) {
@@ -92,7 +91,7 @@ async function closeQuiz(quizId: number) {
 
 async function selectWinner(quizId: number, userId: number) {
   try {
-    await brandOwnerService.selectWinner(quizId, userId);
+    await quizService.selectWinner(quizId, userId);
     trigger("Winnaar gekozen!", "success");
     await loadQuizzes(); // herladen
   } catch (err: any) {

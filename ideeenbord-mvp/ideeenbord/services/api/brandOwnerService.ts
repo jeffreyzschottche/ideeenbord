@@ -32,56 +32,6 @@ export const brandOwnerService = {
   async unpinIdea(id: number) {
     return await brandOwnerApiFetch(`/ideas/${id}/unpin`, { method: "PATCH" });
   },
-
-  // Quiz functionaliteit
-  async getQuizzes(brandId: number): Promise<Quiz[]> {
-    return await brandOwnerApiFetch(`/brands/${brandId}/quizzes`);
-  },
-
-  async closeQuiz(quizId: number) {
-    return await brandOwnerApiFetch(`/quizzes/${quizId}/close`, {
-      method: "POST",
-    });
-  },
-
-  async selectWinner(quizId: number, userId: number) {
-    return await brandOwnerApiFetch(`/quizzes/${quizId}/select-winner`, {
-      method: "POST",
-      body: JSON.stringify({ winner_id: userId }),
-    });
-  },
-
-  async getQuizParticipants(quizId: number) {
-    return await brandOwnerApiFetch(`/quizzes/${quizId}/participants`);
-  },
-
-  // Quiz aanmaken
-  async createQuiz(form: NewQuizForm) {
-    const quiz_questions = form.questions.map((q, i) => ({
-      id: i + 1,
-      title: q.title,
-    }));
-
-    const quiz_answers = form.questions.map((q, i) => ({
-      idQuestion: i + 1,
-      answers: q.answers.reduce((acc, answer) => {
-        acc[answer.text] = answer.correct;
-        return acc;
-      }, {} as Record<string, boolean>),
-    }));
-
-    return await brandOwnerApiFetch("/quizzes", {
-      method: "POST",
-      body: JSON.stringify({
-        brand_id: form.brand_id,
-        title: form.title,
-        prize: form.prize,
-        description: form.description,
-        quiz_questions,
-        quiz_answers,
-      }),
-    });
-  },
   async updateBrand(brandId: number, updates: Record<string, any>) {
     return await brandOwnerApiFetch(`/brands/${brandId}`, {
       method: "PATCH",
