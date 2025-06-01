@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
-import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import type { BrandOwner, UpdateBrandOwnerForm } from "~/types/brand-owner";
+import { brandOwnerService } from "~/services/api/brandOwnerService";
 
 definePageMeta({
   middleware: "brand-owner",
@@ -31,10 +31,7 @@ onMounted(() => {
 
 async function handleSubmit() {
   try {
-    await brandOwnerApiFetch("/brand-owner/account", {
-      method: "PATCH",
-      body: JSON.stringify(form.value as UpdateBrandOwnerForm),
-    });
+    await brandOwnerService.updateAccount(form.value);
     trigger("Gegevens bijgewerkt!", "success");
     await authStore.initAuth(); // opnieuw laden
   } catch (err: any) {

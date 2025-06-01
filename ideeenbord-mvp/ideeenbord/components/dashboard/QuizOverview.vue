@@ -31,7 +31,7 @@
             :key="participant.user_id"
             class="mb-2 p-2 border rounded flex justify-between items-center"
           >
-            <span>User: {{ participant.name }}</span>
+            <span>Gebruiker : {{ participant.name }}</span>
             <button
               @click="selectWinner(quiz.id, participant.user_id)"
               class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
@@ -47,10 +47,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import type { Quiz, QuizWithParticipants } from "~/types/quiz";
+import { brandOwnerService } from "~/services/api/brandOwnerService";
 
 const { trigger } = useResponseDisplay();
 const brandId = useBrandOwnerAuthStore().owner?.brand?.id;
@@ -59,14 +59,14 @@ const quizzes = ref<QuizWithParticipants[]>([]);
 async function loadQuizzes() {
   if (!brandId) return;
   try {
-    const response = await brandOwnerApiFetch(`/brands/${brandId}/quizzes`);
+    const baseQuizzes = await brandOwnerService.getQuizzes(brandId);
     const detailed: QuizWithParticipants[] = await Promise.all(
-      response.map(async (quiz: Quiz) => {
+      baseQuizzes.map(async (quiz: Quiz) => {
         const participants =
           quiz.status === "open"
-            ? await brandOwnerApiFetch(
-                `/quizzes/${quiz.id}/participants`
-              ).catch(() => [])
+            ? await brandOwnerService
+                .getQuizParticipants(quiz.id)
+                .catch(() => [])
             : [];
         return { ...quiz, participants };
       })
@@ -82,7 +82,7 @@ onMounted(loadQuizzes);
 
 async function closeQuiz(quizId: number) {
   try {
-    await brandOwnerApiFetch(`/quizzes/${quizId}/close`, { method: "POST" });
+    await brandOwnerService.closeQuiz(quizId);
     trigger("Quiz gesloten!", "success");
     await loadQuizzes(); // herladen
   } catch (err) {
@@ -92,10 +92,7 @@ async function closeQuiz(quizId: number) {
 
 async function selectWinner(quizId: number, userId: number) {
   try {
-    await brandOwnerApiFetch(`/quizzes/${quizId}/select-winner`, {
-      method: "POST",
-      body: JSON.stringify({ winner_id: userId }),
-    });
+    await brandOwnerService.selectWinner(quizId, userId);
     trigger("Winnaar gekozen!", "success");
     await loadQuizzes(); // herladen
   } catch (err: any) {

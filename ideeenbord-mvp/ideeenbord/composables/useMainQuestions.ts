@@ -1,45 +1,39 @@
-// ~/composables/useMainQuestions.ts
 import { ref } from "vue";
-import { apiFetch } from "~/composables/useApi";
-import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
 import type { MainQuestion } from "~/types/main-question";
+import { brandOwnerService } from "~/services/api/brandOwnerService";
 
 const questions = ref<MainQuestion[]>([]);
 const error = ref<string | null>(null);
 
 export function useMainQuestions() {
-  // 📥 Alle vragen ophalen (voor dropdown, etc.)
   async function fetchMainQuestions() {
     try {
-      const res = await brandOwnerApiFetch<MainQuestion[]>("/main-questions");
-      questions.value = res;
+      questions.value = await brandOwnerService.getMainQuestions();
     } catch (err: any) {
       error.value = err.message || "Kon vragen niet laden.";
     }
   }
 
-  // 📥 Eén vraag ophalen op ID (voor frontend gebruikersweergave)
   async function fetchMainQuestionById(
     id: number | string
   ): Promise<MainQuestion | null> {
     try {
-      return await apiFetch<MainQuestion>(`/main-questions/${id}`);
+      return await brandOwnerService.getMainQuestionById(id);
     } catch (err: any) {
       console.error("Kon main question niet laden", err);
       return null;
     }
   }
 
-  // ✅ PATCH: vraag instellen op merk (via dashboard)
   async function setMainQuestionForBrand(
     brandId: number,
     mainQuestionId: number
   ) {
     try {
-      return await brandOwnerApiFetch(`/brands/${brandId}/main-questions`, {
-        method: "PATCH",
-        body: JSON.stringify({ main_question_id: mainQuestionId }),
-      });
+      return await brandOwnerService.setMainQuestionForBrand(
+        brandId,
+        mainQuestionId
+      );
     } catch (err) {
       throw err;
     }
