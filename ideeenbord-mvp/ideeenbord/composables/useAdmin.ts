@@ -1,30 +1,29 @@
 import { ref } from "vue";
-import { apiFetch } from "~/composables/useApi";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import { adminService } from "~/services/api/adminService";
+import type { BrandOwner } from "~/types/brand-owner";
 
 export function useAdmin() {
   const error = ref<string | null>(null);
-  const owners = ref<any[]>([]);
+  const owners = ref<BrandOwner[]>([]);
+  const { trigger } = useResponseDisplay();
 
   async function fetchPendingOwners() {
     try {
-      owners.value = await apiFetch("/admin/brand-owners");
+      owners.value = await adminService.fetchPendingOwners();
     } catch (err: any) {
       error.value = err?.message || "Kon eigenaren niet laden";
     }
   }
-  async function verifyOwner(id: number) {
-    const { trigger } = useResponseDisplay(); // ← haal trigger op
 
+  async function verifyOwner(id: number) {
     try {
-      await apiFetch(`/admin/brands/owners/${id}/verify`, {
-        method: "POST",
-      });
-      trigger("Eigenaar succesvol geverifieerd!", "success"); // ✅ melding bij succes
-      await fetchPendingOwners(); // Refresh lijst
+      await adminService.verifyOwner(id);
+      trigger("Eigenaar succesvol geverifieerd!", "success");
+      await fetchPendingOwners();
     } catch (err: any) {
-      trigger(err?.message || "Verifiëren mislukt", "error"); // ❌ foutmelding
       error.value = err?.message || "Verifiëren mislukt";
+      trigger(error.value, "error");
     }
   }
 

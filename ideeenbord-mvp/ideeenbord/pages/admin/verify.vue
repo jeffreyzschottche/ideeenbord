@@ -19,7 +19,7 @@ onMounted(() => {
     <ul v-if="owners.length">
       <li v-for="owner in owners" :key="owner.id">
         {{ owner.name }} ({{ owner.email }}) wil merk ID
-        {{ owner.brand_id }} claimen
+        {{ owner.brand.id }} claimen
         <button @click="verifyOwner(owner.id)">✅ Verifieer</button>
       </li>
     </ul>
