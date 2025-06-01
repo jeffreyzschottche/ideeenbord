@@ -1,7 +1,7 @@
 import { ref } from "vue";
-import { apiFetch } from "~/composables/useApi";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import type { Idea, NewIdeaForm } from "~/types/idea";
+import { ideaService } from "~/services/api/ideaService";
 
 export function useIdeas(brandId: number) {
   const ideas = ref<Idea[]>([]);
@@ -10,7 +10,7 @@ export function useIdeas(brandId: number) {
 
   async function fetchIdeas() {
     try {
-      ideas.value = await apiFetch<Idea[]>(`/brands/${brandId}/ideas`);
+      ideas.value = await ideaService.fetchIdeas(brandId);
     } catch (err: any) {
       error.value = err?.message || "Kon ideeën niet laden.";
       trigger(`Mistake fetching ideas : ${err}`, "error");
@@ -24,11 +24,8 @@ export function useIdeas(brandId: number) {
       description,
     };
     try {
-      await apiFetch("/ideas", {
-        method: "POST",
-        body: payload,
-      });
-      await fetchIdeas(); // refresh na plaatsen
+      await ideaService.submitIdea(payload);
+      await fetchIdeas(); // refresh
       trigger(`Succesfully posted your idea!`, "success");
     } catch (err: any) {
       error.value = err?.message || "Idee plaatsen mislukt.";
@@ -38,8 +35,8 @@ export function useIdeas(brandId: number) {
 
   async function likeIdea(id: number) {
     try {
-      await apiFetch(`/ideas/${id}/like`, { method: "POST" });
-      await fetchIdeas(); // Refresh de ideeën na like
+      await ideaService.likeIdea(id);
+      await fetchIdeas();
       trigger("Je hebt het idee geliket! ✅", "success");
     } catch (err: any) {
       error.value = err?.message || "Liken mislukt.";
@@ -49,13 +46,14 @@ export function useIdeas(brandId: number) {
 
   async function dislikeIdea(id: number) {
     try {
-      await apiFetch(`/ideas/${id}/dislike`, { method: "POST" });
-      await fetchIdeas(); // Refresh de ideeën na dislike
+      await ideaService.dislikeIdea(id);
+      await fetchIdeas();
       trigger("Je hebt het idee gedisliket! ❌", "warning");
     } catch (err: any) {
       error.value = err?.message || "Disliken mislukt.";
       trigger(`Fout bij disliken: ${err}`, "error");
     }
   }
+
   return { ideas, fetchIdeas, submitIdea, likeIdea, dislikeIdea, error };
 }
