@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import type { MainQuestion } from "~/types/main-question";
-import { brandOwnerService } from "~/services/api/brandOwnerService";
+import { mainQuestionService } from "~/services/api/mainQuestionService";
 
 const questions = ref<MainQuestion[]>([]);
 const error = ref<string | null>(null);
@@ -8,17 +8,15 @@ const error = ref<string | null>(null);
 export function useMainQuestions() {
   async function fetchMainQuestions() {
     try {
-      questions.value = await brandOwnerService.getMainQuestions();
+      questions.value = await mainQuestionService.getAll();
     } catch (err: any) {
       error.value = err.message || "Kon vragen niet laden.";
     }
   }
 
-  async function fetchMainQuestionById(
-    id: number | string
-  ): Promise<MainQuestion | null> {
+  async function fetchMainQuestionById(id: number | string) {
     try {
-      return await brandOwnerService.getMainQuestionById(id);
+      return await mainQuestionService.getById(id);
     } catch (err: any) {
       console.error("Kon main question niet laden", err);
       return null;
@@ -29,14 +27,10 @@ export function useMainQuestions() {
     brandId: number,
     mainQuestionId: number
   ) {
-    try {
-      return await brandOwnerService.setMainQuestionForBrand(
-        brandId,
-        mainQuestionId
-      );
-    } catch (err) {
-      throw err;
-    }
+    return await mainQuestionService.setMainQuestionForBrand(
+      brandId,
+      mainQuestionId
+    );
   }
 
   return {
