@@ -53,7 +53,6 @@ export const useBrandOwnerAuthStore = defineStore("brandOwnerAuth", {
           this.owner = data.owner;
           useCookie("bo_owner").value = data.owner;
         } catch (e) {
-          console.error("Kon brand owner info niet ophalen:", e);
           this.logout();
         }
       }

@@ -15,25 +15,24 @@ const imageBase = apiBase.replace("/api", "/storage");
 
 const auth = useUserAuthStore();
 const route = useRoute();
-const { trigger } = useResponseDisplay();
+const { triggerByKey } = useResponseDisplay(); // ✅ triggerByKey gebruiken
 
 const brand = ref<Brand>(null);
-const rating = ref(5); // Default slider positie
+const rating = ref(5);
 
 const averageRating = computed(() => {
   if (!brand.value || brand.value.rating_count === 0) return 0;
-  return (brand.value.rating_sum / brand.value.rating_count).toFixed(1); // 1 decimaal
+  return (brand.value.rating_sum / brand.value.rating_count).toFixed(1);
 });
 
 onMounted(async () => {
   try {
     brand.value = await apiFetch(`/brands/${route.params.slug}`);
   } catch (err: any) {
-    trigger(err?.message || "Fout bij ophalen merk", "error");
+    triggerByKey("brand-load-failed");
   }
 });
 
-// Alleen checken op id als brand geladen is
 const hasRated = computed(() => {
   if (!brand.value || !auth.user) return false;
   return auth.user.ratings_given?.includes(brand.value.id);
@@ -43,7 +42,7 @@ async function submitRating() {
   if (!brand.value) return;
 
   if (hasRated.value) {
-    trigger("Je hebt al een beoordeling gegeven!", "warning");
+    triggerByKey("brand-already-rated");
     return;
   }
 
@@ -56,9 +55,9 @@ async function submitRating() {
       auth.user.ratings_given = [];
     }
     auth.user.ratings_given.push(brand.value.id);
-    trigger("Je beoordeling is succesvol geplaatst!", "success");
+    triggerByKey("brand-rating-saved");
   } catch (err: any) {
-    trigger(err?.message || "Rating mislukt", "error");
+    triggerByKey("brand-rating-failed");
   }
 }
 </script>

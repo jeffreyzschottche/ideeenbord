@@ -18,7 +18,6 @@ export function useMainQuestions() {
     try {
       return await mainQuestionService.getById(id);
     } catch (err: any) {
-      console.error("Kon main question niet laden", err);
       return null;
     }
   }

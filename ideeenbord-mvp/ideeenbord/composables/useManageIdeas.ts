@@ -7,47 +7,47 @@ export function useManageIdeas(brandId: number) {
   type EditableIdea = Idea & { newStatus?: string };
   const ideas = ref<EditableIdea[]>([]);
   const error = ref<string | null>(null);
-  const { trigger } = useResponseDisplay();
+  const { triggerByKey } = useResponseDisplay();
 
   async function fetchIdeas() {
     try {
       ideas.value = await brandOwnerService.getIdeas(brandId);
     } catch (err: any) {
       error.value = err?.message || "Kon ideeën niet laden.";
-      trigger(`Fout bij ophalen ideeën: ${err}`, "error");
+      triggerByKey("manage-ideas-fetch-failed");
     }
   }
 
   async function updateIdeaStatus(ideaId: number, status: string) {
     try {
       await brandOwnerService.updateIdeaStatus(ideaId, status);
-      trigger("Status geüpdatet!", "success");
+      triggerByKey("idea-status-updated");
       await fetchIdeas();
     } catch (err: any) {
       error.value = err?.message || "Fout bij updaten status.";
-      trigger(`Fout: ${err}`, "error");
+      triggerByKey("idea-status-update-failed");
     }
   }
 
   async function pinIdea(ideaId: number) {
     try {
       await brandOwnerService.pinIdea(ideaId);
-      trigger("Idee vastgezet!", "success");
+      triggerByKey("idea-pinned");
       await fetchIdeas();
     } catch (err: any) {
       error.value = err?.message || "Fout bij vastzetten.";
-      trigger(`Fout: ${err}`, "error");
+      triggerByKey("idea-pin-failed");
     }
   }
 
   async function unpinIdea(ideaId: number) {
     try {
       await brandOwnerService.unpinIdea(ideaId);
-      trigger("Idee losgemaakt!", "success");
+      triggerByKey("idea-unpinned");
       await fetchIdeas();
     } catch (err: any) {
       error.value = err?.message || "Fout bij losmaken.";
-      trigger(`Fout: ${err}`, "error");
+      triggerByKey("idea-unpin-failed");
     }
   }
 

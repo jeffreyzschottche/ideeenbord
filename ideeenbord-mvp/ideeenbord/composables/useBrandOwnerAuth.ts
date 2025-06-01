@@ -8,8 +8,8 @@ import type { BrandOwnerLoginResponse } from "~/types/brand-owner";
 
 export function useBrandOwnerAuth() {
   const router = useRouter();
-  const { trigger } = useResponseDisplay();
-  const brandOwnerAuth = useBrandOwnerAuthStore(); // pinia store
+  const { triggerByKey } = useResponseDisplay();
+  const brandOwnerAuth = useBrandOwnerAuthStore();
 
   async function login(credentials: { email: string; password: string }) {
     try {
@@ -21,16 +21,13 @@ export function useBrandOwnerAuth() {
         }
       );
 
-      // 🔥🔥 Store goed vullen
       brandOwnerAuth.setAuth(res.token, res.owner);
+      triggerByKey("brand-owner-login-success");
 
-      trigger("Ingelogd als eigenaar!", "success");
-
-      await router.push(`/dashboard/${res.owner.brand.slug}`); // 🔥 redirecten
+      await router.push(`/dashboard/${res.owner.brand.slug}`);
       return true;
     } catch (err: any) {
-      console.error(err);
-      trigger(err?.message || "Login mislukt", "error");
+      triggerByKey("brand-owner-login-failed");
       return false;
     }
   }
@@ -42,7 +39,7 @@ export function useBrandOwnerAuth() {
   }
 
   async function initAuth() {
-    await brandOwnerAuth.initAuth(); // gewoon direct je store initAuth gebruiken
+    await brandOwnerAuth.initAuth();
   }
 
   return {

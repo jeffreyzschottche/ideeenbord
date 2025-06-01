@@ -71,7 +71,7 @@ import type { Brand, SocialItem } from "~/types/brand";
 
 const props = defineProps<{ open: boolean; brand: Brand }>();
 const emit = defineEmits(["close", "updated"]);
-const { trigger } = useResponseDisplay();
+const { triggerByKey } = useResponseDisplay();
 const { updateBrand } = useBrandUpdater();
 
 const form = ref({
@@ -108,34 +108,27 @@ function closeModal() {
   emit("close");
 }
 
-let socialsParsed: SocialItem[] = [];
-
-try {
-  socialsParsed = JSON.parse(form.value.socials);
-  if (!Array.isArray(socialsParsed)) socialsParsed = [];
-} catch (e) {
-  socialsParsed = [];
-}
-
 async function submitForm() {
+  let socialsParsed: SocialItem[] = [];
+
+  try {
+    socialsParsed = JSON.parse(form.value.socials);
+    if (!Array.isArray(socialsParsed)) socialsParsed = [];
+  } catch (e) {
+    socialsParsed = [];
+  }
+
   try {
     const updates = {
       ...form.value,
       socials: socialsParsed,
     };
     await updateBrand(props.brand.id, updates);
-    trigger("Merkgegevens bijgewerkt!", "success");
+    triggerByKey("brand-updated");
     emit("updated");
     closeModal();
   } catch (e) {
-    trigger("Fout bij bijwerken merk", "error");
+    triggerByKey("brand-update-failed");
   }
 }
 </script>
-
-<style scoped>
-textarea,
-input {
-  font-family: inherit;
-}
-</style>

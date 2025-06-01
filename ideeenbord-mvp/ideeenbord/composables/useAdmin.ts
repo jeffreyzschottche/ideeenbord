@@ -6,24 +6,25 @@ import type { BrandOwner } from "~/types/brand-owner";
 export function useAdmin() {
   const error = ref<string | null>(null);
   const owners = ref<BrandOwner[]>([]);
-  const { trigger } = useResponseDisplay();
+  const { triggerByKey } = useResponseDisplay();
 
   async function fetchPendingOwners() {
     try {
       owners.value = await adminService.fetchPendingOwners();
     } catch (err: any) {
       error.value = err?.message || "Kon eigenaren niet laden";
+      triggerByKey("admin-fetch-failed");
     }
   }
 
   async function verifyOwner(id: number) {
     try {
       await adminService.verifyOwner(id);
-      trigger("Eigenaar succesvol geverifieerd!", "success");
+      triggerByKey("admin-owner-verified");
       await fetchPendingOwners();
     } catch (err: any) {
       error.value = err?.message || "Verifiëren mislukt";
-      trigger(error.value, "error");
+      triggerByKey("admin-owner-verification-failed");
     }
   }
 

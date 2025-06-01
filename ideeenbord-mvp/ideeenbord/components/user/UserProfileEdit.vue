@@ -5,13 +5,12 @@ import { apiFetch } from "~/composables/useApi";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 
 const auth = useUserAuthStore();
-const { trigger } = useResponseDisplay();
+const { triggerByKey } = useResponseDisplay();
 
 const form = ref<Record<string, any>>({});
 const saving = ref(false);
 const showPassword = ref(false);
 
-// Vul form zodra auth.user beschikbaar is
 watch(
   () => auth.user,
   (newUser) => {
@@ -39,10 +38,8 @@ async function updateProfile() {
   saving.value = true;
 
   try {
-    // Alleen velden meesturen die ingevuld zijn of niet leeg zijn
     const filteredBody = Object.fromEntries(
       Object.entries(form.value).filter(([key, value]) => {
-        // Laat lege wachtwoordvelden weg
         if (key === "password" && value === "") return false;
         return value !== null && value !== undefined;
       })
@@ -54,72 +51,11 @@ async function updateProfile() {
     });
 
     auth.user = updated.user;
-    trigger("Profiel bijgewerkt", "success");
+    triggerByKey("profile-updated");
   } catch (e) {
-    trigger("Bijwerken mislukt", "error");
+    triggerByKey("profile-update-failed");
   } finally {
     saving.value = false;
   }
 }
 </script>
-
-<template>
-  <form @submit.prevent="updateProfile" class="space-y-4 mt-8">
-    <h2 class="text-xl font-bold">🛠️ Profiel bijwerken</h2>
-
-    <div
-      v-for="(field, label) in {
-        name: 'Naam',
-        email: 'E-mail',
-        username: 'Gebruikersnaam',
-        gender: 'Gender',
-        education_level: 'Opleidingsniveau',
-        education: 'Studie',
-        job: 'Beroep',
-        sector: 'Sector',
-        city: 'Woonplaats',
-        relationship_status: 'Relatiestatus',
-        postal_code: 'Postcode',
-      }"
-      :key="label"
-    >
-      <label :for="label" class="block font-medium mb-1">{{ field }}</label>
-      <input v-model="form[label]" :id="label" type="text" class="input" />
-    </div>
-
-    <div>
-      <label for="password" class="block font-medium mb-1">
-        Nieuw wachtwoord (optioneel)
-      </label>
-      <small class="text-gray-500"
-        >Laat leeg als je je wachtwoord niet wil wijzigen</small
-      >
-      <div class="relative">
-        <input
-          v-model="form.password"
-          :type="showPassword ? 'text' : 'password'"
-          id="password"
-          class="input pr-10"
-        />
-      </div>
-    </div>
-
-    <button
-      type="submit"
-      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-      :disabled="saving"
-    >
-      {{ saving ? "Opslaan..." : "Opslaan" }}
-    </button>
-  </form>
-</template>
-
-<style scoped>
-.input {
-  display: block;
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 0.25rem;
-}
-</style>

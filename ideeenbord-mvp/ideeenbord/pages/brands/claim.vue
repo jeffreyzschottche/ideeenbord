@@ -17,7 +17,7 @@ const form = ref<ClaimForm>({
 
 const { claimBrand, error } = useClaimBrand();
 const brands = ref<{ id: number; title: string }[]>([]);
-const { trigger } = useResponseDisplay();
+const { triggerByKey } = useResponseDisplay();
 
 onMounted(async () => {
   try {
@@ -26,16 +26,16 @@ onMounted(async () => {
     });
     brands.value = data;
   } catch (err: any) {
-    trigger(err?.message || "Merken ophalen mislukt.", "error");
+    triggerByKey("claim-load-failed");
   }
 });
 
 async function handleSubmit() {
   try {
     await claimBrand(form.value);
-    trigger("Merkclaim succesvol verstuurd!", "success");
+    triggerByKey("claim-submitted");
   } catch (e) {
-    trigger(error.value || "Merkclaim mislukt.", "error");
+    triggerByKey("claim-failed");
   }
 }
 </script>

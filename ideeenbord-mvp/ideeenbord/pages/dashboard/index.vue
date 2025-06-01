@@ -21,7 +21,6 @@ async function handleSubmit() {
     brandOwnerAuth.setAuth(res.token, res.owner);
     navigateTo("/dashboard/" + res.owner.brand.slug);
   } catch (err: any) {
-    console.error(err);
     error.value = err?.response?._data?.message || "Inloggen mislukt";
   }
 }

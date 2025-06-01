@@ -55,10 +55,8 @@ export async function apiFetch<T>(
         break;
       case 500: // Server error
         // navigateTo("/");
-        console.error(err);
         break;
       default:
-        console.error(`API Error met status ${statusCode}`);
     }
 
     throw err; // andere fouten nog steeds laten doorvloeien

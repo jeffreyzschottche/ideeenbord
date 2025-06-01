@@ -67,7 +67,6 @@
     </button>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref } from "vue";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
@@ -75,7 +74,7 @@ import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import { useQuizBuilder } from "~/composables/useQuizBuilder";
 import type { NewQuizForm } from "~/types/quiz";
 
-const { trigger } = useResponseDisplay();
+const { triggerByKey } = useResponseDisplay();
 const { createQuiz } = useQuizBuilder();
 const brandOwnerAuth = useBrandOwnerAuthStore();
 
@@ -122,7 +121,7 @@ async function submitQuiz() {
 
     await createQuiz(quizData);
 
-    trigger("Quiz succesvol aangemaakt!", "success");
+    triggerByKey("quiz-created");
 
     title.value = "";
     description.value = "";
@@ -137,13 +136,7 @@ async function submitQuiz() {
       },
     ];
   } catch (err: any) {
-    trigger("Fout bij opslaan quiz: " + err.message, "error");
+    triggerByKey("quiz-create-failed");
   }
 }
 </script>
-
-<style scoped>
-input[type="radio"] {
-  transform: scale(1.2);
-}
-</style>

@@ -13,13 +13,13 @@ import AccountEditModal from "~/components/dashboard/AccountEditModal.vue";
 import type { BrandOwner } from "~/types/brand-owner";
 import type { Brand } from "~/types/brand";
 
-const { trigger } = useResponseDisplay();
+const { triggerByKey } = useResponseDisplay(); // ✅ gebruik triggerByKey
 
 const showModal = ref(false);
-
 const rawApiBase = useRuntimeConfig().public.apiBase;
 const apiBase = (rawApiBase || "http://localhost:8000/api") as string;
 const imageBase = apiBase.replace("/api", "/storage");
+
 const editing = ref<Record<string, boolean>>({});
 const { updateBrand } = useBrandUpdater();
 const brand = ref<Brand>(null);
@@ -33,10 +33,10 @@ async function saveEdit(field: string) {
   if (!brand.value?.id) return;
   try {
     await updateBrand(brand.value.id, { [field]: brand.value[field] });
-    trigger("Bijgewerkt!", "success");
+    triggerByKey("brand-updated");
     editing.value[field] = false;
   } catch (e) {
-    trigger("Bijwerken mislukt", "error");
+    triggerByKey("brand-update-failed");
   }
 }
 
@@ -45,6 +45,7 @@ async function reloadData() {
   await initAuth();
   loading.value = false;
 }
+
 definePageMeta({
   middleware: "brand-owner", // 🔒 alleen toegankelijk als ingelogd
 });
@@ -65,7 +66,7 @@ onMounted(async () => {
         `/brands/${owner.value.brand.slug}`
       );
     } catch (err) {
-      trigger("Fout bij laden van volledige merkdata", "error");
+      triggerByKey("brand-load-failed");
     }
   }
 });

@@ -7,7 +7,6 @@ export default defineNuxtRouteMiddleware((to) => {
   const owner = useCookie<any | null>("bo_owner");
 
   if (!token.value || !owner.value) {
-    console.log("❌ Geen cookie-token of owner, redirect");
     return navigateTo("/dashboard/");
   }
 
@@ -22,9 +21,6 @@ export default defineNuxtRouteMiddleware((to) => {
   const ownerSlug = owner.value?.brand?.slug;
 
   if (routeSlug !== ownerSlug) {
-    console.log(`❌ Slug mismatch: ${routeSlug} vs ${ownerSlug}`);
     return navigateTo(`/dashboard/${ownerSlug}`);
   }
-
-  console.log("✅ Brand-owner toegang toegestaan");
 });

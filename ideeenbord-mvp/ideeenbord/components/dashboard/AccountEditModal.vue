@@ -10,7 +10,7 @@ definePageMeta({
 });
 
 const authStore = useBrandOwnerAuthStore();
-const { trigger } = useResponseDisplay();
+const { triggerByKey } = useResponseDisplay();
 const owner = computed<BrandOwner | null>(() => authStore.owner);
 
 const form = ref<UpdateBrandOwnerForm>({
@@ -32,10 +32,10 @@ onMounted(() => {
 async function handleSubmit() {
   try {
     await brandOwnerService.updateAccount(form.value);
-    trigger("Gegevens bijgewerkt!", "success");
-    await authStore.initAuth(); // opnieuw laden
+    triggerByKey("account-updated");
+    await authStore.initAuth();
   } catch (err: any) {
-    trigger(err.message || "Fout bij bijwerken", "error");
+    triggerByKey("account-update-failed");
   }
 }
 </script>

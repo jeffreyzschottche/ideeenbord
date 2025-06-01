@@ -31,7 +31,7 @@ const brandId = computed(() => brandOwnerAuth.owner?.brand?.id);
 const { questions, fetchMainQuestions, setMainQuestionForBrand } =
   useMainQuestions();
 
-const { trigger } = useResponseDisplay();
+const { triggerByKey } = useResponseDisplay();
 const brandOwnerAuth = useBrandOwnerAuthStore();
 const selectedId = ref<string>("");
 
@@ -42,14 +42,15 @@ const currentQuestion = computed<MainQuestion | null>(() => {
 });
 
 onMounted(fetchMainQuestions);
+
 async function submit() {
   if (!selectedId.value) return;
 
   try {
     await setMainQuestionForBrand(brandId.value, Number(selectedId.value));
-    trigger("Vraag succesvol opgeslagen!", "success");
+    triggerByKey("main-question-set");
   } catch (err: any) {
-    trigger("Fout bij opslaan vraag: " + err.message, "error");
+    triggerByKey("main-question-failed");
   }
 }
 </script>

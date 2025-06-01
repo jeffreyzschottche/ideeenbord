@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import type { RegisterForm } from "~/types/auth";
 import { useRegister } from "~/composables/useAuth";
+import { useResponseDisplay } from "~/composables/useResponseDisplay"; // ✅ toegevoegd
 
 const form = ref<RegisterForm>({
   name: "",
@@ -21,18 +22,15 @@ const form = ref<RegisterForm>({
 });
 
 const { register, error } = useRegister();
-const { trigger } = useResponseDisplay(); // ✨ trigger ophalen
+const { triggerByKey } = useResponseDisplay(); // ✅ triggerByKey gebruiken
 
 async function handleSubmit() {
   const success = await register(form.value);
 
   if (success) {
-    trigger(
-      "Registratie gelukt! Bevestig je e-mailadres via de mail.",
-      "success"
-    );
-  } else if (error.value) {
-    trigger(error.value, "error");
+    triggerByKey("register-success");
+  } else {
+    triggerByKey("register-failed");
   }
 }
 </script>

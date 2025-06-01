@@ -22,7 +22,7 @@ onMounted(async () => {
 });
 
 const { submitMainQuestionResponse } = useMainQuestionResponse();
-const { trigger } = useResponseDisplay();
+const { triggerByKey } = useResponseDisplay();
 const route = useRoute();
 const auth = useUserAuthStore();
 
@@ -47,18 +47,17 @@ function handleAnswerInput(event: Event) {
 
 async function handleAnswer(answer: string) {
   if (!auth.token) {
-    return trigger("Log in om te reageren.", "warning");
+    return triggerByKey("question-login-required");
   }
 
   try {
     await submitMainQuestionResponse(props.brand.id, parsed.value!.id, answer);
-    trigger("Je antwoord is opgeslagen!", "success");
+    triggerByKey("question-saved");
   } catch (err: any) {
     if (err?.statusCode === 409) {
-      trigger("Je hebt deze vraag al beantwoord.", "warning");
+      triggerByKey("question-already-answered");
     } else {
-      console.error(err.data); // zie welke field faalt
-      trigger("Fout bij opslaan antwoord: " + err.message, "error");
+      triggerByKey("question-save-failed");
     }
   }
 }

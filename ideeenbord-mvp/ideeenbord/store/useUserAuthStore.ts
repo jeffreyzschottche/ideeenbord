@@ -42,7 +42,6 @@ export const useUserAuthStore = defineStore("userAuth", {
             const user = await res.json();
             this.user = user;
           } catch (e) {
-            console.error("Kon user info niet ophalen", e);
             this.logout();
           }
         }

@@ -53,7 +53,7 @@ import type { Quiz, QuizWithParticipants } from "~/types/quiz";
 import { brandOwnerService } from "~/services/api/brandOwnerService";
 import { quizService } from "~/services/api/quizService";
 
-const { trigger } = useResponseDisplay();
+const { triggerByKey } = useResponseDisplay();
 const brandId = useBrandOwnerAuthStore().owner?.brand?.id;
 const quizzes = ref<QuizWithParticipants[]>([]);
 
@@ -73,7 +73,7 @@ async function loadQuizzes() {
 
     quizzes.value = detailed;
   } catch (err) {
-    trigger("Fout bij laden quizzen", "error");
+    triggerByKey("quiz-load-failed");
   }
 }
 
@@ -82,20 +82,20 @@ onMounted(loadQuizzes);
 async function closeQuiz(quizId: number) {
   try {
     await quizService.closeQuiz(quizId);
-    trigger("Quiz gesloten!", "success");
+    triggerByKey("quiz-closed");
     await loadQuizzes(); // herladen
   } catch (err) {
-    trigger("Quiz sluiten mislukt", "error");
+    triggerByKey("quiz-close-failed");
   }
 }
 
 async function selectWinner(quizId: number, userId: number) {
   try {
     await quizService.selectWinner(quizId, userId);
-    trigger("Winnaar gekozen!", "success");
+    triggerByKey("quiz-winner-selected");
     await loadQuizzes(); // herladen
   } catch (err: any) {
-    trigger("Fout bij kiezen winnaar", "error");
+    triggerByKey("quiz-winner-failed");
   }
 }
 </script>

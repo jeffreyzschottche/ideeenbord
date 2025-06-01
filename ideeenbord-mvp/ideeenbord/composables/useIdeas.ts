@@ -6,14 +6,14 @@ import { ideaService } from "~/services/api/ideaService";
 export function useIdeas(brandId: number) {
   const ideas = ref<Idea[]>([]);
   const error = ref<string | null>(null);
-  const { trigger } = useResponseDisplay();
+  const { triggerByKey } = useResponseDisplay();
 
   async function fetchIdeas() {
     try {
       ideas.value = await ideaService.fetchIdeas(brandId);
     } catch (err: any) {
       error.value = err?.message || "Kon ideeën niet laden.";
-      trigger(`Mistake fetching ideas : ${err}`, "error");
+      triggerByKey("ideas-fetch-failed");
     }
   }
 
@@ -25,11 +25,11 @@ export function useIdeas(brandId: number) {
     };
     try {
       await ideaService.submitIdea(payload);
-      await fetchIdeas(); // refresh
-      trigger(`Succesfully posted your idea!`, "success");
+      await fetchIdeas();
+      triggerByKey("idea-posted");
     } catch (err: any) {
       error.value = err?.message || "Idee plaatsen mislukt.";
-      trigger(`Mistake posting idea : ${err}`, "error");
+      triggerByKey("idea-failed");
     }
   }
 
@@ -37,10 +37,10 @@ export function useIdeas(brandId: number) {
     try {
       await ideaService.likeIdea(id);
       await fetchIdeas();
-      trigger("Je hebt het idee geliket! ✅", "success");
+      triggerByKey("idea-liked");
     } catch (err: any) {
       error.value = err?.message || "Liken mislukt.";
-      trigger(`Fout bij liken: ${err}`, "error");
+      triggerByKey("idea-like-failed");
     }
   }
 
@@ -48,10 +48,10 @@ export function useIdeas(brandId: number) {
     try {
       await ideaService.dislikeIdea(id);
       await fetchIdeas();
-      trigger("Je hebt het idee gedisliket! ❌", "warning");
+      triggerByKey("idea-disliked");
     } catch (err: any) {
       error.value = err?.message || "Disliken mislukt.";
-      trigger(`Fout bij disliken: ${err}`, "error");
+      triggerByKey("idea-dislike-failed");
     }
   }
 

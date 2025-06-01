@@ -16,14 +16,14 @@ const form = ref<RequestBrandForm>({
 });
 
 const { requestBrand, error } = useRequestBrand();
-const { trigger } = useResponseDisplay(); // ← belangrijk erbij
+const { triggerByKey } = useResponseDisplay(); // ✅ vervangen
 
 async function handleSubmit() {
   try {
     await requestBrand(form.value);
-    trigger("Merk succesvol aangevraagd!", "success");
+    triggerByKey("request-submitted");
   } catch (e) {
-    trigger(error.value || "Aanvraag mislukt.", "error");
+    triggerByKey("request-failed");
   }
 }
 </script>
