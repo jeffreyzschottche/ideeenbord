@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
+import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import type { LoginForm } from "~/types/auth";
+import { apiFetch } from "~/composables/useApi";
 
 const brandOwnerAuth = useBrandOwnerAuthStore();
-const error = ref<string | null>(null);
+const { triggerByKey, trigger } = useResponseDisplay();
 
 const form = ref<LoginForm>({ email: "", password: "" });
 
@@ -19,9 +21,15 @@ async function handleSubmit() {
     );
 
     brandOwnerAuth.setAuth(res.token, res.owner);
+    triggerByKey("brand-owner-login-success");
     navigateTo("/dashboard/" + res.owner.brand.slug);
   } catch (err: any) {
-    error.value = err?.response?._data?.message || "Inloggen mislukt";
+    if (
+      err?.response?._data?.message === "Ongeldige inloggegevens." ||
+      err?.status === 401
+    ) {
+      triggerByKey("brand-owner-login-failed");
+    }
   }
 }
 </script>
@@ -58,7 +66,5 @@ async function handleSubmit() {
         Login
       </button>
     </form>
-
-    <p v-if="error" class="text-red-500 mt-4 text-center">{{ error }}</p>
   </div>
 </template>

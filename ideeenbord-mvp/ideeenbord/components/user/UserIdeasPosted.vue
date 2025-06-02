@@ -2,9 +2,11 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { apiFetch } from "~/composables/useApi";
+import { useResponseDisplay } from "~/composables/useResponseDisplay";
 
 const route = useRoute();
 const username = route.params.slug as string;
+const { triggerByKey } = useResponseDisplay();
 
 const ideas = ref<any[]>([]);
 const loading = ref(true);
@@ -15,7 +17,7 @@ onMounted(async () => {
     const ideaData: any = await apiFetch(`/users/${username}/ideas`);
     ideas.value = ideaData;
   } catch (e: any) {
-    error.value = e.message || "Fout bij laden van ideeën";
+    triggerByKey("ideas-fetch-failed");
   } finally {
     loading.value = false;
   }

@@ -47,14 +47,15 @@ export async function apiFetch<T>(
 
     switch (statusCode) {
       case 401: // Unauthorized
-      case 403: // Forbidden
         navigateTo("/login");
+        break;
+      case 403: // Forbidden
         break;
       case 404: // Not found
         navigateTo("/404");
         break;
       case 500: // Server error
-        // navigateTo("/");
+        navigateTo("/");
         break;
       default:
     }

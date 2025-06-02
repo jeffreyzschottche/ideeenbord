@@ -319,8 +319,8 @@ export const messages: Record<
   "idea-like-failed": {
     type: "error",
     text: {
-      nl: "Fout bij liken van idee.",
-      en: "Error liking idea.",
+      nl: "Je hebt je mening al gegeven bij dit idee.",
+      en: "Already gave your opinion this idea.",
     },
   },
   "idea-disliked": {

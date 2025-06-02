@@ -13,6 +13,10 @@ const router = useRouter();
 
 const routeUsername = route.params.slug;
 
+definePageMeta({
+  middleware: "user",
+});
+
 onMounted(async () => {
   // ✅ Initieel auth ophalen
   if (!auth.user || !auth.token) {
