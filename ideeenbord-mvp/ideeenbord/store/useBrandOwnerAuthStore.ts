@@ -37,15 +37,14 @@ export const useBrandOwnerAuthStore = defineStore("brandOwnerAuth", {
         this.token = token.value;
 
         try {
-          const res = await fetch(
-            "http://localhost:8000/api/v1/brand-owner/me",
-            {
-              headers: {
-                Authorization: `Bearer ${token.value}`,
-                "Content-Type": "application/json",
-              },
-            }
-          );
+          const rawApiBase = useRuntimeConfig().public.apiBaseUrl;
+          const apiBase = rawApiBase as string;
+          const res = await fetch(apiBase + "/brand-owner/me", {
+            headers: {
+              Authorization: `Bearer ${token.value}`,
+              "Content-Type": "application/json",
+            },
+          });
 
           if (!res.ok) throw new Error("Kon brand owner info niet ophalen");
 

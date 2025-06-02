@@ -9,8 +9,8 @@ import BrandMainQuestion from "~/components/BrandMainQuestion.vue";
 import QuizParticipant from "~/components/QuizParticipant.vue";
 import type { Brand } from "~/types/brand";
 
-const rawApiBase = useRuntimeConfig().public.apiBase;
-const apiBase = (rawApiBase || "http://localhost:8000/api") as string;
+const rawApiBase = useRuntimeConfig().public.apiBaseUrl;
+const apiBase = rawApiBase as string;
 const imageBase = apiBase.replace("/api", "/storage");
 
 const auth = useUserAuthStore();

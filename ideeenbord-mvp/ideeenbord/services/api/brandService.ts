@@ -2,8 +2,6 @@ import type { RequestBrandForm } from "~/types/brand";
 import type { ClaimForm } from "~/types/brand";
 import { apiFetch } from "~/composables/useApi";
 
-const BASE = "http://localhost:8000/api";
-
 export const brandService = {
   async requestBrand(form: RequestBrandForm) {
     const formData = new FormData();

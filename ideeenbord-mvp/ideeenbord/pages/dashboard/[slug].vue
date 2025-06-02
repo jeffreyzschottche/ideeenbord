@@ -16,8 +16,8 @@ import type { Brand } from "~/types/brand";
 const { triggerByKey } = useResponseDisplay(); // ✅ gebruik triggerByKey
 
 const showModal = ref(false);
-const rawApiBase = useRuntimeConfig().public.apiBase;
-const apiBase = (rawApiBase || "http://localhost:8000/api") as string;
+const rawApiBase = useRuntimeConfig().public.apiBaseUrl;
+const apiBase = rawApiBase as string;
 const imageBase = apiBase.replace("/api", "/storage");
 
 const editing = ref<Record<string, boolean>>({});

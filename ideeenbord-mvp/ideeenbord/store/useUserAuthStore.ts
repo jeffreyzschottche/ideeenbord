@@ -33,7 +33,9 @@ export const useUserAuthStore = defineStore("userAuth", {
         if (token.value) {
           this.token = token.value;
           try {
-            const res = await fetch("http://localhost:8000/api/v1/me", {
+            const rawApiBase = useRuntimeConfig().public.apiBaseUrl;
+            const apiBase = rawApiBase as string;
+            const res = await fetch(`${apiBase}/me`, {
               headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
