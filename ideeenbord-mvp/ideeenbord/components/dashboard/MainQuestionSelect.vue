@@ -22,14 +22,14 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import { useMainQuestions } from "~/composables/useMainQuestions";
+import { useMainQuestionsFeatures } from "~/composables/useMainQuestionsFeatures";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import type { MainQuestion } from "~/types/main-question";
 
 const brandId = computed(() => brandOwnerAuth.owner?.brand?.id);
 const { questions, fetchMainQuestions, setMainQuestionForBrand } =
-  useMainQuestions();
+  useMainQuestionsFeatures();
 
 const { triggerByKey } = useResponseDisplay();
 const brandOwnerAuth = useBrandOwnerAuthStore();

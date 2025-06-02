@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useMainQuestionResponse } from "~/composables/useMainQuestionResponse";
 import { useRoute } from "vue-router";
 import { useUserAuthStore } from "~/store/useUserAuthStore";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import { ref, onMounted } from "vue";
-import { useMainQuestions } from "~/composables/useMainQuestions";
 import type { Brand } from "~/types/brand";
 import type { MainQuestion } from "~/types/main-question";
+import { useMainQuestionsFeatures } from "~/composables/useMainQuestionsFeatures";
 
 const props = defineProps<{ brand: Brand }>();
 
 const question = ref<MainQuestion | null>(null);
 
-const { fetchMainQuestionById } = useMainQuestions();
+const { fetchMainQuestionById, submitMainQuestionResponse } =
+  useMainQuestionsFeatures();
 
 onMounted(async () => {
   if (props.brand.main_question_id) {
@@ -21,7 +21,6 @@ onMounted(async () => {
   }
 });
 
-const { submitMainQuestionResponse } = useMainQuestionResponse();
 const { triggerByKey } = useResponseDisplay();
 const route = useRoute();
 const auth = useUserAuthStore();
