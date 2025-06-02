@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { RequestBrandForm } from "~/types/brand";
-import { useRequestBrand } from "~/composables/useBrand";
+import { useBrand } from "~/composables/useBrand";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 
 const form = ref<RequestBrandForm>({
@@ -15,8 +15,8 @@ const form = ref<RequestBrandForm>({
   socials: [],
 });
 
-const { requestBrand, error } = useRequestBrand();
-const { triggerByKey } = useResponseDisplay(); // ✅ vervangen
+const { requestBrand, error } = useBrand();
+const { triggerByKey } = useResponseDisplay();
 
 async function handleSubmit() {
   try {

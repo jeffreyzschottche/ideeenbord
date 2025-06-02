@@ -7,7 +7,7 @@ import MainQuestionSelect from "~/components/dashboard/MainQuestionSelect.vue";
 import QuizBuilder from "~/components/dashboard/QuizBuilder.vue";
 import QuizOverview from "~/components/dashboard/QuizOverview.vue";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
-import { useBrandUpdater } from "~/composables/useBrandUpdater";
+import { useBrand } from "~/composables/useBrand";
 import BrandEditModal from "~/components/dashboard/BrandEditModal.vue";
 import AccountEditModal from "~/components/dashboard/AccountEditModal.vue";
 import type { BrandOwner } from "~/types/brand-owner";
@@ -21,7 +21,7 @@ const apiBase = (rawApiBase || "http://localhost:8000/api") as string;
 const imageBase = apiBase.replace("/api", "/storage");
 
 const editing = ref<Record<string, boolean>>({});
-const { updateBrand } = useBrandUpdater();
+const { updateBrand } = useBrand();
 const brand = ref<Brand>(null);
 const fullBrand = ref<Brand | null>(null);
 

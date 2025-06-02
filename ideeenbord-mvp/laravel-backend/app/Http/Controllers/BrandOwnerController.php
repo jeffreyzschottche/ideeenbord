@@ -26,6 +26,9 @@ class BrandOwnerController extends Controller
             ...$data,
             'verified_owner' => false,
         ]);
+           $brand = Brand::find($data['brand_id']);
+           $brand->brand_owner_id = $brandOwner->id;
+           $brand->save();
 
         return response()->json(['message' => 'Registratie gelukt. Verifieer je e-mail.'], 201);
     }

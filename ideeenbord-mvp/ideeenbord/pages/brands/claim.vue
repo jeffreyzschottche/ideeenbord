@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import type { ClaimForm } from "~/types/brand";
-import { useClaimBrand } from "~/composables/useBrand";
+import { useBrand } from "~/composables/useBrand";
 import { apiFetch } from "~/composables/useApi";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 
@@ -15,7 +15,7 @@ const form = ref<ClaimForm>({
   password: "",
 });
 
-const { claimBrand, error } = useClaimBrand();
+const { claimBrand, error } = useBrand();
 const brands = ref<{ id: number; title: string }[]>([]);
 const { triggerByKey } = useResponseDisplay();
 

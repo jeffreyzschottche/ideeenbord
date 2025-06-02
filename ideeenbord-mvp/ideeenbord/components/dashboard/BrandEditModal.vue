@@ -66,13 +66,13 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
-import { useBrandUpdater } from "~/composables/useBrandUpdater";
+import { useBrand } from "~/composables/useBrand";
 import type { Brand, SocialItem } from "~/types/brand";
 
 const props = defineProps<{ open: boolean; brand: Brand }>();
 const emit = defineEmits(["close", "updated"]);
 const { triggerByKey } = useResponseDisplay();
-const { updateBrand } = useBrandUpdater();
+const { updateBrand } = useBrand();
 
 const form = ref({
   title: "",
