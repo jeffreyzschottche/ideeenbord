@@ -10,17 +10,21 @@
 </template>
 
 <script setup lang="ts">
+// Import reactive display state from composable
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import { computed } from "vue";
 
+// Destructure shared state from composable
 const { show, message, type } = useResponseDisplay();
 
+// Close message display
 function close() {
   show.value = false;
 }
 </script>
 
 <style scoped>
+/* Base notification container styling */
 .response-display {
   position: fixed;
   top: 20px;
@@ -40,24 +44,26 @@ function close() {
   font-size: 16px;
 }
 
-/* Kleuren per type */
+/* Style per notification type */
 .success {
-  background-color: #28a745; /* Mooie groene kleur */
+  background-color: #28a745; /* Green for success */
 }
 
 .error {
-  background-color: #dc3545; /* Mooie rode kleur */
+  background-color: #dc3545; /* Red for error */
 }
 
 .warning {
-  background-color: #fd7e14; /* Mooie oranje kleur */
+  background-color: #fd7e14; /* Orange for warning */
 }
 
+/* Message container */
 .message {
   flex: 1;
   text-align: center;
 }
 
+/* Close button styling */
 .close-button {
   background: none;
   border: none;
@@ -67,7 +73,7 @@ function close() {
   cursor: pointer;
 }
 
-/* Animatie */
+/* Slide and fade animation */
 .slide-fade-enter-active,
 .slide-fade-leave-active {
   transition: all 0.4s ease;

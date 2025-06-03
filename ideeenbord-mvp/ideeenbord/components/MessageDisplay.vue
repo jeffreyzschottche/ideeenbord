@@ -7,6 +7,7 @@
 </template>
 
 <script setup lang="ts">
+// Import message and error state from custom composable
 import { useMessage } from "~/composables/useMessage";
 
 const { message, error } = useMessage();

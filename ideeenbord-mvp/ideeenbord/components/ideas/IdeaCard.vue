@@ -8,10 +8,11 @@
     <div class="flex items-center justify-between mb-2">
       <h3 class="text-xl font-bold">
         <span v-if="idea.is_pinned" class="mr-1">📌</span>
-        <!-- Prik icoon -->
+        <!-- Pin icon for pinned ideas -->
         {{ idea.title }}
       </h3>
 
+      <!-- Status badge -->
       <span
         class="text-xs font-semibold px-2 py-1 rounded"
         :class="statusColor"
@@ -20,8 +21,10 @@
       </span>
     </div>
 
+    <!-- Idea description -->
     <p class="text-sm text-gray-600">{{ idea.description }}</p>
 
+    <!-- Like/dislike buttons -->
     <div class="flex gap-2 mt-2">
       <button @click="$emit('like', idea.id)">👍 {{ idea.likes }}</button>
       <button @click="$emit('dislike', idea.id)">👎 {{ idea.dislikes }}</button>
@@ -30,13 +33,25 @@
 </template>
 
 <script setup lang="ts">
+/*
+  Displays a single idea card.
+  Shows the title, description, pin status, current status badge,
+  and like/dislike counters with interaction.
+*/
+
 import type { Idea, IdeaStatus } from "~/types/idea";
+
 const props = defineProps<{
   idea: Idea;
 }>();
 
+// Extract status from the idea
 const status = computed<IdeaStatus>(() => props.idea.status);
 
+/*
+  Map status to specific CSS color classes.
+  Used to style the status badge consistently.
+*/
 const statusColor = computed(() => {
   switch (status.value) {
     case "pending":
@@ -52,6 +67,9 @@ const statusColor = computed(() => {
   }
 });
 
+/*
+  Convert raw status values into readable Dutch labels for display.
+*/
 const statusLabel = computed(() => {
   switch (status.value) {
     case "pending":

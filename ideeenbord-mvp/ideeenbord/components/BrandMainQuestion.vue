@@ -1,33 +1,31 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useUserAuthStore } from "~/store/useUserAuthStore";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
-import { ref, onMounted } from "vue";
+import { useMainQuestionsFeatures } from "~/composables/useMainQuestionsFeatures";
 import type { Brand } from "~/types/brand";
 import type { MainQuestion } from "~/types/main-question";
-import { useMainQuestionsFeatures } from "~/composables/useMainQuestionsFeatures";
 
 const props = defineProps<{ brand: Brand }>();
 
 const question = ref<MainQuestion | null>(null);
-
 const { fetchMainQuestionById, submitMainQuestionResponse } =
   useMainQuestionsFeatures();
+const { triggerByKey } = useResponseDisplay();
+const auth = useUserAuthStore();
+const route = useRoute();
 
+// Fetch the question for this brand on mount
 onMounted(async () => {
   if (props.brand.main_question_id) {
     question.value = await fetchMainQuestionById(props.brand.main_question_id);
   }
 });
 
-const { triggerByKey } = useResponseDisplay();
-const route = useRoute();
-const auth = useUserAuthStore();
-
+// Replace placeholders in question text
 const parsed = computed(() => {
   if (!question.value) return null;
-
   return {
     id: question.value.id,
     text: question.value.text
@@ -37,6 +35,7 @@ const parsed = computed(() => {
   };
 });
 
+// Handle freeform answer on blur
 function handleAnswerInput(event: Event) {
   const target = event.target as HTMLTextAreaElement;
   if (target?.value) {
@@ -44,6 +43,7 @@ function handleAnswerInput(event: Event) {
   }
 }
 
+// Submit answer to API
 async function handleAnswer(answer: string) {
   if (!auth.token) {
     return triggerByKey("question-login-required");

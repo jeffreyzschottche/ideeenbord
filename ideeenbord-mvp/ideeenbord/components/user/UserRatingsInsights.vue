@@ -1,18 +1,23 @@
 <script setup lang="ts">
+/*
+  Shows an overview of ideas the user has liked or disliked.
+  Fetches idea details based on the user's liked_posts and disliked_posts IDs.
+*/
+
 import { ref, onMounted } from "vue";
 import { useUserAuthStore } from "~/store/useUserAuthStore";
 import { apiFetch } from "~/composables/useApi";
 
+// Auth store and state
 const auth = useUserAuthStore();
 const likedIdeas = ref<any[]>([]);
 const dislikedIdeas = ref<any[]>([]);
-
 const loading = ref(true);
 const error = ref<string | null>(null);
 
+// Fetch liked and disliked ideas on mount
 onMounted(async () => {
   try {
-    // Eerst checken of user beschikbaar is
     if (!auth.user) {
       await auth.initAuth();
     }
@@ -49,13 +54,12 @@ onMounted(async () => {
         ✅ <strong>{{ idea.title }}</strong> (status: {{ idea.status }})
         <span v-if="idea.brand">
           – bij
-          <NuxtLink :to="`/brands/${idea.brand.title}`">{{
-            idea.brand.title
-          }}</NuxtLink>
+          <NuxtLink :to="`/brands/${idea.brand.title}`">
+            {{ idea.brand.title }}
+          </NuxtLink>
         </span>
       </li>
     </ul>
-
     <p v-else>Nog geen ideeën geliked.</p>
 
     <h2>🔴 Disliked Ideas</h2>
@@ -64,9 +68,9 @@ onMounted(async () => {
         🚫 <strong>{{ idea.title }}</strong> (status: {{ idea.status }})
         <span v-if="idea.brand">
           – bij
-          <NuxtLink :to="`/brands/${idea.brand.title}`">{{
-            idea.brand.title
-          }}</NuxtLink>
+          <NuxtLink :to="`/brands/${idea.brand.title}`">
+            {{ idea.brand.title }}
+          </NuxtLink>
         </span>
       </li>
     </ul>
