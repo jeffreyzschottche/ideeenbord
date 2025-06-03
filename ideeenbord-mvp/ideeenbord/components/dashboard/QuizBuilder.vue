@@ -1,89 +1,3 @@
-<template>
-  <!-- 
-    UI for creating a new quiz.
-    Allows setting a title, description, prize, and dynamically adding questions and answers.
-    One answer per question can be marked as correct.
-  -->
-  <div class="bg-white rounded shadow p-6 mb-10">
-    <h2 class="text-2xl font-bold mb-4">Nieuwe Quiz Aanmaken</h2>
-
-    <!-- Quiz title input -->
-    <input
-      v-model="title"
-      placeholder="Titel van de quiz"
-      class="w-full border p-2 mb-4 rounded"
-    />
-
-    <!-- Quiz description input -->
-    <textarea
-      v-model="description"
-      placeholder="Korte beschrijving van de quiz"
-      class="w-full border p-2 mb-4 rounded"
-      rows="3"
-    ></textarea>
-
-    <!-- Prize input -->
-    <input
-      v-model="prize"
-      placeholder="Wat kunnen deelnemers winnen?"
-      class="w-full border p-2 mb-4 rounded"
-    />
-
-    <!-- Questions and their answers -->
-    <div
-      v-for="(question, qIndex) in questions"
-      :key="qIndex"
-      class="mb-6 border p-4 rounded"
-    >
-      <!-- Question text input -->
-      <input
-        v-model="question.title"
-        placeholder="Vraagtekst"
-        class="w-full border p-2 mb-2 rounded"
-      />
-
-      <!-- List of possible answers for this question -->
-      <div
-        v-for="(answer, aIndex) in question.answers"
-        :key="aIndex"
-        class="flex items-center gap-2 mb-2"
-      >
-        <input
-          v-model="answer.text"
-          placeholder="Antwoordoptie"
-          class="flex-1 border p-2 rounded"
-        />
-        <!-- Radio button to mark this answer as correct -->
-        <input
-          type="radio"
-          :name="'correct-' + qIndex"
-          :checked="answer.correct"
-          @change="setCorrectAnswer(qIndex, aIndex)"
-        />
-        <span class="text-sm text-gray-500">Correct</span>
-      </div>
-
-      <!-- Add another answer to the current question -->
-      <button @click="addAnswer(qIndex)" class="text-blue-600 text-sm">
-        + Antwoord toevoegen
-      </button>
-    </div>
-
-    <!-- Add a new question to the quiz -->
-    <button @click="addQuestion" class="text-blue-700 mb-4">
-      + Vraag toevoegen
-    </button>
-
-    <!-- Submit the entire quiz -->
-    <button
-      @click="submitQuiz"
-      class="bg-blue-500 text-white px-4 py-2 rounded"
-    >
-      Quiz Opslaan
-    </button>
-  </div>
-</template>
-
 <script setup lang="ts">
 /*
   Logic for dynamically building and submitting a quiz.
@@ -170,3 +84,88 @@ async function submitQuiz() {
   }
 }
 </script>
+<template>
+  <!-- 
+  UI for creating a new quiz.
+    Allows setting a title, description, prize, and dynamically adding questions and answers.
+    One answer per question can be marked as correct.
+  -->
+  <div class="bg-white rounded shadow p-6 mb-10">
+    <h2 class="text-2xl font-bold mb-4">Nieuwe Quiz Aanmaken</h2>
+
+    <!-- Quiz title input -->
+    <input
+      v-model="title"
+      placeholder="Titel van de quiz"
+      class="w-full border p-2 mb-4 rounded"
+    />
+
+    <!-- Quiz description input -->
+    <textarea
+      v-model="description"
+      placeholder="Korte beschrijving van de quiz"
+      class="w-full border p-2 mb-4 rounded"
+      rows="3"
+    ></textarea>
+
+    <!-- Prize input -->
+    <input
+      v-model="prize"
+      placeholder="Wat kunnen deelnemers winnen?"
+      class="w-full border p-2 mb-4 rounded"
+    />
+
+    <!-- Questions and their answers -->
+    <div
+      v-for="(question, qIndex) in questions"
+      :key="qIndex"
+      class="mb-6 border p-4 rounded"
+    >
+      <!-- Question text input -->
+      <input
+        v-model="question.title"
+        placeholder="Vraagtekst"
+        class="w-full border p-2 mb-2 rounded"
+      />
+
+      <!-- List of possible answers for this question -->
+      <div
+        v-for="(answer, aIndex) in question.answers"
+        :key="aIndex"
+        class="flex items-center gap-2 mb-2"
+      >
+        <input
+          v-model="answer.text"
+          placeholder="Antwoordoptie"
+          class="flex-1 border p-2 rounded"
+        />
+        <!-- Radio button to mark this answer as correct -->
+        <input
+          type="radio"
+          :name="'correct-' + qIndex"
+          :checked="answer.correct"
+          @change="setCorrectAnswer(qIndex, aIndex)"
+        />
+        <span class="text-sm text-gray-500">Correct</span>
+      </div>
+
+      <!-- Add another answer to the current question -->
+      <button @click="addAnswer(qIndex)" class="text-blue-600 text-sm">
+        + Antwoord toevoegen
+      </button>
+    </div>
+
+    <!-- Add a new question to the quiz -->
+    <button @click="addQuestion" class="text-blue-700 mb-4">
+      + Vraag toevoegen
+    </button>
+
+    <!-- Submit the entire quiz -->
+    <button
+      @click="submitQuiz"
+      class="bg-blue-500 text-white px-4 py-2 rounded"
+    >
+      Quiz Opslaan
+    </button>
+  </div>
+</template>

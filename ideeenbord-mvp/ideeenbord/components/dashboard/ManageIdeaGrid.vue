@@ -1,3 +1,40 @@
+<script setup lang="ts">
+import { onMounted } from "vue";
+import { useManageIdeas } from "~/composables/useManageIdeas";
+import type { Idea } from "~/types/idea";
+
+// Extend idea type to include local-only field for UI selection
+type EditableIdea = Idea & { newStatus?: string };
+
+// Receives the brand ID to manage ideas for
+const props = defineProps<{ brandId: number }>();
+
+// Load state and actions from custom composable
+const { ideas, fetchIdeas, updateIdeaStatus, pinIdea, unpinIdea } =
+  useManageIdeas(props.brandId);
+
+// Load ideas on component mount
+onMounted(fetchIdeas);
+
+/*
+  Save updated status for an idea.
+  Only executes if a new status is selected.
+*/
+async function updateStatus(idea: EditableIdea) {
+  if (!idea.newStatus) return;
+  await updateIdeaStatus(idea.id, idea.newStatus);
+}
+
+// Pin the idea to give it visual priority
+async function pinIdeaAction(idea: Idea) {
+  await pinIdea(idea.id);
+}
+
+// Unpin the idea to remove visual priority
+async function unpinIdeaAction(idea: Idea) {
+  await unpinIdea(idea.id);
+}
+</script>
 <template>
   <div>
     <h2 class="text-2xl font-bold mb-4">Beheer Ideeën</h2>
@@ -57,41 +94,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { onMounted } from "vue";
-import { useManageIdeas } from "~/composables/useManageIdeas";
-import type { Idea } from "~/types/idea";
-
-// Extend idea type to include local-only field for UI selection
-type EditableIdea = Idea & { newStatus?: string };
-
-// Receives the brand ID to manage ideas for
-const props = defineProps<{ brandId: number }>();
-
-// Load state and actions from custom composable
-const { ideas, fetchIdeas, updateIdeaStatus, pinIdea, unpinIdea } =
-  useManageIdeas(props.brandId);
-
-// Load ideas on component mount
-onMounted(fetchIdeas);
-
-/*
-  Save updated status for an idea.
-  Only executes if a new status is selected.
-*/
-async function updateStatus(idea: EditableIdea) {
-  if (!idea.newStatus) return;
-  await updateIdeaStatus(idea.id, idea.newStatus);
-}
-
-// Pin the idea to give it visual priority
-async function pinIdeaAction(idea: Idea) {
-  await pinIdea(idea.id);
-}
-
-// Unpin the idea to remove visual priority
-async function unpinIdeaAction(idea: Idea) {
-  await unpinIdea(idea.id);
-}
-</script>

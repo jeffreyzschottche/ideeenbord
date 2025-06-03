@@ -1,31 +1,3 @@
-<template>
-  <!--   UI for selecting a predefined "main question" for a brand.
-    If the brand already has a question, it appears as the disabled default option.
-  -->
-  <div class="mt-8">
-    <h2 class="text-xl font-bold mb-4">Kies een algemene vraag</h2>
-
-    <!-- Dropdown menu with available questions -->
-    <select v-model="selectedId" class="w-full border rounded p-2 mb-4">
-      <option disabled value="" v-if="currentQuestion?.text">
-        {{ currentQuestion.text }}
-      </option>
-      <option v-for="q in questions" :key="q.id" :value="q.id">
-        {{ q.text }}
-      </option>
-    </select>
-
-    <!-- Button to submit the selected question -->
-    <button
-      @click="submit"
-      :disabled="!selectedId"
-      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-    >
-      Vraag instellen
-    </button>
-  </div>
-</template>
-
 <script setup lang="ts">
 /*
   Fetches a list of main questions and allows the brand owner to select one.
@@ -81,3 +53,31 @@ async function submit() {
   }
 }
 </script>
+
+<template>
+  <!--   UI for selecting a predefined "main question" for a brand.
+    If the brand already has a question, it appears as the disabled default option.
+  -->
+  <div class="mt-8">
+    <h2 class="text-xl font-bold mb-4">Kies een algemene vraag</h2>
+
+    <!-- Dropdown menu with available questions -->
+    <select v-model="selectedId" class="w-full border rounded p-2 mb-4">
+      <option disabled value="" v-if="currentQuestion?.text">
+        {{ currentQuestion.text }}
+      </option>
+      <option v-for="q in questions" :key="q.id" :value="q.id">
+        {{ q.text }}
+      </option>
+    </select>
+
+    <!-- Button to submit the selected question -->
+    <button
+      @click="submit"
+      :disabled="!selectedId"
+      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+    >
+      Vraag instellen
+    </button>
+  </div>
+</template>

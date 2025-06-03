@@ -1,82 +1,3 @@
-<template>
-  <!-- 
-    Modal for editing brand information.
-    Shown only when `open` is true.
-  -->
-  <div
-    v-if="open"
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-  >
-    <div class="bg-white w-full max-w-xl p-6 rounded shadow relative">
-      <h2 class="text-2xl font-bold mb-4">Bewerk Merkgegevens</h2>
-
-      <!-- Title input -->
-      <label class="block font-semibold mb-1">Titel</label>
-      <input v-model="form.title" class="w-full border p-2 mb-3 rounded" />
-
-      <!-- Category input -->
-      <label class="block font-semibold mb-1">Categorie</label>
-      <input v-model="form.category" class="w-full border p-2 mb-3 rounded" />
-
-      <!-- Website URL input -->
-      <label class="block font-semibold mb-1">Website URL</label>
-      <input
-        v-model="form.website_url"
-        class="w-full border p-2 mb-3 rounded"
-      />
-
-      <!-- Long intro input -->
-      <label class="block font-semibold mb-1">Introductie</label>
-      <textarea
-        v-model="form.intro"
-        class="w-full border p-2 mb-3 rounded"
-      ></textarea>
-
-      <!-- Short intro input -->
-      <label class="block font-semibold mb-1">Korte Introductie</label>
-      <input
-        v-model="form.intro_short"
-        class="w-full border p-2 mb-3 rounded"
-      />
-
-      <!-- Email input -->
-      <label class="block font-semibold mb-1">Email</label>
-      <input v-model="form.email" class="w-full border p-2 mb-3 rounded" />
-
-      <!-- Subscription type input -->
-      <label class="block font-semibold mb-1">Abonnement</label>
-      <input
-        v-model="form.subscription"
-        class="w-full border p-2 mb-3 rounded"
-      />
-
-      <!-- JSON string input for socials -->
-      <label class="block font-semibold mb-1">Socials (JSON)</label>
-      <textarea
-        v-model="form.socials"
-        class="w-full border p-2 mb-4 rounded"
-        rows="3"
-      ></textarea>
-
-      <!-- Action buttons -->
-      <div class="flex justify-between">
-        <button @click="closeModal" class="text-gray-500">Annuleer</button>
-        <button
-          @click="submitForm"
-          class="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Opslaan
-        </button>
-      </div>
-
-      <!-- Close button in top-right -->
-      <button class="absolute top-3 right-3 text-gray-600" @click="closeModal">
-        ✖️
-      </button>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 /*
   A modal component for editing brand information. 
@@ -164,3 +85,81 @@ async function submitForm() {
   }
 }
 </script>
+<template>
+  <!-- 
+    Modal for editing brand information.
+    Shown only when `open` is true.
+  -->
+  <div
+    v-if="open"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  >
+    <div class="bg-white w-full max-w-xl p-6 rounded shadow relative">
+      <h2 class="text-2xl font-bold mb-4">Bewerk Merkgegevens</h2>
+
+      <!-- Title input -->
+      <label class="block font-semibold mb-1">Titel</label>
+      <input v-model="form.title" class="w-full border p-2 mb-3 rounded" />
+
+      <!-- Category input -->
+      <label class="block font-semibold mb-1">Categorie</label>
+      <input v-model="form.category" class="w-full border p-2 mb-3 rounded" />
+
+      <!-- Website URL input -->
+      <label class="block font-semibold mb-1">Website URL</label>
+      <input
+        v-model="form.website_url"
+        class="w-full border p-2 mb-3 rounded"
+      />
+
+      <!-- Long intro input -->
+      <label class="block font-semibold mb-1">Introductie</label>
+      <textarea
+        v-model="form.intro"
+        class="w-full border p-2 mb-3 rounded"
+      ></textarea>
+
+      <!-- Short intro input -->
+      <label class="block font-semibold mb-1">Korte Introductie</label>
+      <input
+        v-model="form.intro_short"
+        class="w-full border p-2 mb-3 rounded"
+      />
+
+      <!-- Email input -->
+      <label class="block font-semibold mb-1">Email</label>
+      <input v-model="form.email" class="w-full border p-2 mb-3 rounded" />
+
+      <!-- Subscription type input -->
+      <label class="block font-semibold mb-1">Abonnement</label>
+      <input
+        v-model="form.subscription"
+        class="w-full border p-2 mb-3 rounded"
+      />
+
+      <!-- JSON string input for socials -->
+      <label class="block font-semibold mb-1">Socials (JSON)</label>
+      <textarea
+        v-model="form.socials"
+        class="w-full border p-2 mb-4 rounded"
+        rows="3"
+      ></textarea>
+
+      <!-- Action buttons -->
+      <div class="flex justify-between">
+        <button @click="closeModal" class="text-gray-500">Annuleer</button>
+        <button
+          @click="submitForm"
+          class="bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Opslaan
+        </button>
+      </div>
+
+      <!-- Close button in top-right -->
+      <button class="absolute top-3 right-3 text-gray-600" @click="closeModal">
+        ✖️
+      </button>
+    </div>
+  </div>
+</template>

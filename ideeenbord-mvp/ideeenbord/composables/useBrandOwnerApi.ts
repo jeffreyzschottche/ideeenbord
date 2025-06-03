@@ -1,6 +1,15 @@
 import { useRuntimeConfig, useCookie } from "#app";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 
+/**
+ * Custom API fetch function for authenticated Brand Owner requests.
+ * Automatically attaches the Brand Owner's token (from store or cookie).
+ *
+ * @param url - API endpoint path (relative to /v1)
+ * @param options - Optional fetch configuration (method, headers, body, etc.)
+ * @returns Parsed JSON response
+ * @throws Error if response is not OK
+ */
 export async function brandOwnerApiFetch<T = any>(
   url: string,
   options: RequestInit = {}

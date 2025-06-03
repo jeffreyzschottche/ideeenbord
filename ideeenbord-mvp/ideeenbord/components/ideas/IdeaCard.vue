@@ -1,37 +1,3 @@
-<template>
-  <div
-    :class="[
-      'border p-4 rounded shadow mb-4 relative',
-      idea.is_pinned ? 'border-yellow-400' : 'border-gray-300',
-    ]"
-  >
-    <div class="flex items-center justify-between mb-2">
-      <h3 class="text-xl font-bold">
-        <span v-if="idea.is_pinned" class="mr-1">📌</span>
-        <!-- Pin icon for pinned ideas -->
-        {{ idea.title }}
-      </h3>
-
-      <!-- Status badge -->
-      <span
-        class="text-xs font-semibold px-2 py-1 rounded"
-        :class="statusColor"
-      >
-        {{ statusLabel }}
-      </span>
-    </div>
-
-    <!-- Idea description -->
-    <p class="text-sm text-gray-600">{{ idea.description }}</p>
-
-    <!-- Like/dislike buttons -->
-    <div class="flex gap-2 mt-2">
-      <button @click="$emit('like', idea.id)">👍 {{ idea.likes }}</button>
-      <button @click="$emit('dislike', idea.id)">👎 {{ idea.dislikes }}</button>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 /*
   Displays a single idea card.
@@ -85,3 +51,36 @@ const statusLabel = computed(() => {
   }
 });
 </script>
+<template>
+  <div
+    :class="[
+      'border p-4 rounded shadow mb-4 relative',
+      idea.is_pinned ? 'border-yellow-400' : 'border-gray-300',
+    ]"
+  >
+    <div class="flex items-center justify-between mb-2">
+      <h3 class="text-xl font-bold">
+        <span v-if="idea.is_pinned" class="mr-1">📌</span>
+        <!-- Pin icon for pinned ideas -->
+        {{ idea.title }}
+      </h3>
+
+      <!-- Status badge -->
+      <span
+        class="text-xs font-semibold px-2 py-1 rounded"
+        :class="statusColor"
+      >
+        {{ statusLabel }}
+      </span>
+    </div>
+
+    <!-- Idea description -->
+    <p class="text-sm text-gray-600">{{ idea.description }}</p>
+
+    <!-- Like/dislike buttons -->
+    <div class="flex gap-2 mt-2">
+      <button @click="$emit('like', idea.id)">👍 {{ idea.likes }}</button>
+      <button @click="$emit('dislike', idea.id)">👎 {{ idea.dislikes }}</button>
+    </div>
+  </div>
+</template>

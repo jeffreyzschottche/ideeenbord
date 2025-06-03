@@ -1,14 +1,3 @@
-<template>
-  <Transition name="slide-fade">
-    <div v-if="show" :class="['response-display', type]">
-      <span class="message">{{ message }}</span>
-      <button @click="close" class="close-button" aria-label="Sluiten">
-        &times;
-      </button>
-    </div>
-  </Transition>
-</template>
-
 <script setup lang="ts">
 // Import reactive display state from composable
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
@@ -22,7 +11,16 @@ function close() {
   show.value = false;
 }
 </script>
-
+<template>
+  <Transition name="slide-fade">
+    <div v-if="show" :class="['response-display', type]">
+      <span class="message">{{ message }}</span>
+      <button @click="close" class="close-button" aria-label="Sluiten">
+        &times;
+      </button>
+    </div>
+  </Transition>
+</template>
 <style scoped>
 /* Base notification container styling */
 .response-display {

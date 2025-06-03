@@ -1,51 +1,3 @@
-<template>
-  <div class="max-w-xl mx-auto mt-10 bg-white p-6 rounded shadow">
-    <h1 class="text-2xl font-bold mb-4">Accountinstellingen</h1>
-
-    <form @submit.prevent="handleSubmit" class="space-y-4">
-      <!-- Email input -->
-      <div>
-        <label>Email</label>
-        <input v-model="form.email" type="email" class="input" />
-      </div>
-
-      <!-- Phone number input -->
-      <div>
-        <label>Telefoonnummer</label>
-        <input v-model="form.phone" type="text" class="input" />
-      </div>
-
-      <!-- Subscription plan selector -->
-      <div>
-        <label>Abonnement</label>
-        <select v-model="form.subscription_plan" class="input">
-          <option>Brons</option>
-          <option>Zilver</option>
-          <option>Goud</option>
-        </select>
-      </div>
-
-      <!-- New password input -->
-      <div>
-        <label>Nieuw wachtwoord</label>
-        <input v-model="form.password" type="password" class="input" />
-      </div>
-
-      <!-- Password confirmation input -->
-      <div>
-        <label>Bevestig wachtwoord</label>
-        <input
-          v-model="form.password_confirmation"
-          type="password"
-          class="input"
-        />
-      </div>
-
-      <!-- Submit button -->
-      <button type="submit" class="btn btn-primary w-full">Opslaan</button>
-    </form>
-  </div>
-</template>
 <script setup lang="ts">
 /* 
   This component allows a logged-in brand owner to edit their account details 
@@ -103,3 +55,51 @@ async function handleSubmit() {
   }
 }
 </script>
+<template>
+  <div class="max-w-xl mx-auto mt-10 bg-white p-6 rounded shadow">
+    <h1 class="text-2xl font-bold mb-4">Accountinstellingen</h1>
+
+    <form @submit.prevent="handleSubmit" class="space-y-4">
+      <!-- Email input -->
+      <div>
+        <label>Email</label>
+        <input v-model="form.email" type="email" class="input" />
+      </div>
+
+      <!-- Phone number input -->
+      <div>
+        <label>Telefoonnummer</label>
+        <input v-model="form.phone" type="text" class="input" />
+      </div>
+
+      <!-- Subscription plan selector -->
+      <div>
+        <label>Abonnement</label>
+        <select v-model="form.subscription_plan" class="input">
+          <option>Brons</option>
+          <option>Zilver</option>
+          <option>Goud</option>
+        </select>
+      </div>
+
+      <!-- New password input -->
+      <div>
+        <label>Nieuw wachtwoord</label>
+        <input v-model="form.password" type="password" class="input" />
+      </div>
+
+      <!-- Password confirmation input -->
+      <div>
+        <label>Bevestig wachtwoord</label>
+        <input
+          v-model="form.password_confirmation"
+          type="password"
+          class="input"
+        />
+      </div>
+
+      <!-- Submit button -->
+      <button type="submit" class="btn btn-primary w-full">Opslaan</button>
+    </form>
+  </div>
+</template>

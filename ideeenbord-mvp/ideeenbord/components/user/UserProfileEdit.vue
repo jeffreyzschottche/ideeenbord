@@ -76,3 +76,64 @@ async function updateProfile() {
   }
 }
 </script>
+
+<template>
+  <form @submit.prevent="updateProfile" class="space-y-4 mt-8">
+    <h2 class="text-xl font-bold">🛠️ Profiel bijwerken</h2>
+
+    <div
+      v-for="(field, label) in {
+        name: 'Naam',
+        email: 'E-mail',
+        username: 'Gebruikersnaam',
+        gender: 'Gender',
+        education_level: 'Opleidingsniveau',
+        education: 'Studie',
+        job: 'Beroep',
+        sector: 'Sector',
+        city: 'Woonplaats',
+        relationship_status: 'Relatiestatus',
+        postal_code: 'Postcode',
+      }"
+      :key="label"
+    >
+      <label :for="label" class="block font-medium mb-1">{{ field }}</label>
+      <input v-model="form[label]" :id="label" type="text" class="input" />
+    </div>
+
+    <div>
+      <label for="password" class="block font-medium mb-1">
+        Nieuw wachtwoord (optioneel)
+      </label>
+      <small class="text-gray-500"
+        >Laat leeg als je je wachtwoord niet wil wijzigen</small
+      >
+      <div class="relative">
+        <input
+          v-model="form.password"
+          :type="showPassword ? 'text' : 'password'"
+          id="password"
+          class="input pr-10"
+        />
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      :disabled="saving"
+    >
+      {{ saving ? "Opslaan..." : "Opslaan" }}
+    </button>
+  </form>
+</template>
+
+<style scoped>
+.input {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+}
+</style>
