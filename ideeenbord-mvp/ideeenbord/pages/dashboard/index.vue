@@ -1,4 +1,13 @@
 <script setup lang="ts">
+/*
+  This page is the login screen for brand owners.
+  On successful login:
+    - Authentication data is stored in the Pinia store
+    - The user is redirected to their brand dashboard
+  On failure:
+    - A localized error message is displayed using the response system
+*/
+
 import { ref } from "vue";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
@@ -10,6 +19,7 @@ const { triggerByKey, trigger } = useResponseDisplay();
 
 const form = ref<LoginForm>({ email: "", password: "" });
 
+// Handle login form submission
 async function handleSubmit() {
   try {
     const res = await apiFetch<{ token: string; owner: any }>(

@@ -1,4 +1,15 @@
 <script setup lang="ts">
+/*
+  This is the main dashboard page for brand owners.
+  It allows owners to:
+    - View and edit their brand information
+    - Manage ideas submitted to their brand
+    - Select a main question to display
+    - Create and review quizzes
+    - Edit their account details
+  All data is loaded based on the slug from the route and the authenticated brand owner.
+*/
+
 import { useRoute } from "vue-router";
 import { ref, onMounted, computed } from "vue";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
@@ -13,7 +24,7 @@ import AccountEditModal from "~/components/dashboard/AccountEditModal.vue";
 import type { BrandOwner } from "~/types/brand-owner";
 import type { Brand } from "~/types/brand";
 
-const { triggerByKey } = useResponseDisplay(); // ✅ gebruik triggerByKey
+const { triggerByKey } = useResponseDisplay();
 
 const showModal = ref(false);
 const rawApiBase = useRuntimeConfig().public.apiBaseUrl;
@@ -25,10 +36,12 @@ const { updateBrand } = useBrand();
 const brand = ref<Brand>(null);
 const fullBrand = ref<Brand | null>(null);
 
+// Toggle edit mode for a field
 function toggleEdit(field: string) {
   editing.value[field] = !editing.value[field];
 }
 
+// Save a single edited field
 async function saveEdit(field: string) {
   if (!brand.value?.id) return;
   try {
@@ -40,6 +53,7 @@ async function saveEdit(field: string) {
   }
 }
 
+// Reload brand and auth data
 async function reloadData() {
   loading.value = true;
   await initAuth();
@@ -47,7 +61,7 @@ async function reloadData() {
 }
 
 definePageMeta({
-  middleware: "brand-owner", // 🔒 alleen toegankelijk als ingelogd
+  middleware: "brand-owner", // 🔒 protected route for brand owners only
 });
 
 const route = useRoute();
@@ -79,7 +93,7 @@ onMounted(async () => {
     </h1>
     <div v-if="loading">
       <p>Bezig met laden...</p>
-      <!-- of spinner -->
+      <!-- or loading spinner -->
     </div>
 
     <div v-else-if="owner">

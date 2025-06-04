@@ -1,4 +1,13 @@
 <script setup lang="ts">
+/*
+  This page displays the public brand profile based on the slug in the route.
+  It includes brand information, average rating, and interactive components like:
+  - Rating submission (if logged in)
+  - IdeaGrid (list of submitted ideas)
+  - BrandMainQuestion (main question for feedback)
+  - QuizParticipant (join brand-specific quizzes)
+*/
+
 import { ref, computed, onMounted } from "vue";
 import { useUserAuthStore } from "~/store/useUserAuthStore";
 import { apiFetch } from "~/composables/useApi";
@@ -15,16 +24,18 @@ const imageBase = apiBase.replace("/api", "/storage");
 
 const auth = useUserAuthStore();
 const route = useRoute();
-const { triggerByKey } = useResponseDisplay(); // ✅ triggerByKey gebruiken
+const { triggerByKey } = useResponseDisplay(); // ✅ use triggerByKey for feedback messages
 
 const brand = ref<Brand>(null);
 const rating = ref(5);
 
+// Calculate the average rating
 const averageRating = computed(() => {
   if (!brand.value || brand.value.rating_count === 0) return 0;
   return (brand.value.rating_sum / brand.value.rating_count).toFixed(1);
 });
 
+// Fetch brand data on mount
 onMounted(async () => {
   try {
     brand.value = await apiFetch(`/brands/${route.params.slug}`);
@@ -33,11 +44,13 @@ onMounted(async () => {
   }
 });
 
+// Check if current user has already rated this brand
 const hasRated = computed(() => {
   if (!brand.value || !auth.user) return false;
   return auth.user.ratings_given?.includes(brand.value.id);
 });
 
+// Submit new rating for the brand
 async function submitRating() {
   if (!brand.value) return;
 

@@ -1,4 +1,10 @@
 <script setup lang="ts">
+/*
+  This page handles email verification using a query string.
+  It checks for required parameters and attempts to verify the email via API.
+  Displays success or error feedback based on the result.
+*/
+
 import { useRoute, useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";

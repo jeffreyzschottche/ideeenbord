@@ -1,4 +1,11 @@
 <script setup lang="ts">
+/*
+  This page displays the logged-in user's profile dashboard.
+  It includes personal info, posted ideas, rating insights,
+  quizzes participated in, and an inbox for notifications.
+  Middleware ensures only the correct logged-in user can access this page.
+*/
+
 import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Inbox from "~/components/user/Inbox.vue";
@@ -18,14 +25,14 @@ definePageMeta({
 });
 
 onMounted(async () => {
-  // ✅ Initieel auth ophalen
+  // ✅ Initialize auth on mount if missing
   if (!auth.user || !auth.token) {
     await auth.initAuth();
   }
 
   const currentUsername = auth.user?.username;
 
-  // ❌ Niet ingelogd óf andere gebruiker
+  // ❌ Redirect if not logged in or accessing another user's profile
   if (!auth.token || !currentUsername || currentUsername !== routeUsername) {
     return router.push("/login");
   }
@@ -37,7 +44,7 @@ onMounted(async () => {
     <h1>Welkom, {{ auth.user.name }} 👋</h1>
     <p>Gebruikersnaam: {{ auth.user.username }}</p>
   </div>
-  <UserRatingsInsights></UserRatingsInsights>
+  <UserRatingsInsights />
   <UserQuizzes />
   <UserProfileEdit />
   <UserIdeasPosted />

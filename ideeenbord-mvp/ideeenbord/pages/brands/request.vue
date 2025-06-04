@@ -1,4 +1,10 @@
 <script setup lang="ts">
+/*
+  This page allows users to request the creation of a new brand.
+  The form includes brand details such as name, category, website, intro, email, and logo.
+  On submit, the request is sent to the backend via the useBrand composable.
+*/
+
 import { ref } from "vue";
 import type { RequestBrandForm } from "~/types/brand";
 import { useBrand } from "~/composables/useBrand";
@@ -18,6 +24,7 @@ const form = ref<RequestBrandForm>({
 const { requestBrand, error } = useBrand();
 const { triggerByKey } = useResponseDisplay();
 
+// Submit the form to request a new brand
 async function handleSubmit() {
   try {
     await requestBrand(form.value);

@@ -1,10 +1,17 @@
 <script setup lang="ts">
+/*
+  This page allows a user to claim an unverified brand by submitting a form.
+  The available brands are fetched on mount and shown in a dropdown.
+  After submission, the brand claim is processed and a success or error message is triggered.
+*/
+
 import { ref, onMounted } from "vue";
 import type { ClaimForm } from "~/types/brand";
 import { useBrand } from "~/composables/useBrand";
 import { apiFetch } from "~/composables/useApi";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 
+// Form data for claiming a brand
 const form = ref<ClaimForm>({
   brandId: "",
   name: "",
@@ -19,6 +26,7 @@ const { claimBrand, error } = useBrand();
 const brands = ref<{ id: number; title: string }[]>([]);
 const { triggerByKey } = useResponseDisplay();
 
+// Fetch all unverified brands on mount
 onMounted(async () => {
   try {
     const data = await apiFetch<{ id: number; title: string }[]>("/brands", {
@@ -30,6 +38,7 @@ onMounted(async () => {
   }
 });
 
+// Handle form submission to claim a brand
 async function handleSubmit() {
   try {
     await claimBrand(form.value);

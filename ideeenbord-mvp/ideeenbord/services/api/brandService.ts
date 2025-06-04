@@ -1,8 +1,12 @@
+// This service handles brand-related operations accessible to public users,
+// such as requesting a new brand or claiming an existing one.
+
 import type { RequestBrandForm } from "~/types/brand";
 import type { ClaimForm } from "~/types/brand";
 import { apiFetch } from "~/composables/useApi";
 
 export const brandService = {
+  // Submit a request to register a new brand
   async requestBrand(form: RequestBrandForm) {
     const formData = new FormData();
     formData.append("title", form.title);
@@ -23,6 +27,8 @@ export const brandService = {
       body: formData,
     });
   },
+
+  // Submit a claim to become the owner of an existing brand
   async claimBrand(form: ClaimForm) {
     return await apiFetch("/brands/claim", {
       method: "POST",

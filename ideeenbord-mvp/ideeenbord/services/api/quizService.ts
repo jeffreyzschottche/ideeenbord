@@ -1,8 +1,13 @@
-// ~/services/api/quizService.ts
+/**
+ * Service for managing brand quizzes: creating, fetching, closing,
+ * retrieving participants, and selecting winners.
+ */
+
 import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
 import type { NewQuizForm, Quiz } from "~/types/quiz";
 
 export const quizService = {
+  // Create a new quiz with structured questions and answers
   async createQuiz(form: NewQuizForm) {
     const quiz_questions = form.questions.map((q, i) => ({
       id: i + 1,
@@ -30,20 +35,24 @@ export const quizService = {
     });
   },
 
+  // Get all quizzes created by a brand
   async getQuizzes(brandId: number): Promise<Quiz[]> {
     return await brandOwnerApiFetch(`/brands/${brandId}/quizzes`);
   },
 
+  // Get all participants of a specific quiz
   async getParticipants(quizId: number) {
     return await brandOwnerApiFetch(`/quizzes/${quizId}/participants`);
   },
 
+  // Close a quiz so users can no longer submit answers
   async closeQuiz(quizId: number) {
     return await brandOwnerApiFetch(`/quizzes/${quizId}/close`, {
       method: "POST",
     });
   },
 
+  // Select a specific user as the winner of a quiz
   async selectWinner(quizId: number, userId: number) {
     return await brandOwnerApiFetch(`/quizzes/${quizId}/select-winner`, {
       method: "POST",

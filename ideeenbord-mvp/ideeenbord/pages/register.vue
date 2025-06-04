@@ -1,8 +1,14 @@
 <script setup lang="ts">
+/*
+  This page handles user registration using a comprehensive form.
+  It uses `useRegister()` composable to send form data to the backend.
+  On success, a 'register-success' response is triggered; otherwise, 'register-failed'.
+*/
+
 import { ref } from "vue";
 import type { RegisterForm } from "~/types/auth";
 import { useRegister } from "~/composables/useAuth";
-import { useResponseDisplay } from "~/composables/useResponseDisplay"; // ✅ toegevoegd
+import { useResponseDisplay } from "~/composables/useResponseDisplay";
 
 const form = ref<RegisterForm>({
   name: "",
@@ -22,7 +28,7 @@ const form = ref<RegisterForm>({
 });
 
 const { register, error } = useRegister();
-const { triggerByKey } = useResponseDisplay(); // ✅ triggerByKey gebruiken
+const { triggerByKey } = useResponseDisplay();
 
 async function handleSubmit() {
   const success = await register(form.value);
