@@ -109,6 +109,7 @@ onMounted(async () => {
         ✏️ Bewerk alles
       </button>
       <BrandEditModal
+        v-if="fullBrand"
         :open="showModal"
         :brand="fullBrand"
         @close="showModal = false"
@@ -139,7 +140,6 @@ onMounted(async () => {
   </client-only>
   <MainQuestionSelect />
   <QuizBuilder />
-  <!-- <QuizWinner /> -->
   <QuizOverview />
   <AccountEditModal />
 </template>

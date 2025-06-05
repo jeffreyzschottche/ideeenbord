@@ -13,10 +13,13 @@ import UserIdeasPosted from "~/components/user/ideas/UserIdeasPosted.vue";
 import UserProfileEdit from "~/components/user/profile/UserProfileEdit.vue";
 import UserRatingsInsights from "~/components/user/ideas/UserRatingsInsights.vue";
 import { useUserAuthStore } from "~/store/useUserAuthStore";
+import UserQuizzes from "~/components/user/quiz/UserQuizzes.vue";
 
 const auth = useUserAuthStore();
 const route = useRoute();
 const router = useRouter();
+
+const showPage = ref(false);
 
 const routeUsername = route.params.slug;
 
@@ -36,11 +39,12 @@ onMounted(async () => {
   if (!auth.token || !currentUsername || currentUsername !== routeUsername) {
     return router.push("/login");
   }
+  showPage.value = true;
 });
 </script>
 
 <template>
-  <div v-if="auth.user">
+  <div v-if="showPage">
     <h1>Welkom, {{ auth.user.name }} 👋</h1>
     <p>Gebruikersnaam: {{ auth.user.username }}</p>
   </div>

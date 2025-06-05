@@ -1,0 +1,81 @@
+--- Bestanden in: ./components ---
+.DS_Store
+brand/BrandMainQuestion.vue
+dashboard/account/AccountEditModal.vue
+dashboard/brand/BrandEditModal.vue
+dashboard/brand/MainQuestionSelect.vue
+dashboard/brand/ManageIdeaGrid.vue
+dashboard/quiz/QuizBuilder.vue
+dashboard/quiz/QuizOverview.vue
+ideas/IdeaCard.vue
+ideas/IdeaGrid.vue
+notifications/ResponseDisplay.vue
+quiz/QuizParticipant.vue
+user/ideas/UserIdeasPosted.vue
+user/ideas/UserRatingsInsights.vue
+user/notifications/IdeaNotifier.vue
+user/notifications/Inbox.vue
+user/notifications/QuizNotifier.vue
+user/profile/UserProfileEdit.vue
+user/quiz/UserQuizzes.vue
+
+--- Bestanden in: ./composables ---
+adapter/useApi.ts
+admin/useAdmin.ts
+brand/useBrand.ts
+brand/useBrandOwnerApi.ts
+brand/useBrandOwnerAuth.ts
+ideas/useIdeas.ts
+ideas/useManageIdeas.ts
+mainquestion/useMainQuestionsFeatures.ts
+messages/useMessage.ts
+notifications/useResponseDisplay.ts
+quiz/useQuizBuilder.ts
+user/useAuth.ts
+
+--- Bestanden in: ./middleware ---
+admin.ts
+brand-owner.ts
+user.ts
+
+--- Bestanden in: ./pages ---
+.DS_Store
+404.vue
+admin/verify.vue
+brands/[slug].vue
+brands/claim.vue
+brands/index.vue
+brands/request.vue
+dashboard/[slug].vue
+dashboard/index.vue
+dashboard/verify-success.vue
+index.vue
+login.vue
+notifications/email-verification.vue
+register.vue
+user/[slug].vue
+
+--- Bestanden in: ./services ---
+api/admin/adminService.ts
+api/auth/authService.ts
+api/brand/brandOwnerService.ts
+api/brand/brandService.ts
+api/ideas/ideaService.ts
+api/mainquestion/mainQuestionService.ts
+api/messages/messageService.ts
+api/quiz/quizService.ts
+
+--- Bestanden in: ./store ---
+useAdminAuthStore.ts
+useBrandOwnerAuthStore.ts
+useUserAuthStore.ts
+
+--- Bestanden in: ./types ---
+auth.ts
+brand-owner.ts
+brand.ts
+idea.ts
+main-question.ts
+quiz.ts
+user.ts
+

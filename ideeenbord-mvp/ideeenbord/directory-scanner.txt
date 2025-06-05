@@ -1,0 +1,93 @@
+<?php
+
+// Definieer hier de array met de hoofdmappen die je wilt doorzoeken.
+// Je kunt relatieve paden (t.o.v. de locatie van dit script) of absolute paden gebruiken.
+// Voorbeelden:
+// $baseDirs = [
+//     './components',
+//     './controllers',
+//     '../models',
+//     '/var/www/html/views'
+// ];
+$baseDirs = [
+    './components', // Voeg hier je 6-7 hoofdmappen toe.
+    './composables',
+    './middleware',
+    './pages',
+    './services',
+    './store',
+    './types'
+];
+
+$outputFileName = 'file-directory-with-names.txt'; // De naam van het uitvoerbestand
+
+// Open het uitvoerbestand om te schrijven (of maak het aan als het niet bestaat)
+$outputFile = fopen($outputFileName, 'w') or die("Kan het bestand '$outputFileName' niet openen om te schrijven!");
+
+/**
+ * Functie om recursief door mappen te lopen en bestandsnamen vast te leggen.
+ *
+ * @param string $directory Het huidige pad dat moet worden doorzocht.
+ * @param resource $outputFile De file pointer naar het uitvoerbestand.
+ * @param string $basePath De initiële basispad om relatieve paden te construeren.
+ */
+function scanDirectoryRecursive($directory, $outputFile, $basePath) {
+    // Voeg een trailing slash toe voor consistentie als deze ontbreekt
+    if (substr($directory, -1) !== DIRECTORY_SEPARATOR) {
+        $directory .= DIRECTORY_SEPARATOR;
+    }
+
+    $items = scandir($directory);
+
+    foreach ($items as $item) {
+        // Sla '.' en '..' over
+        if ($item === '.' || $item === '..') {
+            continue;
+        }
+
+        $itemPath = $directory . $item;
+
+        if (is_dir($itemPath)) {
+            // Als het een map is, roep de functie recursief aan
+            scanDirectoryRecursive($itemPath, $outputFile, $basePath);
+        } elseif (is_file($itemPath)) {
+            // Als het een bestand is, schrijf het relatieve pad naar het uitvoerbestand
+            $relativePath = str_replace($basePath, '', $itemPath);
+            fwrite($outputFile, $relativePath . "\n");
+        }
+    }
+}
+
+// Loop door elke gedefinieerde hoofdmap
+foreach ($baseDirs as $baseDir) {
+    // Controleer of de hoofdmap bestaat en een map is
+    if (!is_dir($baseDir)) {
+        fwrite($outputFile, "Waarschuwing: De opgegeven hoofdmap '$baseDir' is geen geldige map of bestaat niet. Deze wordt overgeslagen.\n\n");
+        continue;
+    }
+
+    // Normaliseer het pad om consistente output te garanderen
+    $normalizedBaseDir = realpath($baseDir);
+    if ($normalizedBaseDir === false) {
+        fwrite($outputFile, "Waarschuwing: Kan het pad '$baseDir' niet normaliseren. Deze wordt overgeslagen.\n\n");
+        continue;
+    }
+    // Voeg een trailing slash toe aan de genormaliseerde basis directory,
+    // zodat str_replace de slash na de basis directory ook kan verwijderen.
+    if (substr($normalizedBaseDir, -1) !== DIRECTORY_SEPARATOR) {
+        $normalizedBaseDir .= DIRECTORY_SEPARATOR;
+    }
+
+    // Begin met scannen vanuit deze hoofdmap
+    // Schrijf een sectie-header voor elke hoofdmap
+    fwrite($outputFile, "--- Bestanden in: " . $baseDir . " ---\n");
+    scanDirectoryRecursive($normalizedBaseDir, $outputFile, $normalizedBaseDir);
+    fwrite($outputFile, "\n"); // Voeg een lege regel toe voor leesbaarheid tussen hoofdmappen
+}
+
+// Sluit het uitvoerbestand
+fclose($outputFile);
+
+echo "Alle bestandsnamen uit de opgegeven hoofdmappen zijn succesvol vastgelegd in '$outputFileName'.\n";
+
+?>

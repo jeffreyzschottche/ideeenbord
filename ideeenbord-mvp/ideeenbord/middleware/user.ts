@@ -1,7 +1,7 @@
 import { useUserAuthStore } from "~/store/useUserAuthStore";
 import { useCookie } from "#app";
 
-export default defineNuxtRouteMiddleware(() => {
+export default defineNuxtRouteMiddleware((to) => {
   const token = useCookie<string | null>("token");
   const user = useCookie<any | null>("user");
 
@@ -10,6 +10,12 @@ export default defineNuxtRouteMiddleware(() => {
     return navigateTo("/login");
   }
 
+  const routeUsername = to.params.slug;
+  const loggedInUsername = user.value?.username;
+
+  if (routeUsername && loggedInUsername !== routeUsername) {
+    return navigateTo("/login");
+  }
   // Populate Pinia store (client only)
   if (import.meta.client) {
     const store = useUserAuthStore();

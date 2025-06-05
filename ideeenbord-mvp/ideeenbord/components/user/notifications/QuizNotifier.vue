@@ -24,6 +24,10 @@ onMounted(async () => {
       `/users/${username}/notifications`
     );
 
+    // if user did not answered any quizzes yet
+    if (!Array.isArray(data)) {
+      return;
+    }
     // Only keep quiz notifications
     notifications.value = data.filter((n: any) => n.type === "quiz");
   } finally {

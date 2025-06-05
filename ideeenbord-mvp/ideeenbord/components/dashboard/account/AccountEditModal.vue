@@ -11,10 +11,6 @@ import { useResponseDisplay } from "~/composables/notifications/useResponseDispl
 import type { BrandOwner, UpdateBrandOwnerForm } from "~/types/brand-owner";
 import { brandOwnerService } from "~/services/api/brand/brandOwnerService";
 
-definePageMeta({
-  middleware: "brand-owner", // Protects route: only accessible by authenticated brand owners
-});
-
 const authStore = useBrandOwnerAuthStore();
 const { triggerByKey } = useResponseDisplay();
 
