@@ -13,14 +13,14 @@
 import { useRoute } from "vue-router";
 import { ref, onMounted, computed } from "vue";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
-import ManageIdeaGrid from "~/components/dashboard/ManageIdeaGrid.vue";
-import MainQuestionSelect from "~/components/dashboard/MainQuestionSelect.vue";
-import QuizBuilder from "~/components/dashboard/QuizBuilder.vue";
-import QuizOverview from "~/components/dashboard/QuizOverview.vue";
+import ManageIdeaGrid from "~/components/dashboard/brand/ManageIdeaGrid.vue";
+import MainQuestionSelect from "~/components/dashboard/brand/MainQuestionSelect.vue";
+import QuizBuilder from "~/components/dashboard/quiz/QuizBuilder.vue";
+import QuizOverview from "~/components/dashboard/quiz/QuizOverview.vue";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import { useBrand } from "~/composables/useBrand";
-import BrandEditModal from "~/components/dashboard/BrandEditModal.vue";
-import AccountEditModal from "~/components/dashboard/AccountEditModal.vue";
+import BrandEditModal from "~/components/dashboard/brand/BrandEditModal.vue";
+import AccountEditModal from "~/components/dashboard/account/AccountEditModal.vue";
 import type { BrandOwner } from "~/types/brand-owner";
 import type { Brand } from "~/types/brand";
 

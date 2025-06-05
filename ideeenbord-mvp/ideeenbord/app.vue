@@ -6,7 +6,7 @@
 </template>
 <script setup lang="ts">
 import { useUserAuthStore } from "~/store/useUserAuthStore";
-import ResponseDisplay from "~/components/ResponseDisplay.vue";
+import ResponseDisplay from "~/components/notifications/ResponseDisplay.vue";
 import { useBrandOwnerAuth } from "~/composables/useBrandOwnerAuth";
 useBrandOwnerAuth().initAuth();
 

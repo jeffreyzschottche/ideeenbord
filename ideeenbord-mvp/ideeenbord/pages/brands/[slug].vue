@@ -14,8 +14,8 @@ import { apiFetch } from "~/composables/useApi";
 import { useRoute } from "vue-router";
 import IdeaGrid from "~/components/ideas/IdeaGrid.vue";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
-import BrandMainQuestion from "~/components/BrandMainQuestion.vue";
-import QuizParticipant from "~/components/QuizParticipant.vue";
+import BrandMainQuestion from "~/components/brand/BrandMainQuestion.vue";
+import QuizParticipant from "~/components/quiz/QuizParticipant.vue";
 import type { Brand } from "~/types/brand";
 
 const rawApiBase = useRuntimeConfig().public.apiBaseUrl;

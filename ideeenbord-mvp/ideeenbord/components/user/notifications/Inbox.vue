@@ -6,8 +6,8 @@
 
 import { useUserAuthStore } from "~/store/useUserAuthStore";
 import { onMounted, ref } from "vue";
-import QuizNotifier from "~/components/user/QuizNotifier.vue";
-import IdeaNotifier from "~/components/user/IdeaNotifier.vue";
+import QuizNotifier from "~/components/user/notifications/QuizNotifier.vue";
+import IdeaNotifier from "~/components/user/notifications/IdeaNotifier.vue";
 
 // Auth store to access current user and token
 const auth = useUserAuthStore();

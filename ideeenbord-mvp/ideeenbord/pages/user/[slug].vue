@@ -8,10 +8,10 @@
 
 import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import Inbox from "~/components/user/Inbox.vue";
-import UserIdeasPosted from "~/components/user/UserIdeasPosted.vue";
-import UserProfileEdit from "~/components/user/UserProfileEdit.vue";
-import UserRatingsInsights from "~/components/user/UserRatingsInsights.vue";
+import Inbox from "~/components/user/notifications/Inbox.vue";
+import UserIdeasPosted from "~/components/user/ideas/UserIdeasPosted.vue";
+import UserProfileEdit from "~/components/user/profile/UserProfileEdit.vue";
+import UserRatingsInsights from "~/components/user/ideas/UserRatingsInsights.vue";
 import { useUserAuthStore } from "~/store/useUserAuthStore";
 
 const auth = useUserAuthStore();

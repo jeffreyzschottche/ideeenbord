@@ -1,7 +1,5 @@
 <template>
-  <MessageDisplay />
+  <h1>home</h1>
 </template>
 
-<script setup lang="ts">
-import MessageDisplay from "~/components/MessageDisplay.vue";
-</script>
+<script setup lang="ts"></script>
