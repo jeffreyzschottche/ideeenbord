@@ -5,7 +5,7 @@
 */
 
 import { ref, onMounted } from "vue";
-import { apiFetch } from "~/composables/useApi";
+import { apiFetch } from "~/composables/adapter/useApi";
 
 const brands = ref([]);
 

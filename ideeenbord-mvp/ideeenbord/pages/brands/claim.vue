@@ -7,9 +7,9 @@
 
 import { ref, onMounted } from "vue";
 import type { ClaimForm } from "~/types/brand";
-import { useBrand } from "~/composables/useBrand";
-import { apiFetch } from "~/composables/useApi";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import { useBrand } from "~/composables/brand/useBrand";
+import { apiFetch } from "~/composables/adapter/useApi";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 
 // Form data for claiming a brand
 const form = ref<ClaimForm>({

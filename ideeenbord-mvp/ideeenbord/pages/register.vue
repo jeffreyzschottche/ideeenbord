@@ -7,8 +7,8 @@
 
 import { ref } from "vue";
 import type { RegisterForm } from "~/types/auth";
-import { useRegister } from "~/composables/useAuth";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import { useRegister } from "~/composables/user/useAuth";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 
 const form = ref<RegisterForm>({
   name: "",

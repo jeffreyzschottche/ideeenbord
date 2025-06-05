@@ -7,8 +7,8 @@
 
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { apiFetch } from "~/composables/useApi";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import { apiFetch } from "~/composables/adapter/useApi";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 
 const route = useRoute();
 const username = route.params.slug as string;

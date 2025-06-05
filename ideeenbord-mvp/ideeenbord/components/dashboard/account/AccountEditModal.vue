@@ -7,7 +7,7 @@
 
 import { ref, onMounted, computed } from "vue";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 import type { BrandOwner, UpdateBrandOwnerForm } from "~/types/brand-owner";
 import { brandOwnerService } from "~/services/api/brand/brandOwnerService";
 

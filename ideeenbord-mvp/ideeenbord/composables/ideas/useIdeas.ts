@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 import type { Idea, NewIdeaForm } from "~/types/idea";
 import { ideaService } from "~/services/api/ideas/ideaService";
 

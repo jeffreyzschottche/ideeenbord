@@ -8,8 +8,8 @@
 
 import { ref, watch } from "vue";
 import { useUserAuthStore } from "~/store/useUserAuthStore";
-import { apiFetch } from "~/composables/useApi";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import { apiFetch } from "~/composables/adapter/useApi";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 
 const auth = useUserAuthStore();
 const { triggerByKey } = useResponseDisplay();

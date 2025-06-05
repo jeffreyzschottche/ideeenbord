@@ -2,11 +2,12 @@
 // including account updates, managing ideas, brand updates,
 // and assigning main questions.
 
-import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
+import { brandOwnerApiFetch } from "~/composables/brand/useBrandOwnerApi";
 import type { UpdateBrandOwnerForm, BrandOwner } from "~/types/brand-owner";
 import type { Idea } from "~/types/idea";
 import type { Quiz, NewQuizForm } from "~/types/quiz";
 import type { MainQuestion } from "~/types/main-question";
+import { apiFetch } from "~/composables/adapter/useApi";
 
 export const brandOwnerService = {
   // Update brand owner account information

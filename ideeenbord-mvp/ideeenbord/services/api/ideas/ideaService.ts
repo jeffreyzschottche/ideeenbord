@@ -1,7 +1,7 @@
 // This service handles all public-facing idea operations,
 // such as submitting a new idea and liking/disliking existing ones.
 
-import { apiFetch } from "~/composables/useApi";
+import { apiFetch } from "~/composables/adapter/useApi";
 import type { Idea, NewIdeaForm } from "~/types/idea";
 
 export const ideaService = {

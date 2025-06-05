@@ -5,9 +5,9 @@
 */
 
 import { ref, computed, onMounted } from "vue";
-import { useMainQuestionsFeatures } from "~/composables/useMainQuestionsFeatures";
+import { useMainQuestionsFeatures } from "~/composables/mainquestion/useMainQuestionsFeatures";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 import type { MainQuestion } from "~/types/main-question";
 
 // Store containing current brand owner data

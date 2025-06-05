@@ -7,8 +7,8 @@
 
 import { useRoute, useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
-import { apiFetch } from "~/composables/useApi";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
+import { apiFetch } from "~/composables/adapter/useApi";
 
 const route = useRoute();
 const router = useRouter();

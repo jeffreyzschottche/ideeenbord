@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
-import { useManageIdeas } from "~/composables/useManageIdeas";
+import { useManageIdeas } from "~/composables/ideas/useManageIdeas";
 import type { Idea } from "~/types/idea";
 
 // Extend idea type to include local-only field for UI selection

@@ -7,8 +7,8 @@
 
 import { ref } from "vue";
 import type { RequestBrandForm } from "~/types/brand";
-import { useBrand } from "~/composables/useBrand";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import { useBrand } from "~/composables/brand/useBrand";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 
 const form = ref<RequestBrandForm>({
   title: "",

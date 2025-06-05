@@ -7,7 +7,7 @@
 
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { apiFetch } from "~/composables/useApi";
+import { apiFetch } from "~/composables/adapter/useApi";
 
 // Extract username (slug) from the route
 const route = useRoute();

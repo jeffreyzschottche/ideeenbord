@@ -10,9 +10,9 @@
 
 import { ref } from "vue";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 import type { LoginForm } from "~/types/auth";
-import { apiFetch } from "~/composables/useApi";
+import { apiFetch } from "~/composables/adapter/useApi";
 
 const brandOwnerAuth = useBrandOwnerAuthStore();
 const { triggerByKey, trigger } = useResponseDisplay();

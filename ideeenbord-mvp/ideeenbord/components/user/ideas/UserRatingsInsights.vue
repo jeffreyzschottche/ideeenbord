@@ -6,7 +6,7 @@
 
 import { ref, onMounted } from "vue";
 import { useUserAuthStore } from "~/store/useUserAuthStore";
-import { apiFetch } from "~/composables/useApi";
+import { apiFetch } from "~/composables/adapter/useApi";
 
 // Auth store and state
 const auth = useUserAuthStore();

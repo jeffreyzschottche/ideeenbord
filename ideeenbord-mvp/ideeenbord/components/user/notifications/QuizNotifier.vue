@@ -6,7 +6,7 @@
 
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { apiFetch } from "~/composables/useApi";
+import { apiFetch } from "~/composables/adapter/useApi";
 import type { UserNotification } from "~/types/user";
 
 // Get the username (slug) from the current route

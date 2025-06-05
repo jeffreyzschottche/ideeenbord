@@ -3,7 +3,7 @@
 
 import type { RequestBrandForm } from "~/types/brand";
 import type { ClaimForm } from "~/types/brand";
-import { apiFetch } from "~/composables/useApi";
+import { apiFetch } from "~/composables/adapter/useApi";
 
 export const brandService = {
   // Submit a request to register a new brand

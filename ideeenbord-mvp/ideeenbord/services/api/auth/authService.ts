@@ -2,7 +2,7 @@
 // including user registration and login operations.
 
 import type { RegisterForm, LoginForm } from "~/types/auth";
-import { apiFetch } from "~/composables/useApi";
+import { apiFetch } from "~/composables/adapter/useApi";
 
 export const authService = {
   // Sends a POST request to register a new user

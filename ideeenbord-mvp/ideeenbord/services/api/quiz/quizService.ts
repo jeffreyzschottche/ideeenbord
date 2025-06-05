@@ -3,7 +3,7 @@
  * retrieving participants, and selecting winners.
  */
 
-import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
+import { brandOwnerApiFetch } from "~/composables/brand/useBrandOwnerApi";
 import type { NewQuizForm, Quiz } from "~/types/quiz";
 
 export const quizService = {

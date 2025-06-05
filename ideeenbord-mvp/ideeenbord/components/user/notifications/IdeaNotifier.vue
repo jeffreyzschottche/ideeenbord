@@ -7,7 +7,7 @@
 
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { apiFetch } from "~/composables/useApi";
+import { apiFetch } from "~/composables/adapter/useApi";
 import type { Idea, IdeaNotification } from "~/types/idea";
 
 // Extract username (slug) from current route

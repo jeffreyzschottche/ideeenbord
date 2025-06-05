@@ -1,8 +1,8 @@
 <script setup lang="ts">
 // Import required modules and stores
 import { ref, onMounted } from "vue";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
-import { apiFetch } from "~/composables/useApi";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
+import { apiFetch } from "~/composables/adapter/useApi";
 import { useUserAuthStore } from "~/store/useUserAuthStore";
 import type { Quiz } from "~/types/quiz";
 

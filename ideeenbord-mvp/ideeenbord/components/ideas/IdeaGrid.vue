@@ -8,7 +8,7 @@
 
 import { ref, onMounted } from "vue";
 import { useUserAuthStore } from "~/store/useUserAuthStore";
-import { useIdeas } from "~/composables/useIdeas";
+import { useIdeas } from "~/composables/ideas/useIdeas";
 import IdeaCard from "~/components/ideas/IdeaCard.vue";
 import type { Idea } from "~/types/idea";
 

@@ -6,8 +6,8 @@
 */
 
 import { ref, watch } from "vue";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
-import { useBrand } from "~/composables/useBrand";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
+import { useBrand } from "~/composables/brand/useBrand";
 import type { Brand, SocialItem } from "~/types/brand";
 
 // Props: whether the modal is open, and the brand to edit

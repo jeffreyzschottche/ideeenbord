@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 import { adminService } from "~/services/api/admin/adminService";
 import type { BrandOwner } from "~/types/brand-owner";
 

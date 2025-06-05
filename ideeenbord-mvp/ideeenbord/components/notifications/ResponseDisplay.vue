@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Import reactive display state from composable
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 import { computed } from "vue";
 
 // Destructure shared state from composable

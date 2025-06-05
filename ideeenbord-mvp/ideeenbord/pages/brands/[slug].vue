@@ -10,10 +10,10 @@
 
 import { ref, computed, onMounted } from "vue";
 import { useUserAuthStore } from "~/store/useUserAuthStore";
-import { apiFetch } from "~/composables/useApi";
+import { apiFetch } from "~/composables/adapter/useApi";
 import { useRoute } from "vue-router";
 import IdeaGrid from "~/components/ideas/IdeaGrid.vue";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 import BrandMainQuestion from "~/components/brand/BrandMainQuestion.vue";
 import QuizParticipant from "~/components/quiz/QuizParticipant.vue";
 import type { Brand } from "~/types/brand";

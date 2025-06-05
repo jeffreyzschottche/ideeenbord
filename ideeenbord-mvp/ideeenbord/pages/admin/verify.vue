@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { onMounted } from "vue";
-import { useAdmin } from "~/composables/useAdmin";
+import { useAdmin } from "~/composables/admin/useAdmin";
 
 // Set the middleware to restrict access to admins only
 definePageMeta({

@@ -2,8 +2,8 @@
 import { computed, ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useUserAuthStore } from "~/store/useUserAuthStore";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
-import { useMainQuestionsFeatures } from "~/composables/useMainQuestionsFeatures";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
+import { useMainQuestionsFeatures } from "~/composables/mainquestion/useMainQuestionsFeatures";
 import type { Brand } from "~/types/brand";
 import type { MainQuestion } from "~/types/main-question";
 

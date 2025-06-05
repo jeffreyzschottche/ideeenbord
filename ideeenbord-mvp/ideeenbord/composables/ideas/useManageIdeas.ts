@@ -1,6 +1,6 @@
 import type { Idea } from "~/types/idea";
 import { ref } from "vue";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 import { brandOwnerService } from "~/services/api/brand/brandOwnerService";
 
 export function useManageIdeas(brandId: number) {

@@ -1,4 +1,4 @@
-import { apiFetch } from "~/composables/useApi";
+import { apiFetch } from "~/composables/adapter/useApi";
 import type { BrandOwner } from "~/types/brand-owner"; // replace with correct type if needed
 
 // This service handles admin-related API calls, such as verifying brand owners.

@@ -4,8 +4,8 @@
  * and submitting user responses to a selected main question.
  */
 
-import { apiFetch } from "~/composables/useApi";
-import { brandOwnerApiFetch } from "~/composables/useBrandOwnerApi";
+import { apiFetch } from "~/composables/adapter/useApi";
+import { brandOwnerApiFetch } from "~/composables/brand/useBrandOwnerApi";
 import type { MainQuestion, MainQuestionResponse } from "~/types/main-question";
 
 export const mainQuestionService = {

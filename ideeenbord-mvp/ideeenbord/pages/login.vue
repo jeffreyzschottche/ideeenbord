@@ -7,8 +7,8 @@
 
 import { ref } from "vue";
 import type { LoginForm } from "~/types/auth";
-import { useLogin } from "~/composables/useAuth";
-import { useResponseDisplay } from "~/composables/useResponseDisplay";
+import { useLogin } from "~/composables/user/useAuth";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 
 const form = ref<LoginForm>({
   email: "",
