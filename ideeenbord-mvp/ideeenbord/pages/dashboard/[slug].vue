@@ -23,6 +23,7 @@ import BrandEditModal from "~/components/dashboard/brand/BrandEditModal.vue";
 import AccountEditModal from "~/components/dashboard/account/AccountEditModal.vue";
 import type { BrandOwner } from "~/types/brand-owner";
 import type { Brand } from "~/types/brand";
+import { apiFetch } from "~/composables/adapter/useApi";
 
 const { triggerByKey } = useResponseDisplay();
 
