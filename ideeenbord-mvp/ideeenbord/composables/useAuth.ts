@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { authService } from "~/services/api/authService";
+import { authService } from "~/services/api/auth/authService";
 import type { RegisterForm, LoginForm } from "~/types/auth";
 import { useUserAuthStore } from "~/store/useUserAuthStore";
 

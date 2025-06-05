@@ -9,7 +9,7 @@ import { ref, onMounted, computed } from "vue";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import type { BrandOwner, UpdateBrandOwnerForm } from "~/types/brand-owner";
-import { brandOwnerService } from "~/services/api/brandOwnerService";
+import { brandOwnerService } from "~/services/api/brand/brandOwnerService";
 
 definePageMeta({
   middleware: "brand-owner", // Protects route: only accessible by authenticated brand owners

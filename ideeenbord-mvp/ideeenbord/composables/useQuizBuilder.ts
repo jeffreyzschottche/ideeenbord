@@ -1,5 +1,5 @@
 import type { NewQuizForm } from "~/types/quiz";
-import { quizService } from "~/services/api/quizService";
+import { quizService } from "~/services/api/quiz/quizService";
 
 export function useQuizBuilder() {
   // Creates a new quiz by sending form data to the API

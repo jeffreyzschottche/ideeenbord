@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import type { MainQuestion } from "~/types/main-question";
-import { mainQuestionService } from "~/services/api/mainQuestionService";
+import { mainQuestionService } from "~/services/api/mainquestion/mainQuestionService";
 
 /**
  * Composable for handling main questions logic for brands.

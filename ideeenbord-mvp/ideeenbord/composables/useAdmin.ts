@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
-import { adminService } from "~/services/api/adminService";
+import { adminService } from "~/services/api/admin/adminService";
 import type { BrandOwner } from "~/types/brand-owner";
 
 // Composable providing admin-specific logic for managing brand owner verification

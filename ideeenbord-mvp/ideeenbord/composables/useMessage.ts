@@ -1,5 +1,5 @@
 import { ref, onMounted } from "vue";
-import { messageService } from "~/services/api/messageService";
+import { messageService } from "~/services/api/messages/messageService";
 
 export function useMessage() {
   // Holds the greeting message from the API

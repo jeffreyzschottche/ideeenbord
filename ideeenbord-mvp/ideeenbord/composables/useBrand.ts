@@ -1,6 +1,6 @@
 import { ref } from "vue";
-import { brandService } from "~/services/api/brandService";
-import { brandOwnerService } from "~/services/api/brandOwnerService";
+import { brandService } from "~/services/api/brand/brandService";
+import { brandOwnerService } from "~/services/api/brand/brandOwnerService";
 import type { RequestBrandForm, ClaimForm } from "~/types/brand";
 
 /**

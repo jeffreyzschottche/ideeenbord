@@ -14,8 +14,8 @@ import { ref, onMounted } from "vue";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import type { Quiz, QuizWithParticipants } from "~/types/quiz";
-import { brandOwnerService } from "~/services/api/brandOwnerService";
-import { quizService } from "~/services/api/quizService";
+import { brandOwnerService } from "~/services/api/brand/brandOwnerService";
+import { quizService } from "~/services/api/quiz/quizService";
 
 const { triggerByKey } = useResponseDisplay();
 const brandId = useBrandOwnerAuthStore().owner?.brand?.id;

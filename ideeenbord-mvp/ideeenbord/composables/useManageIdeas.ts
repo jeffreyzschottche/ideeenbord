@@ -1,7 +1,7 @@
 import type { Idea } from "~/types/idea";
 import { ref } from "vue";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
-import { brandOwnerService } from "~/services/api/brandOwnerService";
+import { brandOwnerService } from "~/services/api/brand/brandOwnerService";
 
 export function useManageIdeas(brandId: number) {
   // Extend Idea type to optionally hold a new status during editing

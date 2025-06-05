@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { useResponseDisplay } from "~/composables/useResponseDisplay";
 import type { Idea, NewIdeaForm } from "~/types/idea";
-import { ideaService } from "~/services/api/ideaService";
+import { ideaService } from "~/services/api/ideas/ideaService";
 
 /**
  * Composable for managing ideas related to a specific brand.
