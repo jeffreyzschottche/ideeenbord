@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens; // <-- Import toevoegen
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\VerifyEmailForUser;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -71,5 +72,9 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
             'notifications' => 'array'
         ];
+    }
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmailForUser);
     }
 }

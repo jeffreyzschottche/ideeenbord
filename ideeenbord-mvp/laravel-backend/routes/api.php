@@ -33,6 +33,12 @@ use Illuminate\Support\Facades\Hash;
 */
 Route::prefix('v1')->group(function () {
 
+    Route::get('/test-verification/{id}', function ($id) {
+    $user = \App\Models\User::findOrFail($id);
+    $user->sendEmailVerificationNotification();
+    return 'done';
+});
+
     
 Route::get('/brand-owner/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $owner = \App\Models\BrandOwner::findOrFail($request->id);
@@ -79,25 +85,25 @@ Route::post('/brand-owner/email/resend', function (Request $request) {
             'signature' => $request->query('signature'),
         ]);
         
-        return redirect("http://localhost:3000/email-verification?$query");
+        return redirect("http://localhost:3000/notifications/email-verification?$query");
         
     })->middleware('signed')->name('verification.verify');
 
-
 Route::get('/verify-email', function (Request $request) {
+    // Valideer dat de 'id' parameter aanwezig is.
+    $request->validate(['id' => 'required|exists:users,id']);
+
     $user = User::findOrFail($request->query('id'));
 
-    if (! URL::hasValidSignature($request)) {
-        throw new AuthorizationException('Ongeldige of verlopen link');
+    // Controleer simpelweg of de gebruiker nu geverifieerd is.
+    // De daadwerkelijke verificatie is al gebeurd in de redirect-route.
+    if ($user->hasVerifiedEmail()) {
+        return response()->json(['message' => 'Email is succesvol geverifieerd.']);
+    } else {
+        // Dit is een fallback voor het zeldzame geval dat er iets misging.
+        return response()->json(['message' => 'Verificatie kon niet worden bevestigd.'], 422); // Unprocessable Entity
     }
-
-    if (!$user->hasVerifiedEmail()) {
-        $user->markEmailAsVerified();
-        event(new Verified($user));
-    }
-
-    return response()->json(['message' => 'Email succesvol geverifieerd.']);
-});
+})->name('verification.status.check');
     
     Route::post('/email/verification-notification', function (Request $request) {
         $request->user()->sendEmailVerificationNotification();
