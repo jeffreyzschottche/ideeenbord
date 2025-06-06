@@ -6,7 +6,6 @@ use App\Models\Brand;
 use App\Models\BrandOwner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Auth\Events\Registered;
 
 class BrandOwnerController extends Controller
 {
@@ -30,7 +29,7 @@ class BrandOwnerController extends Controller
            $brand->brand_owner_id = $brandOwner->id;
            $brand->save();
 
-        return response()->json(['message' => 'Registratie gelukt. Verifieer je e-mail.'], 201);
+        return response()->json(['message' => 'Claim succesvol ontvangen. Je aanvraag wordt beoordeeld door een administrator.'], 201);
     }
     public function index()
         {

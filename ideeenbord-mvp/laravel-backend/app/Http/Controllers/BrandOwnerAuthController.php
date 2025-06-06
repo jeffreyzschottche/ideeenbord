@@ -20,9 +20,12 @@ class BrandOwnerAuthController extends Controller
         if (!$owner || !Hash::check($request->password, $owner->password)) {
             return response()->json(['message' => 'Ongeldige inloggegevens.'], 401);
         }
-
         if (!$owner->verified_owner) {
-            return response()->json(['message' => 'Account nog niet geverifieerd.'], 403);
+            return response()->json(['message' => 'Je account is nog niet goedgekeurd door een administrator.'], 403);
+        }
+
+         if (!$owner->hasVerifiedEmail()) {
+            return response()->json(['message' => 'Je e-mailadres is nog niet geverifieerd.'], 403);
         }
 
         $token = $owner->createToken('brand-owner-token')->plainTextToken;

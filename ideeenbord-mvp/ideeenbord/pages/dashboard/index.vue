@@ -40,6 +40,9 @@ async function handleSubmit() {
     ) {
       triggerByKey("brand-owner-login-failed");
     }
+    if (err?.status === 403) {
+      triggerByKey("brand-owner-login-not-verified");
+    }
   }
 }
 </script>

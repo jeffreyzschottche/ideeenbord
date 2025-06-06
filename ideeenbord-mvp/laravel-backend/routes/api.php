@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\IdeaStatusChangedMail;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
+use App\Models\BrandOwner; 
 
 
 /*
@@ -39,23 +40,41 @@ Route::prefix('v1')->group(function () {
     return 'done';
 });
 
-    
-Route::get('/brand-owner/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $owner = \App\Models\BrandOwner::findOrFail($request->id);
 
-    if (!hash_equals((string) $request->hash, sha1($owner->getEmailForVerification()))) {
-        throw new \Illuminate\Auth\Access\AuthorizationException('Invalid verification link');
+Route::get('/brand-owner/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
+    $owner = BrandOwner::findOrFail($id);
+
+    if (!hash_equals((string) $hash, sha1($owner->getEmailForVerification()))) {
+        // Om veiligheidsredenen is een algemene redirect beter
+        return redirect('http://localhost:3000/notifications/verification-failed');
     }
 
     if (!$owner->hasVerifiedEmail()) {
         $owner->markEmailAsVerified();
-        $owner->verified_owner = true; // ✅ Dit is jouw extra check
-        $owner->save();
         event(new Verified($owner));
     }
 
-    return redirect('http://localhost:3000/brand-owner/verify-success');
+    // Redirect naar een succes-pagina op je frontend
+    return redirect('http://localhost:3000/notifications/brandowner-verification');
+
 })->middleware('signed')->name('brandowner.verification.verify');
+    
+// Route::get('/brand-owner/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+//     $owner = \App\Models\BrandOwner::findOrFail($request->id);
+
+//     if (!hash_equals((string) $request->hash, sha1($owner->getEmailForVerification()))) {
+//         throw new \Illuminate\Auth\Access\AuthorizationException('Invalid verification link');
+//     }
+
+//     if (!$owner->hasVerifiedEmail()) {
+//         $owner->markEmailAsVerified();
+//         $owner->verified_owner = true; // ✅ Dit is jouw extra check
+//         $owner->save();
+//         event(new Verified($owner));
+//     }
+
+//     return redirect('http://localhost:3000/brand-owner/verify-success');
+// })->middleware('signed')->name('brandowner.verification.verify');
 
 Route::post('/brand-owner/email/resend', function (Request $request) {
     $request->user('brand_owner')->sendEmailVerificationNotification();
@@ -197,27 +216,20 @@ Route::get('/brands/{brand}/quizzes', [QuizController::class, 'listForBrand']);
 
     // 🔒👑 Admin routes
     Route::middleware(['auth:sanctum', IsAdmin::class])->prefix('admin')->group(function () {
-        // Route::post('/brands/owners/{id}/verify', function ($id) {
-        //     $owner = \App\Models\BrandOwner::findOrFail($id);
-        //     $owner->verified_owner = true;
-        //     $owner->save();
-        //     return response()->json(['message' => 'BrandOwner verified']);
-        // });
         Route::post('/brands/owners/{id}/verify', function ($id) {
     $owner = \App\Models\BrandOwner::findOrFail($id);
 
-    if ($owner->hasVerifiedEmail()) {
-        return response()->json(['message' => 'Deze eigenaar is al geverifieerd.']);
-    }
-
+    // De enige taak van deze route is de admin-goedkeuring op true te zetten.
+    // Alle andere checks en events horen hier niet thuis.
     $owner->verified_owner = true;
     $owner->save();
 
-    // ✅ Verificatie-e-mail sturen
     event(new Registered($owner));
 
-    return response()->json(['message' => 'BrandOwner verified & verificatiemail verzonden.']);
+    // Geef een duidelijke en correcte succesmelding terug.
+    return response()->json(['message' => 'BrandOwner succesvol goedgekeurd door admin.']);
 });
+
 
         Route::get('/brand-owners', [BrandOwnerController::class, 'index']);
     });

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\VerifyEmailForBrandOwner;
 
 class BrandOwner extends Authenticatable implements MustVerifyEmail
 {
@@ -38,5 +39,9 @@ class BrandOwner extends Authenticatable implements MustVerifyEmail
     public function brand()
     {
         return $this->belongsTo(Brand::class);
+    }
+     public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmailForBrandOwner);
     }
 }

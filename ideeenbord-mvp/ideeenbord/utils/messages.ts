@@ -41,6 +41,7 @@ export type MessageKey =
   | "admin-fetch-failed"
   | "brand-owner-login-success"
   | "brand-owner-login-failed"
+  | "brand-owner-login-not-verified"
   | "ideas-fetch-failed"
   | "idea-liked"
   | "idea-like-failed"
@@ -300,6 +301,13 @@ export const messages: Record<
     text: {
       nl: "Inloggen als eigenaar mislukt.",
       en: "Brand owner login failed.",
+    },
+  },
+  "brand-owner-login-not-verified": {
+    type: "error",
+    text: {
+      nl: "Verifieer eerst je email.",
+      en: "First verify your email.",
     },
   },
   "ideas-fetch-failed": {
