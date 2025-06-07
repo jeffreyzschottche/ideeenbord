@@ -147,16 +147,6 @@ class QuizController extends Controller
     return response()->json($quiz);
 }
 
-// public function getParticipants(Brand $brand)
-// {
-//     $quiz = Quiz::where('brand_id', $brand->id)->where('status', 'open')->latest()->first();
-//     if (!$quiz) {
-//         return response()->json(['message' => 'Geen actieve quiz'], 404);
-//     }
-
-//     return response()->json($quiz->participants ?? []);
-// }
-
 public function getParticipants(Brand $brand)
 {
     $quiz = Quiz::where('brand_id', $brand->id)
