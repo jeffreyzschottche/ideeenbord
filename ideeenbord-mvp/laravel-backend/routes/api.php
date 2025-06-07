@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\AuthController;
-use App\Http\Controllers\BrandController;
+use App\Http\Controllers\Brand\BrandController;
 use App\Http\Controllers\BrandOwnerController;
 use App\Http\Controllers\BrandOwnerAuthController;
 use App\Http\Controllers\IdeaController;

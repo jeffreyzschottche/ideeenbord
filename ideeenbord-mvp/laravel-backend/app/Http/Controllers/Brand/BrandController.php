@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Brand;
 
 use App\Models\Brand;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -64,8 +65,6 @@ class BrandController extends Controller
 
 public function show($slug)
 {
-    // $brand = Brand::whereRaw('LOWER(title) = ?', [Str::slug($slug)])->firstOrFail();
-    // $brand = Brand::where('slug', $slug)->firstOrFail();
     $brand = Brand::with('mainQuestion')->where('slug', $slug)->firstOrFail();
     return response()->json($brand);
 }
