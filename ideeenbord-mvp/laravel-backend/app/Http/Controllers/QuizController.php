@@ -118,10 +118,6 @@ class QuizController extends Controller
             $user->notifications = $notifications;
             $user->save();
         }
-        
-$request->validate(['winner_id' => 'required|integer']);
-$quiz->winner_id = $request->winner_id;
-        $quiz->save();
         return response()->json(['message' => 'Winnaar geselecteerd.']);
     }
 
