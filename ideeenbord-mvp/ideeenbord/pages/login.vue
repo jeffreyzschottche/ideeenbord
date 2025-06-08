@@ -20,8 +20,9 @@ const { triggerByKey } = useResponseDisplay();
 
 async function handleSubmit() {
   const success = await login(form.value);
+  console.log(success);
 
-  if (success) {
+  if (success || success === undefined) {
     triggerByKey("login-approved");
   } else {
     triggerByKey("login-failed");
