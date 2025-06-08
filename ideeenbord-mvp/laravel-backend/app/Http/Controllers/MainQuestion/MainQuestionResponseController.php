@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\MainQuestion;
 
 use Illuminate\Http\Request;
 use App\Models\MainQuestionResponse;
 use App\Models\Brand;
 use App\Models\MainQuestion;
+use App\Http\Controllers\Controller;
+
 
 class MainQuestionResponseController extends Controller
 {

@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Ideas;
 
 use App\Models\Idea;
 use Illuminate\Http\Request;
 use App\Mail\IdeaStatusChangedMail;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Controller;
+
 
 class IdeaController extends Controller
 {

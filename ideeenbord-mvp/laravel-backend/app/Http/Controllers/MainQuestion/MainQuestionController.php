@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\MainQuestion;
 
 use App\Models\MainQuestion;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
 
 class MainQuestionController extends Controller
 {
