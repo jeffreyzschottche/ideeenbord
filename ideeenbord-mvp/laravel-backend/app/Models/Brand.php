@@ -10,7 +10,7 @@ class Brand extends Model
 {
     use HasFactory;
     protected $fillable = [
-         'title',
+        'title',
         'category',
         'website_url',
         'intro',
@@ -18,6 +18,7 @@ class Brand extends Model
         'email',
         'logo_path',
         'socials',
+        'accepted',
         'verified',
         'rating',
         'has_paid',
@@ -37,27 +38,29 @@ class Brand extends Model
         'giveaways' => 'array',
         'ideas' => 'array',
         'pinned_ideas' => 'array',
+        'accepted' => 'boolean',
+        'verified' => 'boolean',
     ];
     public function owner()
-{
-    return $this->hasOne(BrandOwner::class);
-}
-protected static function boot()
-{
-    parent::boot();
+    {
+        return $this->hasOne(BrandOwner::class);
+    }
+    protected static function boot()
+    {
+        parent::boot();
 
-    static::creating(function ($brand) {
-        $brand->slug = \Str::slug($brand->title);
-    });
+        static::creating(function ($brand) {
+            $brand->slug = \Str::slug($brand->title);
+        });
 
-    static::updating(function ($brand) {
-        $brand->slug = \Str::slug($brand->title);
-    });
-}
-public function mainQuestion()
-{
-    return $this->belongsTo(MainQuestion::class);
-}
+        static::updating(function ($brand) {
+            $brand->slug = \Str::slug($brand->title);
+        });
+    }
+    public function mainQuestion()
+    {
+        return $this->belongsTo(MainQuestion::class);
+    }
 
 
 }

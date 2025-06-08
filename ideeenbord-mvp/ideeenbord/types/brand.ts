@@ -39,4 +39,6 @@ export interface Brand {
   slug: string;
   main_question_id?: number;
   subscription?: string;
+  accepted?: boolean;
+  verified?: boolean;
 }

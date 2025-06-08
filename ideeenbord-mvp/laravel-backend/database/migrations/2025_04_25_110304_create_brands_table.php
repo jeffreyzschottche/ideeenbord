@@ -35,6 +35,7 @@ return new class extends Migration {
             $table->foreignId('main_question_id')->nullable()->constrained('main_questions')->nullOnDelete();
             $table->json('ideas')->nullable();
             $table->json('pinned_ideas')->nullable();
+            $table->boolean('accepted')->default(false);
             $table->timestamps();
         });
     }

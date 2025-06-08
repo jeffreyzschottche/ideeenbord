@@ -39,6 +39,9 @@ const averageRating = computed(() => {
 onMounted(async () => {
   try {
     brand.value = await apiFetch(`/brands/${route.params.slug}`);
+    if (!brand.value.accepted) {
+      navigateTo("/brands");
+    }
   } catch (err: any) {
     triggerByKey("brand-load-failed");
   }

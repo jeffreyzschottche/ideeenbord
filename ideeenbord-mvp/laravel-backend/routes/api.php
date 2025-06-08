@@ -191,6 +191,8 @@ Route::prefix('v1')->group(function () {
             return response()->json(['message' => 'BrandOwner succesvol goedgekeurd door admin.']);
         });
         Route::get('/brand-owners', [BrandOwnerController::class, 'index']);
+        Route::get('/brands/pending', [BrandController::class, 'pending']);
+        Route::post('/brands/{brand}/accept', [BrandController::class, 'accept']);
     });
 
 });
