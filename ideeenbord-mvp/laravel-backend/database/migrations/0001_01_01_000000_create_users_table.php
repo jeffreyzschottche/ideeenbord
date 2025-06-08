@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -19,21 +18,24 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-        $table->string('gender')->nullable();
-        $table->date('birthdate')->nullable();
-        $table->string('education_level')->nullable();
-        $table->string('education')->nullable();
-        $table->string('job')->nullable();
-        $table->string('sector')->nullable();
-        $table->string('city')->nullable();
-        $table->string('birth_city')->nullable();
-        $table->string('relationship_status')->nullable();
-        $table->string('postal_code')->nullable();
+            $table->string('gender')->nullable();
+            $table->date('birthdate')->nullable();
+            $table->string('education_level')->nullable();
+            $table->string('education')->nullable();
+            $table->string('job')->nullable();
+            $table->string('sector')->nullable();
+            $table->string('city')->nullable();
+            $table->string('birth_city')->nullable();
+            $table->string('relationship_status')->nullable();
+            $table->string('postal_code')->nullable();
 
-        $table->json('liked_posts')->nullable();
-        $table->json('disliked_posts')->nullable();
-        $table->json('created_posts')->nullable();
-        $table->json('quiz_submissions')->nullable();
+            $table->json('liked_posts')->nullable();
+            $table->json('disliked_posts')->nullable();
+            $table->json('created_posts')->nullable();
+            $table->json('quiz_submissions')->nullable();
+            $table->json('ratings_given')->nullable();
+            $table->string('role')->default('user');
+            $table->json('notifications')->nullable();
             $table->timestamps();
         });
 

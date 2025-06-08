@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -14,6 +13,7 @@ return new class extends Migration
         Schema::create('brands', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('slug')->nullable()->unique();
             $table->string('category');
             $table->string('website_url')->nullable();
             $table->text('intro')->nullable();
@@ -21,9 +21,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('logo_path')->nullable();
             $table->json('socials')->nullable();
-
-            // Automatisch velden
             $table->boolean('verified')->default(false);
+            $table->unsignedInteger('rating_sum')->default(0);
+            $table->unsignedInteger('rating_count')->default(0);
             $table->integer('rating')->default(0);
             $table->boolean('has_paid')->default(false);
             $table->string('subscription')->nullable();
@@ -32,7 +32,7 @@ return new class extends Migration
             $table->integer('dislikes')->default(0);
             $table->json('quizzes')->nullable();
             $table->json('giveaways')->nullable();
-            $table->string('main_question')->nullable();
+            $table->foreignId('main_question_id')->nullable()->constrained('main_questions')->nullOnDelete();
             $table->json('ideas')->nullable();
             $table->json('pinned_ideas')->nullable();
             $table->timestamps();
