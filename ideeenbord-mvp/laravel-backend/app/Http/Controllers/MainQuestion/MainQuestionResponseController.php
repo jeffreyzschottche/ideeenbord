@@ -9,8 +9,26 @@ use App\Models\MainQuestion;
 use App\Http\Controllers\Controller;
 
 
+/**
+ * Class MainQuestionResponseController
+ *
+ * This controller handles the storage of user responses to main questions
+ * associated with specific brands. It ensures each user can only answer a question once per brand.
+ */
 class MainQuestionResponseController extends Controller
 {
+    /**
+     * Store a user's response to a main question for a specific brand.
+     *
+     * Validates the input, checks for duplicate responses,
+     * and creates a new response record if valid.
+     *
+     * @param Request $request The HTTP request containing main question ID and answer.
+     * @param Brand $brand The brand to which the response is associated.
+     * @return \Illuminate\Http\JsonResponse JSON response confirming success or duplication.
+     *
+     * @throws \Illuminate\Validation\ValidationException If the request validation fails.
+     */
     public function store(Request $request, Brand $brand)
     {
         $user = $request->user();
