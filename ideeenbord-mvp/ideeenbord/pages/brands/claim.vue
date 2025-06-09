@@ -47,7 +47,13 @@ async function handleSubmit() {
     await claimBrand(form.value);
     triggerByKey("claim-submitted");
   } catch (e) {
-    triggerByKey("claim-failed");
+    switch (e) {
+      case "The email has already been taken.":
+        alert("email al in gebruik");
+        break;
+      default:
+        triggerByKey("claim-failed");
+    }
   }
 }
 </script>

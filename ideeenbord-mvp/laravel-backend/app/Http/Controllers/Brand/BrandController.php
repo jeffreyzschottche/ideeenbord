@@ -9,8 +9,23 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
+/**
+ * Class BrandController
+ *
+ * This controller handles all operations related to brand management for brand owners.
+ * It includes methods for creating, listing, viewing, updating, and managing brand properties
+ * such as verification, acceptance, rating, and associating main questions.
+ */
 class BrandController extends Controller
 {
+    /**
+     * Store a new brand.
+     *
+     * Validates input, handles optional logo upload, and stores the brand with default values.
+     *
+     * @param Request $request The HTTP request containing brand data.
+     * @return \Illuminate\Http\JsonResponse The created brand data or validation errors.
+     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -55,9 +70,17 @@ class BrandController extends Controller
 
         return response()->json(['brand' => $brand], 201);
     }
+
+    /**
+     * Get a list of brands with optional filters for verification and acceptance.
+     *
+     * @param Request $request The HTTP request containing optional filters.
+     * @return \Illuminate\Support\Collection A collection of brand IDs and titles.
+     */
     public function index(Request $request)
     {
         $query = Brand::query();
+
         if ($request->has('verified')) {
             $query->where('verified', (bool) $request->input('verified'));
         }
@@ -65,13 +88,26 @@ class BrandController extends Controller
         if ($request->has('accepted')) {
             $query->where('accepted', (bool) $request->input('accepted'));
         }
+
         return $query->get(['id', 'title']);
     }
+
+    /**
+     * Retrieve all brands that are pending acceptance.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection The collection of pending brands.
+     */
     public function pending()
     {
         return Brand::where('accepted', false)->get();
     }
 
+    /**
+     * Accept a brand.
+     *
+     * @param Brand $brand The brand to accept.
+     * @return \Illuminate\Http\JsonResponse A confirmation message.
+     */
     public function accept(Brand $brand)
     {
         $brand->accepted = true;
@@ -80,11 +116,31 @@ class BrandController extends Controller
         return response()->json(['message' => 'Brand geaccepteerd']);
     }
 
+    /**
+     * Show a brand by its slug, including the related main question.
+     *
+     * @param string $slug The slug of the brand.
+     * @return \Illuminate\Http\JsonResponse The brand data.
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException If brand not found.
+     */
     public function show($slug)
     {
         $brand = Brand::with('mainQuestion')->where('slug', $slug)->firstOrFail();
+
         return response()->json($brand);
     }
+
+    /**
+     * Rate a brand.
+     *
+     * Validates the rating, checks if the user already rated, updates the brand's average rating,
+     * and stores the brand ID in the user's rating history.
+     *
+     * @param Request $request The HTTP request with rating data.
+     * @param Brand $brand The brand being rated.
+     * @return \Illuminate\Http\JsonResponse A confirmation message with the updated average rating.
+     */
     public function rate(Request $request, Brand $brand)
     {
         $request->validate([
@@ -93,17 +149,17 @@ class BrandController extends Controller
 
         $user = $request->user();
 
-        // Check of user al gerated heeft
+        // Check if the user has already rated this brand
         if (in_array($brand->id, $user->ratings_given ?? [])) {
             return response()->json(['message' => 'Je hebt al een rating gegeven.'], 403);
         }
 
-        // Brand ratings bijwerken
+        // Update brand ratings
         $brand->rating_sum += $request->rating;
         $brand->rating_count += 1;
         $brand->save();
 
-        // User ratings bijwerken
+        // Update user's given ratings
         $user->ratings_given = [...($user->ratings_given ?? []), $brand->id];
         $user->save();
 
@@ -112,6 +168,14 @@ class BrandController extends Controller
             'average_rating' => round($brand->rating_sum / $brand->rating_count, 1),
         ]);
     }
+
+    /**
+     * Set the main question for a brand by an authenticated brand owner.
+     *
+     * @param Request $request The HTTP request containing main question ID.
+     * @param Brand $brand The brand to update.
+     * @return \Illuminate\Http\JsonResponse A success message with the updated brand.
+     */
     public function setMainQuestion(Request $request, Brand $brand)
     {
         $user = auth('brand_owner')->user();
@@ -132,6 +196,16 @@ class BrandController extends Controller
             'brand' => $brand->load('mainQuestion'),
         ]);
     }
+
+    /**
+     * Update editable fields for a brand.
+     *
+     * Only the authenticated brand owner is authorized to update their brand.
+     *
+     * @param Request $request The HTTP request with brand fields to update.
+     * @param Brand $brand The brand to update.
+     * @return \Illuminate\Http\JsonResponse A confirmation message with updated brand.
+     */
     public function update(Request $request, Brand $brand)
     {
         $user = auth('brand_owner')->user();
@@ -155,9 +229,4 @@ class BrandController extends Controller
 
         return response()->json(['message' => 'Merk bijgewerkt.', 'brand' => $brand]);
     }
-
-
-
-
-
 }
