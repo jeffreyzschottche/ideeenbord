@@ -65,6 +65,8 @@ export type MessageKey =
   | "claim-failed"
   | "request-submitted"
   | "request-failed"
+  | "admin-brand-acceptance-failed"
+  | "admin-brand-accepted"
   | "server-error";
 
 type MessageType = "success" | "error" | "warning";
@@ -469,6 +471,20 @@ export const messages: Record<
     text: {
       nl: "Aanvraag mislukt.",
       en: "Brand request failed.",
+    },
+  },
+  "admin-brand-accepted": {
+    type: "success",
+    text: {
+      nl: "Brand geaccepteerd.",
+      en: "Brand accepted",
+    },
+  },
+  "admin-brand-acceptance-failed": {
+    type: "error",
+    text: {
+      nl: "Brand niet geaccepteerd er ging iets fout.",
+      en: "Brand not accepted, something went wrong.",
     },
   },
 };

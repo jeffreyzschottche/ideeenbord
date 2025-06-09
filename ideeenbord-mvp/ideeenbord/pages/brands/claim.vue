@@ -29,9 +29,12 @@ const { triggerByKey } = useResponseDisplay();
 // Fetch all unverified brands on mount
 onMounted(async () => {
   try {
-    const data = await apiFetch<{ id: number; title: string }[]>("/brands", {
-      params: { verified: 0 },
-    });
+    const data = await apiFetch<{ id: number; title: string }[]>(
+      "/brands?accepted=1",
+      {
+        params: { verified: 0 },
+      }
+    );
     brands.value = data;
   } catch (err: any) {
     triggerByKey("claim-load-failed");
@@ -44,7 +47,13 @@ async function handleSubmit() {
     await claimBrand(form.value);
     triggerByKey("claim-submitted");
   } catch (e) {
-    triggerByKey("claim-failed");
+    switch (e) {
+      case "The email has already been taken.":
+        alert("email al in gebruik");
+        break;
+      default:
+        triggerByKey("claim-failed");
+    }
   }
 }
 </script>

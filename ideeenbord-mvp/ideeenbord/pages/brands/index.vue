@@ -11,7 +11,7 @@ const brands = ref([]);
 
 // Fetch all brands on page load
 onMounted(async () => {
-  brands.value = await apiFetch("/brands");
+  brands.value = await apiFetch("/brands?accepted=1");
 });
 </script>
 

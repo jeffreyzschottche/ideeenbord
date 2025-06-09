@@ -53,16 +53,15 @@ export function useLogin() {
           error.value = "Please verify your email address first.";
           return false;
         }
-
-        // Set token and user in global auth store (also sets cookie)
-        authStore.setAuth(token, user);
-
         // Optional: redirect based on user role
         if (user.role === "admin") {
-          return navigateTo("/admin/verify");
+          navigateTo("/admin/verify");
+          // return true;
         }
-
-        return true;
+        // Set token and user in global auth store (also sets cookie)
+        authStore.setAuth(token, user);
+        navigateTo(`/user/${user.username}`);
+        // return true;
       } else {
         error.value = "No token or user received.";
         return false;

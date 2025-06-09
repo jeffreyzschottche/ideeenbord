@@ -16,10 +16,12 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         VerifyEmail::createUrlUsing(function ($notifiable) {
-            $frontendUrl = Config::get('app.frontend_url', 'http://localhost:3000');
+            $frontendUrl = Config::get('app.frontend_url');
 
             $temporarySignedURL = URL::temporarySignedRoute(
-                'verification.verify', now()->addMinutes(60), [
+                'verification.verify',
+                now()->addMinutes(60),
+                [
                     'id' => $notifiable->getKey(),
                     'hash' => sha1($notifiable->getEmailForVerification()),
                 ]

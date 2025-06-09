@@ -37,7 +37,7 @@ class VerifyEmailForBrandOwner extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-                $verificationUrl = $this->verificationUrl($notifiable);
+        $verificationUrl = $this->verificationUrl($notifiable);
         return (new MailMessage)
             ->subject(Lang::get('Verifieer je E-mailadres'))
             ->line(Lang::get('Klik op de knop hieronder om je e-mailadres te verifiëren.'))
@@ -56,12 +56,10 @@ class VerifyEmailForBrandOwner extends Notification
             //
         ];
     }
-     protected function verificationUrl($notifiable)
+    protected function verificationUrl($notifiable)
     {
-        // ✅ DIT IS DE CRUCIALE STAP
-        // We forceren Laravel om de route voor brand owners te gebruiken.
         return URL::temporarySignedRoute(
-            'brandowner.verification.verify', // De naam van JOUW brand-owner route
+            'brandowner.verification.verify',
             Carbon::now()->addMinutes(60),
             [
                 'id' => $notifiable->getKey(),
