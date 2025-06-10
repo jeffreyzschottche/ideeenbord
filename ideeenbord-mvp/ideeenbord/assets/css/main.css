@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Variables */
+:root {
+  --color-brand: purple;
+  --color-success: #22c55e;
+  --color-error: #ef4444;
+}
+
+/* Utility-classes via Tailwind */
+@layer components {
+  .btn-primary {
+    @apply bg-[var(--color-brand)] text-white px-4 py-2 rounded;
+  }
+}
