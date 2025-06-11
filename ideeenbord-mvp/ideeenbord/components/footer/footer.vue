@@ -1,9 +1,8 @@
 <template>
   <footer class="bg-gray-900 text-white py-6 w-full">
     <div
-      class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-6 text-center md:text-left"
+      class="container mx-auto px-2 grid grid-cols-1 md:grid-cols-4 gap-6 text-center md:text-left"
     >
-      <!-- Logo & copyright -->
       <div>
         <h2 class="text-3xl font-bold">
           IDEEEN<span class="font-light">BORD</span>
@@ -14,7 +13,6 @@
         <p class="text-sm">&copy; {{ year }} Alle rechten voorbehouden.</p>
       </div>
 
-      <!-- Navigatielinks -->
       <div>
         <h3 class="font-semibold mb-2">Navigatie</h3>
         <ul class="space-y-1">
@@ -80,9 +78,7 @@
         </ul>
       </div>
 
-      <!-- Social links -->
       <div>
-        <!-- Volg ons -->
         <h3 class="font-semibold mb-2">Volg ons</h3>
         <div class="flex justify-center md:justify-start space-x-4 mb-4">
           <a href="https://facebook.com" target="_blank" class="social-link">
@@ -104,7 +100,7 @@
 
         <!-- Nieuwsbrief -->
         <h3 class="font-semibold mb-2">Nieuwsbrief</h3>
-        <form class="flex flex-col items-start align-center gap-2">
+        <form class="flex flex-col items-center md:items-start gap-2">
           <input
             type="email"
             placeholder="E-mailadres"

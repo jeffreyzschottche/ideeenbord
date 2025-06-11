@@ -3,7 +3,7 @@
     <NavbarNav />
     <main>
       <div class="h-20"></div>
-      <div class="container">
+      <div class="mx-auto container bg-red-500">
         <slot />
       </div>
     </main>

@@ -5,7 +5,7 @@
       { '-translate-y-full': !showHeader, 'translate-y-0': showHeader },
     ]"
   >
-    <div class="container mx-auto flex justify-between items-center py-4 px-6">
+    <div class="container mx-auto flex justify-between items-center py-4 px-2">
       <!-- Logo -->
       <NuxtLink to="/" class="relative text-3xl font-bold">
         IDEEEN<span class="font-light">BORD</span>
@@ -16,6 +16,8 @@
 
       <!-- Desktop nav -->
       <nav class="hidden md:flex space-x-6 text-md items-center">
+        <SearchSearchbarnav />
+        <NuxtLink to="/about" class="nav-link">Uitleg</NuxtLink>
         <NuxtLink to="/news" class="nav-link">Nieuws</NuxtLink>
         <NuxtLink to="/win" class="nav-link">Winacties</NuxtLink>
         <NuxtLink to="/ideas" class="nav-link">Ideeën</NuxtLink>
@@ -99,6 +101,12 @@
           v-if="menuOpen"
           class="absolute top-16 left-0 w-full bg-gray-800 text-white p-4 flex flex-col space-y-4 md:hidden"
         >
+          <div class="searchBarMobileWrapper mr-auto">
+            <SearchSearchbarnav />
+          </div>
+          <NuxtLink to="/about" class="nav-link" @click="toggleMenu"
+            >Uitleg</NuxtLink
+          >
           <NuxtLink to="/news" class="nav-link" @click="toggleMenu"
             >Nieuws</NuxtLink
           >
@@ -150,6 +158,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import Searchbarnav from "../search/searchbarnav.vue";
+import { SearchSearchbarnav } from "#components";
 
 const menuOpen = ref(false);
 const profileOpen = ref(false);
@@ -189,7 +198,7 @@ onUnmounted(() => window.removeEventListener("scroll", handleScroll));
   @apply text-gray-300 hover:text-white transition duration-300;
 }
 .cta:hover {
-  box-shadow: 0 0 15px 5px var(--color-orange-500);
+  box-shadow: 0 0 15px 5px var(--color-brand);
 }
 .slide-enter-active,
 .slide-leave-active {
