@@ -39,6 +39,11 @@
                 <p v-if="query">{{ query }}</p>
                 <p v-else class="text-gray-400">Geen resultaten</p>
               </div>
+              <div>
+                <h4 class="font-semibold text-orange-500">Artikelen :</h4>
+                <p v-if="query">{{ query }}</p>
+                <p v-else class="text-gray-400">Geen resultaten</p>
+              </div>
             </div>
           </div>
         </div>

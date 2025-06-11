@@ -16,7 +16,7 @@
 
       <!-- Desktop nav -->
       <nav class="hidden md:flex space-x-6 text-md items-center">
-        <SearchSearchbarnav />
+        <SearchBarNav />
         <NuxtLink to="/about" class="nav-link">Uitleg</NuxtLink>
         <NuxtLink to="/news" class="nav-link">Nieuws</NuxtLink>
         <NuxtLink to="/win" class="nav-link">Winacties</NuxtLink>
@@ -102,7 +102,7 @@
           class="absolute top-16 left-0 w-full bg-gray-800 text-white p-4 flex flex-col space-y-4 md:hidden"
         >
           <div class="searchBarMobileWrapper mr-auto">
-            <SearchSearchbarnav />
+            <SearchSearchBarNav />
           </div>
           <NuxtLink to="/about" class="nav-link" @click="toggleMenu"
             >Uitleg</NuxtLink
@@ -157,8 +157,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
-import Searchbarnav from "../search/searchbarnav.vue";
-import { SearchSearchbarnav } from "#components";
+import { SearchBarNav } from "#components";
 
 const menuOpen = ref(false);
 const profileOpen = ref(false);
