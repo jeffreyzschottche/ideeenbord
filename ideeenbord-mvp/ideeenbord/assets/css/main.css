@@ -3,16 +3,93 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Variables */
+/* =======================================
+Custom Color Variables, Fonts & Theme Setup
+========================================== */
 :root {
-  --color-brand: purple;
+  /* Colors */
+  --color-brand: #f78a1d;
   --color-success: #22c55e;
   --color-error: #ef4444;
+  --color-warning: #f97316;
+  --color-text: #1a1a1a;
+  --color-text-light: #ffffff;
+  --color-bg: #f3f4f6;
+  --color-nav: #1f2937;
+  --color-glow: #ffd700;
+  /* Fonts */
+  --font-default: "Poppins", sans-serif;
+  --font-alt: "Roboto", sans-serif;
 }
 
-/* Utility-classes via Tailwind */
+/* =======================================
+Logo Glow
+========================================== */
+.lamp-glow {
+  animation: glow 2s ease-in-out infinite alternate;
+  margin-top: 0.1em;
+}
+@keyframes glow {
+  from {
+    filter: drop-shadow(0 0 5px var(--color-glow));
+  }
+  to {
+    filter: drop-shadow(0 0 15px var(--color-glow));
+  }
+}
+
+/* =======================================
+Custom Utility Components (Tailwind Layer)
+========================================== */
 @layer components {
   .btn-primary {
-    @apply bg-[var(--color-brand)] text-white px-4 py-2 rounded;
+    @apply bg-[var(--color-brand)] text-white px-4 py-2 rounded hover:opacity-90 transition;
+  }
+
+  .text-success {
+    color: var(--color-success);
+  }
+
+  .text-error {
+    color: var(--color-error);
+  }
+
+  .text-warning {
+    color: var(--color-warning);
+  }
+
+  .bg-nav {
+    background-color: var(--color-nav);
+  }
+
+  .bg-brand {
+    background-color: var(--color-brand);
+  }
+
+  .glow-logo {
+    animation: glow 1.5s ease-in-out infinite alternate;
+  }
+
+  .main-text {
+    color: var(--color-text);
+  }
+
+  .light-bg {
+    background-color: var(--color-bg);
+  }
+
+  .dark-text {
+    color: var(--color-text);
+  }
+
+  .light-text {
+    color: var(--color-text-light);
+  }
+  .font-default {
+    font-family: var(--font-default);
+  }
+
+  .font-alt {
+    font-family: var(--font-alt);
   }
 }
