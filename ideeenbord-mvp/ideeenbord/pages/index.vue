@@ -1,24 +1,20 @@
 <template>
-  <p class="p1 text-2xl font-bold">Poppins</p>
-  <p class="font-alt p2 text-2xl font-bold">Roboto</p>
-  <pre class="font-default p3 italic text-2xl font-bold">code hier</pre>
+  <div class="p-6">
+    <h1 class="text-2xl font-bold mb-4">{{ content["home-title"] }}</h1>
+
+    <img
+      v-if="content['header-home-image']"
+      :src="content['header-home-image']"
+      class="max-h-64 rounded shadow"
+    />
+
+    <div v-if="isLoading" class="text-gray-500">Laden...</div>
+    <div v-if="error" class="text-red-500">Fout: {{ error }}</div>
+  </div>
 </template>
+
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { useCmsContent } from "~/composables/content/useCmsContent";
 
-onMounted(() => {
-  const logFont = (className: string) => {
-    const el = document.querySelector(`.${className}`);
-    if (el) {
-      const style = getComputedStyle(el);
-      console.log(`Font for .${className}:`, style.fontFamily);
-    } else {
-      console.warn(`Element with class "${className}" not found`);
-    }
-  };
-
-  logFont("p1");
-  logFont("p2");
-  logFont("p3");
-});
+const { content, isLoading, error } = useCmsContent("home");
 </script>

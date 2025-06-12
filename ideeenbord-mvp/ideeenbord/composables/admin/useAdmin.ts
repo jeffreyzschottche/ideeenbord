@@ -3,6 +3,8 @@ import { useResponseDisplay } from "~/composables/notifications/useResponseDispl
 import { adminService } from "~/services/api/admin/adminService";
 import type { BrandOwner } from "~/types/brand-owner";
 import type { Brand } from "~/types/brand";
+import type { CmsPage } from "~/types/cms-page";
+import type { CmsField } from "~/types/cms-field";
 
 // Composable providing admin-specific logic for managing brand owner verification
 export function useAdmin() {
@@ -59,7 +61,6 @@ export function useAdmin() {
       triggerByKey("admin-brand-acceptance-failed");
     }
   }
-
   return {
     owners,
     pendingBrands,
