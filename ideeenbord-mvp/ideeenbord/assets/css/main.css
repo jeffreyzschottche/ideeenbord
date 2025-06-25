@@ -16,7 +16,7 @@ Custom Color Variables, Fonts & Theme Setup
   --color-text-light: #ffffff;
   --color-bg: #f3f4f6;
   --color-nav: #1f2937;
-  --color-glow: #ffd700;
+  --color-glow: #ffbb00;
   /* Fonts */
   --font-default: "Poppins", sans-serif;
   --font-alt: "Roboto", sans-serif;
@@ -42,6 +42,12 @@ Logo Glow
 Custom Utility Components (Tailwind Layer)
 ========================================== */
 @layer components {
+  .cta {
+    @apply bg-gradient-to-b from-orange-400 to-orange-600 text-white px-2 py-2 rounded-xl font-bold transition ease-in-out duration-300;
+  }
+  .nav-link {
+    @apply text-gray-300 hover:text-white transition duration-300;
+  }
   .btn-primary {
     @apply bg-[var(--color-brand)] text-white px-4 py-2 rounded hover:opacity-90 transition;
   }
@@ -66,8 +72,9 @@ Custom Utility Components (Tailwind Layer)
     background-color: var(--color-brand);
   }
 
-  .glow-logo {
-    animation: glow 1.5s ease-in-out infinite alternate;
+  .cta:hover {
+    /* animation: glow 1.5s ease-in-out infinite alternate; */
+    box-shadow: 0 0 10px 5px var(--color-glow);
   }
 
   .main-text {
@@ -91,5 +98,12 @@ Custom Utility Components (Tailwind Layer)
 
   .font-alt {
     font-family: var(--font-alt);
+  }
+  .footer-link {
+    @apply text-gray-300 hover:text-white transition duration-300;
+  }
+
+  .social-link {
+    @apply text-gray-300 hover:text-orange-500 text-xl transition duration-300;
   }
 }

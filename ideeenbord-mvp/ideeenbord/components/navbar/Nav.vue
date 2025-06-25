@@ -1,7 +1,7 @@
 <template>
   <header
     :class="[
-      'fixed w-full h-20 z-50 bg-gray-900 text-white transition-transform duration-300',
+      'fixed w-full h-20 z-50 bg-nav light-text text-light transition-transform duration-300',
       { '-translate-y-full': !showHeader, 'translate-y-0': showHeader },
     ]"
   >
@@ -40,9 +40,9 @@
                 <NuxtLink
                   to="/my-account"
                   class="block px-4 py-2 text-gray-200 hover:bg-gray-700"
-                  >Account</NuxtLink
                 >
-
+                  Account
+                </NuxtLink>
                 <button
                   @click="logout"
                   class="w-full text-left px-4 py-2 text-gray-200 hover:bg-gray-700"
@@ -54,11 +54,9 @@
           </div>
         </template>
 
-        <NuxtLink
-          to="/app"
-          class="cta hover:orange-box-shadow bg-gradient-to-b from-orange-400 to-orange-600 text-white px-2 py-2 rounded-xl w-35 font-bold text-center transition duration-300"
-          >+ Plaats idee</NuxtLink
-        >
+        <NuxtLink to="/app" class="cta w-35 text-center">
+          + Plaats idee
+        </NuxtLink>
       </nav>
 
       <!-- Hamburger -->
@@ -101,7 +99,7 @@
           v-if="menuOpen"
           class="absolute top-16 left-0 w-full bg-gray-800 text-white p-4 flex flex-col space-y-4 md:hidden"
         >
-          <div class="searchBarMobileWrapper mr-auto">
+          <div class="searchBarMobileWrapper mr-auto nav-link">
             <SearchSearchBarNav />
           </div>
           <NuxtLink to="/about" class="nav-link" @click="toggleMenu"
@@ -143,11 +141,7 @@
             </button>
           </template>
 
-          <NuxtLink
-            to="/app"
-            class="cta hover:orange-box-shadow bg-orange-500 text-white px-2 py-2 rounded-xl w-35 font-bold text-center transition duration-300"
-            >+ Plaats idee</NuxtLink
-          >
+          <NuxtLink to="/app" class="cta text-center"> + Plaats idee </NuxtLink>
         </div>
       </transition>
     </div>
@@ -191,14 +185,7 @@ onMounted(() => {
 onUnmounted(() => window.removeEventListener("scroll", handleScroll));
 </script>
 
-<style>
-@import "tailwindcss";
-.nav-link {
-  @apply text-gray-300 hover:text-white transition duration-300;
-}
-.cta:hover {
-  box-shadow: 0 0 15px 5px var(--color-brand);
-}
+<style scoped>
 .slide-enter-active,
 .slide-leave-active {
   transition: transform 0.3s, opacity 0.3s;

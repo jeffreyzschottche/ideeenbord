@@ -27,8 +27,15 @@
         :key="page.id"
         class="border border-gray-300 rounded-lg p-4"
       >
-        <h2 class="text-xl font-bold mb-4">{{ page.title }}</h2>
-
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold">{{ page.title }}</h2>
+          <button
+            @click="toggleCollapse(page.id)"
+            class="text-sm text-blue-600 underline hover:text-blue-800"
+          >
+            {{ collapsedPages[page.id] ? "Uitklappen" : "Inklappen" }}
+          </button>
+        </div>
         <!-- Add field -->
         <form
           v-if="fieldForms[page.id]"
@@ -81,7 +88,7 @@
         </form>
 
         <!-- Field list -->
-        <div v-if="page.fields?.length">
+        <div v-if="page.fields?.length && !collapsedPages[page.id]">
           <div
             v-for="field in page.fields"
             :key="field.id"
@@ -153,6 +160,8 @@ import { ref, onMounted } from "vue";
 import { useCms } from "~/composables/admin/useCms";
 import type { CmsPage } from "~/types/cms-page";
 import type { CmsField } from "~/types/cms-field";
+
+const collapsedPages = ref<Record<number, boolean>>({});
 
 const {
   pages,
@@ -245,5 +254,8 @@ async function handleImageUpload(event: Event, pageId: number) {
   } catch (err) {
     console.error("Image upload failed", err);
   }
+}
+function toggleCollapse(pageId: number) {
+  collapsedPages.value[pageId] = !collapsedPages.value[pageId];
 }
 </script>

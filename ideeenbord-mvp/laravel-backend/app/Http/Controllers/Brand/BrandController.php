@@ -89,7 +89,7 @@ class BrandController extends Controller
             $query->where('accepted', (bool) $request->input('accepted'));
         }
 
-        return $query->get(['id', 'title']);
+        return $query->get(['id', 'title', 'logo_path']);
     }
 
     /**

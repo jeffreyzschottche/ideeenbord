@@ -1,19 +1,19 @@
 <template>
-  <div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">{{ content["home-title"] }}</h1>
-
-    <img
-      v-if="content['header-home-image']"
-      :src="content['header-home-image']"
-      class="max-h-64 rounded shadow"
-    />
-
-    <div v-if="isLoading" class="text-gray-500">Laden...</div>
-    <div v-if="error" class="text-red-500">Fout: {{ error }}</div>
+  <div class="pt-6">
+    <HomeSlider v-if="content" :content="content" class="mt-14" />
+    <div class="mx-auto container pl-2 pr-2 md:pl-0 md:pr-0">
+      <HomeAboutSnippet />
+      <HomeData />
+      <HomeHowTo />
+      <HomeBrandSlider />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "home",
+});
 import { useCmsContent } from "~/composables/content/useCmsContent";
 
 const { content, isLoading, error } = useCmsContent("home");
