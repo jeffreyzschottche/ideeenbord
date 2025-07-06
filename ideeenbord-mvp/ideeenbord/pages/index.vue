@@ -6,6 +6,9 @@
       <HomeData />
       <HomeHowTo />
       <HomeBrandSlider />
+      <HomeCurrentActions />
+      <HomeVideo />
+      <HomeOptionsGrid />
     </div>
   </div>
 </template>

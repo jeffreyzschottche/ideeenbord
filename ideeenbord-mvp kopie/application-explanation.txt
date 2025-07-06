@@ -1,0 +1,27 @@
+Ideeenbord is een moderne webapplicatie ontwikkeld met Nuxt 3 (frontend) en Laravel (backend). Het platform biedt gebruikers de mogelijkheid om interactief betrokken te raken bij diverse merken via merk-specifieke pagina’s.
+
+Elk merk op Ideeenbord kan worden geclaimd door een brand-owner of nog openstaan voor een toekomstige eigenaar. Wanneer een merk geclaimd is, beheert de brand-owner via een beveiligd dashboard diverse functies zoals merkbeheer, quizbeheer en interactie met gebruikers.
+
+Gebruikers kunnen zich eenvoudig registreren en ontvangen vervolgens een verificatie-e-mail om hun account te bevestigen. Na verificatie kunnen gebruikers inloggen en gebruik maken van meerdere functionaliteiten. Zo kunnen zij ideeën plaatsen op merkpagina’s, ideeën liken of disliken, deelnemen aan quizzen en antwoorden geven op de wekelijkse hoofdvraag (main question) die door de brand-owner gekozen wordt.
+
+De brand-owner heeft uitgebreide controle via het dashboard, waaronder:
+
+Aanmaken en beheren van interactieve quizzen.
+
+Selecteren en publiceren van een "vraag van de week" (main question) voor hun merkpagina.
+
+Aanpassen van merkgegevens zoals titel, categorie, logo en social media links.
+
+Aanpassen van persoonlijke brand-owner gegevens zoals e-mail, wachtwoord en telefoonnummer.
+
+Bekijken en beheren van ingezonden ideeën door gebruikers, waaronder het aanpassen van de status van ideeën (bijvoorbeeld van "pending" naar "in progress" of "completed") en het "pinnen" van belangrijke ideeën.
+
+Bij iedere verandering door een brand-owner (zoals het wijzigen van een idee-status of het selecteren van een quizwinnaar) ontvangt de betreffende gebruiker een melding in zijn persoonlijke inbox binnen het platform, evenals een notificatie via e-mail. Zo blijft de interactie tussen merk en gebruiker transparant en duidelijk.
+
+Quizzen en winacties zijn bedoeld om gebruikers actief te betrekken bij de merken. Gebruikers die deelnemen kunnen prijzen winnen, geselecteerd door de brand-owner. Zodra een winnaar wordt gekozen, krijgt deze automatisch bericht via mail en inbox.
+
+In toekomstige updates van Ideeenbord zal ook uitgebreide rapportagefunctionaliteit worden toegevoegd. Brand-owners en gebruikers zullen gedetailleerde rapporten kunnen genereren en exporteren als CSV-bestanden. Deze rapportages geven inzicht in gebruikersinteracties, quizdeelnames, ideeënprestaties, populariteit van vragen, gebruikersbeoordelingen en algemene merkbetrokkenheid.
+
+Daarnaast ondersteunt Ideeenbord verschillende abonnementsvormen voor brand-owners, zoals Brons, Zilver en Goud. Elk abonnement biedt specifieke voordelen en functionaliteiten, waaronder uitgebreider merkbeheer, extra analyse- en rapportagemogelijkheden, prioriteitsondersteuning en verhoogde interactiemogelijkheden met gebruikers. Deze abonnementsstructuur biedt flexibiliteit en schaalbaarheid voor merken van elke omvang en behoefte.
+
+Ideeenbord streeft ernaar een dynamische en interactieve omgeving te creëren waar merken en gebruikers effectief kunnen communiceren, samenwerken aan ideeën, en waardevolle inzichten kunnen verkrijgen uit gebruikersdata.

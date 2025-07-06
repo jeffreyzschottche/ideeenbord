@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,6 +15,8 @@ return new class extends Migration
             $table->foreignId('brand_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->string('slug')->unique();
+            $table->text('description')->nullable();
+            $table->string('prize')->nullable();
             $table->enum('status', ['open', 'closed'])->default('open');
             $table->json('quiz_questions');
             $table->json('quiz_answers');

@@ -51,6 +51,32 @@ class QuizController extends Controller
 
         return response()->json(['quiz' => $quiz], 201);
     }
+    public function index(Request $request)
+    {
+        // optionele query-params
+        $limit = $request->integer('limit', 5);
+        $order = $request->string('order', 'desc');
+
+        // $quizzes = Quiz::query()
+        //     ->when(
+        //         $order === 'asc',
+        //         fn($q) => $q->orderBy('created_at', 'asc'),
+        //         fn($q) => $q->orderBy('created_at', 'desc')
+        //     )
+        //     ->take($limit)
+        //     ->get(['id', 'title', 'slug', 'brand_id']);
+        $quizzes = Quiz::with('brand:id,slug,title')
+            ->when(
+                $order === 'asc',
+                fn($q) => $q->orderBy('created_at', 'asc'),
+                fn($q) => $q->orderBy('created_at', 'desc')
+            )
+            ->take($limit)
+            ->get(['id', 'title', 'slug', 'brand_id']);
+
+        return response()->json($quizzes);
+    }
+
     /**
      * Update an existing quiz owned by the authenticated brand owner.
      *

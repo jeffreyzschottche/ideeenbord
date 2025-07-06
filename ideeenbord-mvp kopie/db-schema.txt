@@ -1,0 +1,168 @@
+
+# Database Schema Overview
+
+Dit bestand beschrijft het databaseschema op basis van de actuele JSON-inhoud. Elke tabel bevat uitleg over kolommen, voorbeelddata en relaties.
+
+## Tabel: users
+Bevat gebruikersgegevens van het platform. Gebruikers kunnen ideeën posten, quizzen invullen en meldingen ontvangen.
+
+Kolommen:
+- id: Primaire sleutel
+- name, username, email: Gebruikersidentiteit
+- password: Hashed wachtwoord
+- email_verified_at: Tijdstip van e-mailverificatie
+- quiz_submissions, liked_posts, disliked_posts: JSON-array met relaties
+- notifications: JSON-array met meldingen
+- role: user/admin
+
+Voorbeeld:
+- id: 25
+- username: pillenpiet
+- email: pillenpiet@gmail.com
+
+## Tabel: brand_owners
+Beheert merkeigenaren. Elke eigenaar heeft één gekoppeld merk via brand_id.
+
+Kolommen:
+- id, brand_id: Verwijzing naar brands
+- name, email, phone, url: Identiteit
+- subscription_plan: Brons/Zilver/Goud
+- password: Hashed wachtwoord
+- verified_owner: Boolean
+- email_verified_at: Verificatiestatus
+
+## Tabel: brands
+Een merk met eigenschappen, eigenaar en verzamelde interacties.
+
+Kolommen:
+- id, title, category, website_url: Identiteit
+- email, intro, intro_short: Content
+- socials: JSON-array
+- likes/dislikes: Interactie
+- quizzes, giveaways, ideas, pinned_ideas: JSON-referenties
+- rating_sum, rating_count: Scoreberekening
+- main_question_id: Verwijzing naar main_questions
+
+## Tabel: ideas
+Inzendingen van gebruikers bij een merk.
+
+Kolommen:
+- id, brand_id, user_id: Verwijzingen
+- title, description: Inhoud
+- likes, dislikes: Statistieken
+- is_pinned, status: Boolean + statuslabel (bv. pending)
+
+## Tabel: main_questions
+Vaste set vragen die merken kunnen koppelen aan hun publiek.
+
+Kolommen:
+- id, text: Vraag
+- answers: JSON-array met mogelijke antwoorden
+
+## Tabel: main_question_responses
+Reacties van gebruikers op een main_question van een merk.
+
+Kolommen:
+- id, user_id, brand_id, main_question_id: Verwijzingen
+- answer: Antwoordtekst
+
+## Tabel: quizzes
+Merkgebonden quizzen met deelnemers en antwoorden.
+
+Kolommen:
+- id, brand_id: Verwijzing naar merk
+- title, description, prize: Metadata
+- status: open/closed
+- quiz_questions: JSON-array met vragen
+- quiz_answers: JSON-array met juiste antwoorden
+- participants: JSON-array met antwoorden van deelnemers
+- winner_id: ID van winnaar (user_id)
+
+## Tabel: personal_access_tokens
+Sanctum-tokens voor authenticatie.
+
+Kolommen:
+- id, tokenable_type: User of BrandOwner
+- tokenable_id: ID verwijzing
+- token: Hash
+- abilities: JSON-array van rechten
+- last_used_at: Tijdstip van gebruik
+
+## Tabel: migrations
+Geschiedenis van uitgevoerde database migraties
+
+Kolommen:
+- id, migration, batch: Tijd en groep van de migratie
+
+## Overige tabellen
+- password_reset_tokens: Voor wachtwoordherstel (niet getoond)
+- failed_jobs / job_batches / jobs: Laravel queue-system (jobs en foutopvolging)
+- cache / cache_locks: Interne cacheopslag voor Laravel (tijdelijk)
+
+## Samenvatting relaties:
+- `users` → `ideas`, `main_question_responses`, `quizzes.participants`, `notifications`
+- `brand_owners` → `brands` (1-op-1)
+- `brands` → `ideas`, `quizzes`, `main_question_responses`
+- `main_questions` → `main_question_responses`
+- `quizzes` → `quiz_questions`, `quiz_answers`, `participants`, `winner_id`
+
+
+---
+
+### 🔧 Technische details en aanvullingen per tabel
+
+#### `users`
+- **Relaties**:
+  - Heeft veel `ideas` (via `user_id`)
+  - Heeft veel `main_question_responses` (via `user_id`)
+  - Heeft veel `quiz_submissions` (genormaliseerd in JSON, kan genormaliseerd worden naar pivot)
+- **Tokens**: `personal_access_tokens` met polymorfe relatie `tokenable_type = App\Models\User`
+- **Notificaties**: opgeslagen in JSON-array in `notifications` veld (kan evt. naar aparte tabel)
+
+#### `brand_owners`
+- **Relaties**:
+  - Heeft één `brand` (via `brand_id`)
+  - Genereert tokens in `personal_access_tokens` met `tokenable_type = App\Models\BrandOwner`
+- **Verificatie**:
+  - `verified_owner` als extra boolean naast standaard `email_verified_at`
+
+#### `brands`
+- **Relaties**:
+  - Heeft veel `ideas`, `quizzes`, `main_question_responses`
+  - Behoort tot een `brand_owner`
+- **Socials**: opgeslagen als stringified JSON (`socials`)
+- **Extra velden**: `rating_sum`, `rating_count`, `main_question_id` ondersteunen interactieve functies en metingen
+
+#### `ideas`
+- **Status**: `"pending"`, `"rejected"`, `"in_progress"`, `"completed"`
+- **Relaties**:
+  - Heeft `brand_id`, `user_id` foreign keys
+  - Wordt geliket of gedisliket door `users` (tracked in user JSON arrays)
+
+#### `main_questions`
+- **Vaststaande vragenlijst** met tekst en mogelijke `answers` als stringified JSON-array
+
+#### `main_question_responses`
+- Koppelt user en brand aan een antwoord op een bepaalde hoofdvraag
+- Gebruikt drie foreign keys: `user_id`, `brand_id`, `main_question_id`
+
+#### `quizzes`
+- **Structuur**: bevat vragen, antwoorden, deelnemers en winnaar (allemaal als JSON strings)
+- `quiz_questions`: JSON lijst met id en titel
+- `quiz_answers`: lijst van objecten met juiste antwoorden
+- `participants`: lijst van antwoorden per `user_id`
+- **Status**: `"open"` of `"closed"`
+- **Relaties**:
+  - Behoort tot `brand`
+  - Heeft optioneel `winner_id` (verwijzing naar `users`)
+
+#### `personal_access_tokens`
+- **Polymorf**: gebruikt `tokenable_type` en `tokenable_id` om zowel `users` als `brand_owners` te ondersteunen
+- **Beveiliging**: token en abilities in plaintext opgeslagen (mogelijk encryptie/rotatie toepassen)
+
+---
+
+### 💡 Aanbevelingen
+- Overweeg het normaliseren van `participants`, `answers`, en `notifications` naar eigen tabellen voor relationele integriteit.
+- Voeg indices toe op velden zoals `email`, `slug`, `user_id`, `brand_id` voor snellere queries.
+- Valideer JSON-velden als `quizzes.answers` en `users.notifications` in modellen of policies.

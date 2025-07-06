@@ -20,6 +20,33 @@
       </div>
     </form>
 
+    <!-- Import JSON content -->
+    <form @submit.prevent="importJson" class="mb-8">
+      <label class="block font-semibold mb-2">Import JSON content</label>
+      <div class="flex flex-col lg:flex-row gap-4">
+        <select
+          v-model="importTargetPageId"
+          class="px-4 py-2 border rounded w-full lg:w-64"
+        >
+          <option disabled value="">Select page</option>
+          <option v-for="page in pages" :key="page.id" :value="page.id">
+            {{ page.title }}
+          </option>
+        </select>
+        <textarea
+          v-model="jsonInput"
+          placeholder='[{"label":"Title","key":"title","type":"text","value":"Hello"}]'
+          class="px-4 py-2 border rounded w-full h-32 font-mono"
+        ></textarea>
+        <button
+          type="submit"
+          class="bg-blue-600 text-white px-4 py-2 rounded font-bold self-start"
+        >
+          Import JSON
+        </button>
+      </div>
+    </form>
+
     <!-- List of pages -->
     <div v-if="pages.length" class="space-y-6">
       <div
@@ -153,7 +180,9 @@
     <div v-else class="text-gray-500 mt-10">No pages created yet.</div>
   </div>
 </template>
+
 <script setup lang="ts">
+// Register route guard
 definePageMeta({ middleware: "admin" });
 
 import { ref, onMounted } from "vue";
@@ -161,8 +190,10 @@ import { useCms } from "~/composables/admin/useCms";
 import type { CmsPage } from "~/types/cms-page";
 import type { CmsField } from "~/types/cms-field";
 
+// Collapsed state per page
 const collapsedPages = ref<Record<number, boolean>>({});
 
+// CMS composable
 const {
   pages,
   fetchPages,
@@ -173,21 +204,39 @@ const {
   uploadImage,
 } = useCms();
 
+// New page form model
 const newPage = ref({ title: "" });
+
+// Field form models per page
 const fieldForms = ref<Record<number, CmsField>>({});
+
+// Editing UI state
 const editingFieldId = ref<number | null>(null);
 const editingValue = ref<string>("");
 
+// JSON import state
+const jsonInput = ref<string>("");
+const importTargetPageId = ref<number | null>(null);
+
+/**
+ * Start editing an existing field
+ */
 function startEditing(field: CmsField) {
   editingFieldId.value = field.id;
   editingValue.value = field.value;
 }
 
+/**
+ * Cancel edit UI
+ */
 function cancelEdit() {
   editingFieldId.value = null;
   editingValue.value = "";
 }
 
+/**
+ * Save edited field value
+ */
 async function saveEdit(field: CmsField, pageId: number) {
   field.value = editingValue.value;
   await updateField(pageId, field);
@@ -195,18 +244,27 @@ async function saveEdit(field: CmsField, pageId: number) {
   await fetchPages();
 }
 
+/**
+ * Remove a field
+ */
 async function deleteField(fieldId: number, pageId: number) {
   if (!confirm("Weet je zeker dat je dit veld wilt verwijderen?")) return;
   await removeField(pageId, fieldId);
   await fetchPages();
 }
 
+/**
+ * Build full image URL from API path
+ */
 const getFullImageUrl = (path: string) => {
   const apiBase = useRuntimeConfig().public.apiBaseUrl;
   const base = apiBase.replace(/\/api$/, "");
   return `${base}${path.startsWith("/") ? "" : "/"}${path}`;
 };
 
+/**
+ * Ensure field form exists for page
+ */
 function initFieldForm(pageId: number) {
   if (!fieldForms.value[pageId]) {
     fieldForms.value[pageId] = {
@@ -215,23 +273,34 @@ function initFieldForm(pageId: number) {
       key: "",
       type: "text",
       value: "",
-    };
+    } as CmsField;
   }
 }
 
+/**
+ * Lifecycle – fetch existing pages and prep forms
+ */
 onMounted(async () => {
   await fetchPages();
   pages.value.forEach((page) => initFieldForm(page.id));
 });
 
+/**
+ * Create a new CMS page
+ */
 async function createPage() {
-  await createPageApi(newPage.value.title);
+  if (!newPage.value.title.trim()) return;
+  await createPageApi(newPage.value.title.trim());
   newPage.value = { title: "" };
   await fetchPages();
 }
 
+/**
+ * Add a single field through inline form
+ */
 async function addField(pageId: number) {
   const field = fieldForms.value[pageId];
+  if (!field.label || !field.key) return;
   await createField(field);
   fieldForms.value[pageId] = {
     page_id: pageId,
@@ -239,10 +308,13 @@ async function addField(pageId: number) {
     key: "",
     type: "text",
     value: "",
-  };
+  } as CmsField;
   await fetchPages();
 }
 
+/**
+ * Handle image upload and set value to uploaded path
+ */
 async function handleImageUpload(event: Event, pageId: number) {
   const input = event.target as HTMLInputElement;
   if (!input.files?.length) return;
@@ -255,7 +327,49 @@ async function handleImageUpload(event: Event, pageId: number) {
     console.error("Image upload failed", err);
   }
 }
+
+/**
+ * Toggle collapse state of a page block
+ */
 function toggleCollapse(pageId: number) {
   collapsedPages.value[pageId] = !collapsedPages.value[pageId];
+}
+
+/**
+ * Bulk‑import fields as JSON for a selected page
+ */
+async function importJson() {
+  if (!importTargetPageId.value || !jsonInput.value.trim()) {
+    alert("Selecteer een pagina en voer geldige JSON in.");
+    return;
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(jsonInput.value);
+  } catch (err) {
+    alert("JSON is niet geldig.");
+    return;
+  }
+
+  const fields: CmsField[] = Array.isArray(parsed) ? parsed : [parsed];
+
+  for (const f of fields) {
+    // Basic validation – skip if essential props missing
+    if (!f.label || !f.key || !f.type) continue;
+
+    await createField({
+      page_id: importTargetPageId.value,
+      label: f.label,
+      key: f.key,
+      type: f.type,
+      value: f.value ?? "",
+    } as CmsField);
+  }
+
+  // Reset form & refresh
+  jsonInput.value = "";
+  importTargetPageId.value = null;
+  await fetchPages();
 }
 </script>

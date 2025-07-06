@@ -1,0 +1,150 @@
+Front End File Description - Nuxt 3
+- Components
+    - Dashboard
+        - AccountEditModal.vue
+            Modalvenster voor het bewerken van de accountgegevens van de brandowner. Gebruikt middleware 'brand-owner' en haalt data op uit de `brandOwnerAuth` store.
+        - BrandEditModal.vue
+            Modal voor het aanpassen van de merkgegevens, zoals titel, categorie en socials. Gebruikt `useResponseDisplay` en `useBrandUpdater` composables.
+        - MainQuestionSelect.vue
+            Interface om een algemene vraag te kiezen die op de publieke merkpagina verschijnt. Gebruikt `useMainQuestions` om vragen op te halen en op te slaan.
+        - ManageIdeaGrid.vue
+            Overzicht en beheer van ingediende ideeën van gebruikers. Laat status en pin-status zien en biedt knoppen om dit aan te passen.
+        - QuizBuilder.vue
+            Formulier om een nieuwe quiz aan te maken met vragen en antwoorden. Verstuurt quiz via `useQuizBuilder` composable.
+        - QuizOverview.vue
+            Overzicht van alle quizzen voor een merk met knoppen om quiz te sluiten en deelnemers in te zien. Toont ook status en winnaar (indien aanwezig).
+        - QuizWinner.vue
+            Simpele interface om een winnaar te kiezen uit een lijst met quizdeelnemers. Haalt deelnemers op en stuurt keuze via API naar backend.
+    - Ideas
+    	- IdeaGrid.vue
+	Layoutcomponent die een raster van ideeën toont. Ontvangt een lijst van ideeën via props en rendert per idee een `IdeaCard.vue`. Verantwoordelijk voor de visuele structuur en doorgeven van data naar de kaarten.
+        - IdeaCard.vue
+            Kaartcomponent die één idee toont met titel, beschrijving en eventueel interactie (bijv. like/status). Wordt gebruikt binnen `IdeaGrid.vue`. Zorgt voor visuele presentatie en bevat mogelijk knoppen of statusinfo voor gebruikers.
+    - User
+	- IdeaNotifier.vue
+            Toont meldingen aan de gebruiker wanneer een van zijn/haar ideeën een statusupdate krijgt of geliket wordt. Gebruikt props om meldingsdata door te geven en toont die visueel in een meldingskaart.
+        - Inbox.vue
+            Hoofdcomponent voor de inbox op een gebruikersprofiel. Laadt en groepeert notificaties (zoals quizresultaten en idee-updates) via subcomponenten `IdeaNotifier.vue` en `QuizNotifier.vue`. Biedt een overzicht van recente interacties voor de gebruiker.
+        - QuizNotifier.vue
+            Meldingscomponent die de gebruiker informeert over quizuitslagen (gewonnen/verloren) of andere quizgerelateerde gebeurtenissen. Gebruikt props voor data en biedt korte visuele terugkoppeling.
+        - UserIdeasPosted.vue
+            Toont een overzicht van ideeën die door deze gebruiker zijn geplaatst. Haalt de ideeën op via een lijst van `idea_id`s uit de user-data, en toont ze met behulp van `IdeaCard.vue`. Wordt gebruikt op de gebruikerspagina.
+        - UserProfileEdit.vue
+            Formuliercomponent waarmee een gebruiker zijn/haar profielgegevens (zoals naam of beschrijving) kan aanpassen. Gebruikt lokale form-data en stuurt updates via een API-composable.
+        - UserQuizzes.vue
+            Toont alle quizzen waaraan deze gebruiker heeft deelgenomen of die nog actief zijn. Laat quizstatus en eventuele gewonnen prijzen zien. Laadt quizdata vanuit de backend en presenteert die in kaartvorm.
+        - UserRatingInsight.vue
+            Analytische weergave van hoe een gebruiker stemt of ideeën beoordeelt (bijv. welke categorieën favoriet zijn). Presenteert statistieken en inzichten als visuele elementen, zoals scores of diagrammen.
+    - BrandMainQuestion.vue
+        Toont de 'main question' van een merk op de publieke merkpagina (`/brands/[slug]`). Haalt dynamisch de vraagtekst op via props en vervangt placeholders zoals `[merknaam]` en `[categorie]` door actuele merkdata.
+    - MessageDisplay.vue
+        Visuele component voor het tonen van berichten op de merkpagina. Gebruikt props om berichten of systeemmeldingen weer te geven, bijvoorbeeld als er nog geen ideeën of quizzen zijn.
+    - QuizParticipant.vue
+        Interactieve component die gebruikers laat deelnemen aan een actieve quiz. Toont de quizvragen, laat gebruikers antwoorden invullen en verstuurt deze via de API. Bevat validatie en feedback.
+    - ResponseDisplay.vue
+        Globale feedbackcomponent voor het tonen van succes- of foutmeldingen. Gebruikt een interne status met timers om meldingen tijdelijk weer te geven. Wordt aangestuurd via de `useResponseDisplay` composable.
+- Composables
+    - useAdmin.ts
+        Bevat adminfuncties voor authenticatie en toegangscontrole. Gebruikt `useAuth` om de ingelogde gebruiker te controleren en bepaalt of deze adminrechten heeft. Returnt reactive states zoals `isAdmin`, `isAuthenticated` en `currentUser`.
+    - useApi.ts
+        Centrale fetch-wrapper voor alle API-aanroepen. Zorgt voor consistente headers (zoals Authorization), foutafhandeling en body-verwerking. Werkt samen met `useAuth` en de Laravel Sanctum setup. Gebruikt `useRuntimeConfig` voor API base URL.
+    - useAuth.ts
+        Regelt authenticatie voor gewone users. Bevat login, logout en registratie via `authService`. Houdt `user` en `isLoggedIn` reactive bij. Werkt met cookies en backend-Sanctum authenticatie.
+    - useBrand.ts
+        Bevat helperfuncties om merkinformatie op te halen. Gebruikt `brandService` om een brand op te halen aan de hand van slug of ID. Returnt reactive data zoals `brand`, `loading` en `error`.
+    - useBrandOwnerApi.ts
+        Alternatieve fetch-wrapper specifiek voor de `brand-owner` scope. Voegt Bearer-token toe aan headers, die verkregen wordt uit de `brandOwnerAuth` store. Wordt o.a. gebruikt in `useManageIdeas`, `useQuizBuilder`, `useBrandUpdater`.
+    - useBrandOwnerAuth.ts
+        Beheert de authenticatie van de brandowner. Initieert login, logout, registratie en het ophalen van `owner`-data. Gebruikt `brandService` en `authService`. Slaat token op in localStorage en stelt deze beschikbaar voor `useBrandOwnerApi`.
+    - useBrandUpdater.ts
+        Bevat de functie `updateBrand` die PATCH-verzoeken uitvoert naar een merkendpoint. Wordt gebruikt in `BrandEditModal.vue`. Gebruikt `useBrandOwnerApi` intern om de juiste API-aanroep te doen.
+    - useIdeas.ts
+        Laadt publieke ideeën die aan een merk zijn gekoppeld (bijvoorbeeld op een merkpagina). Haalt data op via `brandService.getIdeas(brandId)` en returnt reactive data zoals `ideas`, `loading` en `error`.
+    - useMainQuestionResponse.ts
+        Beheert het antwoordproces van een gebruiker op een merk-vraag. Stelt `answer` en `hasAnswered` beschikbaar, en een `submit` functie om een reactie op te slaan. Gebruikt `useAuth` en `useResponseDisplay`.
+    - useMainQuestion.ts
+        Regelt ophalen, tonen en opslaan van 'main questions'. Haalt lijst op van alle beschikbare vragen (`GET /main-questions`) en bevat methode `setMainQuestionForBrand`. Gebruikt `useBrandOwnerApi` en `useResponseDisplay`.
+    - useManageIdeas.ts
+        Verantwoordelijk voor het beheren van ideeën als brandowner. Laadt de ideeënlijst voor een brand, laat toe om ideeën een status te geven, te pinnen of los te maken. Gebruikt `brandOwnerApiFetch` en `useResponseDisplay`. Returnt `ideas`, `error` en alle actie-methodes.
+    - useMessage.ts
+        Laadt een welkomst- of statusbericht bij het opstarten van een component. Gebruikt `messageService.getGreeting()` om dynamische tekst op te halen. Returnt `message` en `error`. Wordt automatisch aangeroepen bij `onMounted`.
+    - useQuizBuilder.ts
+        Bevat de functie `createQuiz`, waarmee een volledige quiz met vragen en antwoorden aangemaakt kan worden. Zet de vragenstructuur om in twee API-ready payloads: `quiz_questions` en `quiz_answers`. Gebruikt `brandOwnerApiFetch`.
+    - useResponseDisplay.ts
+        Globale store-achtige singleton die succes- of foutmeldingen toont op het scherm. Houdt state bij via `ref` voor `show`, `message` en `type`. De functie `trigger(message, type)` toont tijdelijk een melding. Wordt breed gebruikt in forms, modals en errorhandling.
+- Middleware
+    - admin.ts
+        Controleert of de gebruiker adminrechten heeft door `useAdmin()` aan te roepen. Als `isAdmin` niet waar is, wordt de gebruiker doorgestuurd naar `/`. Verdedigt adminroutes tegen ongeautoriseerde toegang.
+
+    - auth.ts
+        Verplicht algemene gebruikersauthenticatie via `useAuth()`. Als `isLoggedIn` false is, wordt de gebruiker doorgestuurd naar `/login`. Deze middleware wordt gebruikt op pagina's die alleen voor ingelogde gebruikers toegankelijk zijn.
+
+    - brand-owner.ts
+        Beveiligt routes voor brandowners. Gebruikt `useBrandOwnerAuth()` om te controleren of `owner` beschikbaar is. Als er geen geldige ingelogde brandowner is, redirect deze naar `/login`. Wordt toegepast op dashboardpagina's en instellingen voor merkbeheer.
+- Pages
+    - Admin
+        - verify.vue
+            Pagina voor adminverificatie van merken, meestal na een aanvraag of claim. Laadt het merk op basis van een queryparameter (`id` of `slug`) en geeft de admin een mogelijkheid om het merk te accepteren of af te wijzen. Gebruikt `useBrand`, `useAdmin`, en `brandService`.
+    - Brands
+        - [slug].vue
+            Publieke merkpagina, toegankelijk voor gebruikers. Toont merkinformatie, de 'main question' (via `BrandMainQuestion.vue`), quizzen, ideeën en reactie-opties. Haalt data op via `useBrand` en `useMainQuestionResponse`. De kernpagina voor merkinteractie.
+        - claim.vue
+            Formulierpagina waar gebruikers kunnen aangeven dat ze eigenaar zijn van een bestaand merk. Verstuurd via `brandService.claimBrand()`. Valideert gebruiker en merkgegevens en toont statusmeldingen via `useResponseDisplay`.
+        - index.vue
+            Overzichtspagina van alle beschikbare merken. Haalt merken op via `brandService.getAllBrands()` en toont ze in een lijst of grid. Gebruikelijk als startpunt voor verkenning door gebruikers.
+        - request.vue
+            Formulierpagina waar gebruikers een nieuw merk kunnen aanvragen. Maakt gebruik van lokale `form` refs en `brandService.requestBrand()`. Valideert invoer en geeft feedback via `useResponseDisplay`.
+    - Dashboard
+        - [slug].vue
+            Merk-specifieke dashboardpagina voor de brandowner. Toont gegevens van het geselecteerde merk (via slug), inclusief modals voor accountbewerking, merkbewerking, quizbeheer (`QuizOverview.vue`), vraagselectie (`MainQuestionSelect.vue`) en idee-beheer (`ManageIdeaGrid.vue`). Gebruikt `useBrandOwnerAuth`, `useBrand`, en meerdere composables. Alleen toegankelijk via middleware `brand-owner`.
+        - index.vue
+            Algemene toegangspoort tot het dashboard. Checkt of de ingelogde brandowner een merk heeft, en redirect naar `dashboard/[slug]`. Gebruikt `useBrandOwnerAuth`. Beveiligd met middleware `brand-owner`.
+        - Verify-success.vue
+            Bevestigingspagina na succesvolle verificatie van een merkclaim of registratie. Toont een eenvoudige succesmelding en call-to-action richting dashboard of merkpagina. Wordt meestal bereikt na het invullen van `request.vue` of `claim.vue`.
+    - User
+        - [slug].vue
+            Profielpagina van een gebruiker. Toont `Inbox.vue`, geplaatste ideeën (`UserIdeasPosted.vue`), deelname aan quizzen (`UserQuizzes.vue`) en stemgedrag (`UserRatingInsight.vue`). Gebruikt `useRoute`, `useAuth`, en laadt user-specifieke gegevens op basis van de slug. Publiek toegankelijk, maar toont alleen volledige info aan de betreffende gebruiker.
+ - email-verification.vue
+        Pagina die verschijnt na registratie of e-mailverificatie. Laat gebruikers weten dat ze hun e-mailadres moeten bevestigen via een link in hun inbox. Bevat call-to-actions en uitleg. Wordt vaak bezocht na registratie of via directe redirect na inloggen met niet-geverifieerde status.
+
+    - index.vue
+        Homepage van de applicatie. Biedt toegang tot hoofdsecties zoals merken, login, registratie of uitleg. Wordt vaak als marketing of landingspagina gebruikt. Laadt dynamische content (optioneel) via `useMessage()`.
+
+    - login.vue
+        Inlogpagina voor reguliere gebruikers. Bevat formulier met e-mail en wachtwoordvelden, en verstuurt data via `useAuth().login()`. Toont foutmeldingen en redirect bij succes naar gebruikerspagina of merkpagina.
+
+    - register.vue
+        Registratiepagina voor nieuwe gebruikers. Bevat formulier om naam, e-mail en wachtwoord in te voeren. Verstuurt data via `useAuth().register()`. Toont foutmeldingen en redirect bij succes naar `email-verification.vue`.
+- Services
+    - Api
+	- authService.ts
+            Bevat alle functies voor authenticatie van gebruikers en brandowners. Verwerkt login, registratie en logout via POST-verzoeken. Voor brandowners zijn er aparte endpoints zoals `/brand-owner/login` en `/brand-owner/register`. Returnt tokens of foutmeldingen en wordt gebruikt in `useAuth.ts` en `useBrandOwnerAuth.ts`.
+        - brandService.ts
+            Centrale service voor alles rondom merken. Bevat functies om:
+              - Merken op te halen (`getAllBrands`, `getBrandBySlug`)
+              - Merken aan te maken of bij te werken (`requestBrand`, `updateBrand`)
+              - Merken te claimen of verifiëren (`claimBrand`, `verifyBrand`)
+              - Merk-gerelateerde data op te halen zoals ideeën (`getIdeas`) of quizzen
+            Wordt gebruikt in zowel user- als admin-context en in `useBrand.ts`, `useBrandUpdater.ts`, `useIdeas.ts`.
+        - messageService.ts
+            Eenvoudige API-service voor het ophalen van dynamische berichten (bijv. een welkomsbericht of statusboodschap). Bevat functie `getGreeting()` die wordt gebruikt in de homepage (`index.vue`) via `useMessage.ts`.
+- Store
+    - auth.ts
+        Pinia store voor het beheren van de authenticatiestatus van gewone gebruikers. Houdt `user`, `isLoggedIn`, `token` en `loading` bij. Bevat methodes zoals `login`, `register`, `logout`, en `initAuth` om sessies persistent te maken. Werkt samen met `authService` en Nuxt cookies. Wordt gebruikt in `useAuth.ts`.
+
+    - brandOwnerAuth.ts
+        Pinia store specifiek voor brandowners. Houdt `owner`, `token`, `isLoggedIn` en `loading` bij. Bevat methodes als `login`, `register`, `logout`, en `initAuth`. Opslag van token gebeurt in `localStorage`. Werkt samen met `authService`, `brandService` en wordt gebruikt in `useBrandOwnerAuth.ts` en `useBrandOwnerApi.ts`.
+- Types
+    - auth.ts
+        Bevat interfaces voor authenticatiegerelateerde data zoals `User`, `LoginCredentials`, en `RegisterData`. Gebruikt in zowel `authService.ts` als `useAuth.ts` en `store/auth.ts` om typeveiligheid te garanderen bij login, registratie en sessiebeheer.
+
+    - brand.ts
+        Definieert types voor merken zoals `Brand`, `BrandRequest`, `ClaimBrandData`, en `BrandOwner`. Zorgt voor consistente datastructuur in composables en services zoals `useBrand`, `useBrandOwnerAuth`, `brandService`, en `useBrandUpdater`.
+
+    - quiz.ts
+        Beschrijft types voor quizlogica, inclusief `Quiz`, `QuizQuestion`, `QuizAnswerMap`, en `Participant`. Wordt gebruikt in `useQuizBuilder`, `QuizOverview.vue`, `QuizParticipant.vue`, en in API-verzoeken voor quizopbouw, deelname en resultaatverwerking.
+
+    - user.ts
+        Definieert de datastructuur voor gewone gebruikers. Bevat types als `UserProfile`, `UserIdea`, en mogelijk `UserRating` of `UserNotification`. Wordt gebruikt in `UserIdeasPosted.vue`, `UserProfileEdit.vue` en bij het ophalen van gebruikersdata via `userService`.
+
+

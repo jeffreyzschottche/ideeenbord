@@ -1,0 +1,203 @@
+## API Overview – Laravel Backend (v1)
+
+Hieronder staat een volledig overzicht van alle API-endpoints uit `routes/api.php`, inclusief:
+
+* Methode & endpoint
+* Versie (`v1`)
+* Middleware
+* Authenticatie (`user` of `brand_owner`)
+* Verantwoordelijkheid / doel
+
+---
+
+### 📬 Verificatie en Authenticatie (Users & BrandOwners)
+
+#### ✅ BrandOwner Email Verificatie
+
+* **GET** `/v1/brand-owner/email/verify/{id}/{hash}`
+* **Middleware:** `signed`
+* **Token:** geen
+* **Doel:** Valideert en markeert e-mail van brandowner als geverifieerd, redirect naar frontend.
+
+#### 🔁 BrandOwner Verificatie opnieuw versturen
+
+* **POST** `/v1/brand-owner/email/resend`
+* **Middleware:** `auth:brand_owner`
+* **Token:** Sanctum (`brand_owner` guard)
+* **Doel:** Stuurt verificatie-e-mail opnieuw naar brandowner.
+
+#### ✅ User Email Verificatie
+
+* **GET** `/v1/email/verify/{id}/{hash}`
+* **Middleware:** `signed`
+* **Token:** geen
+* **Doel:** Verifieert een gewone gebruiker en redirect naar frontend.
+
+#### ✅ User Email Controleren via link
+
+* **GET** `/v1/verify-email`
+* **Middleware:** `signed`
+* **Token:** geen
+* **Doel:** Controleert e-mailadres van een user en stuurt JSON terug.
+
+#### ✉️ Verificatie-email sturen
+
+* **POST** `/v1/email/verification-notification`
+* **Middleware:** geen
+* **Token:** (optioneel, voor user)
+* **Doel:** Stuurt een nieuwe verificatie-email.
+
+---
+
+### 🔐 BrandOwner Auth & Accountbeheer
+
+#### 🔑 Login
+
+* **POST** `/v1/brand-owner/login`
+* **Middleware:** geen
+* **Token:** geen
+* **Doel:** Inloggen voor brandowners, geeft token terug.
+
+#### 👤 Logout
+
+* **POST** `/v1/brand-owner/logout`
+* **Middleware:** `auth:brand_owner`
+* **Token:** Sanctum (brandowner)
+* **Doel:** Logt een brandowner uit (invalideert token).
+
+#### 🔍 Eigen profiel
+
+* **GET** `/v1/brand-owner/me`
+* **Middleware:** `auth:brand_owner`
+* **Doel:** Haalt ingelogde brandownergegevens op.
+
+#### 🔧 Account bewerken
+
+* **PATCH** `/v1/brand-owner/account`
+* **Middleware:** `auth:brand_owner`
+* **Doel:** Wijzigt email, telefoon, wachtwoord of abonnement van de brandowner.
+
+---
+
+### 🌐 Publieke Routes – Merken & Vragen
+
+#### 📋 Alle Merken
+
+* **GET** `/v1/brands`
+* **Middleware:** geen
+* **Doel:** Publiek overzicht van alle merken
+
+#### 🔍 Merkpagina
+
+* **GET** `/v1/brands/{slug}`
+* **Middleware:** geen
+* **Doel:** Toont detailpagina van merk obv slug
+
+#### 🧠 Algemene vragen ophalen
+
+* **GET** `/v1/main-questions`
+* **Middleware:** geen
+* **Doel:** Geeft lijst van beschikbare hoofdvragen terug
+
+#### 🧠 Één specifieke vraag
+
+* **GET** `/v1/main-questions/{mainQuestion}`
+* **Middleware:** geen
+* **Doel:** Toont één specifieke vraag
+
+#### 📚 Ideeën voor merk ophalen
+
+* **GET** `/v1/brands/{brand}/ideas`
+* **Middleware:** geen
+* **Doel:** Haalt alle ideeën op die bij een merk horen
+
+#### 🧩 Actieve quiz voor merk
+
+* **GET** `/v1/brands/{brand}/quiz`
+* **Middleware:** geen
+* **Doel:** Toont de lopende quiz (indien aanwezig)
+
+#### 👥 Quizdeelnemers ophalen
+
+* **GET** `/v1/brands/{brand}/quiz/participants`
+* **Middleware:** geen
+* **Doel:** Toont gebruikers die aan quiz deelnemen
+
+#### 🧠 Meerdere quizzen voor merk
+
+* **GET** `/v1/brands/{brand}/quizzes`
+* **Middleware:** geen
+* **Doel:** Toont quizhistorie
+
+---
+
+### 🔐 Geverifieerde User Routes
+
+* **POST** `/v1/register` → Registreert nieuwe gebruiker
+* **POST** `/v1/login` → Inloggen gebruiker
+* **GET** `/v1/hi` → Hello world test
+* **GET** `/v1/me`, `/user` → Ingelogde gebruikersdata
+* **GET** `/v1/bye` → Beveiligde toegangstest
+
+#### 📥 Ideeën & interacties
+
+* **POST** `/v1/ideas` → Idee indienen
+* **POST** `/v1/ideas/{id}/like|dislike` → Liken of disliken
+* **GET** `/v1/ideas` → Meerdere ideeën ophalen op basis van ID’s
+
+#### 📊 Merkbeoordeling & vraag
+
+* **POST** `/v1/brands/{brand}/rate` → Beoordeling geven
+* **POST** `/v1/brands/{brand}/main-question-response` → Antwoord op algemene vraag indienen
+
+#### 🧠 Quiz
+
+* **GET** `/v1/quizzes/{id}` → Quiz ophalen
+* **POST** `/v1/quizzes/{id}/submit` → Quiz indienen
+* **GET** `/v1/users/{username}/quiz-submissions` → Gebruikersinzendingen ophalen
+
+#### 👤 Profielbeheer
+
+* **PATCH** `/v1/users/{username}` → Profiel bijwerken
+* **GET** `/v1/users/{username}` → Profielgegevens
+* **GET** `/v1/users/{username}/ideas` → Ideeën van gebruiker
+* **GET** `/v1/users/{username}/notifications` → Notificaties ophalen
+
+#### 🛡️ Merkregistratie & claim (alleen ingelogd)
+
+* **POST** `/v1/brands/request` → Nieuw merk aanvragen
+* **POST** `/v1/brands/claim` → Bestaand merk claimen
+
+---
+
+### 👑 Admin Routes
+
+#### ✅ BrandOwner verifiëren
+
+* **POST** `/v1/admin/brands/owners/{id}/verify`
+* **Middleware:** `auth:sanctum`, `IsAdmin`
+* **Doel:** Markeert brandowner als geverifieerd en stuurt e-mail
+
+#### 📋 BrandOwners overzicht
+
+* **GET** `/v1/admin/brand-owners`
+* **Middleware:** `auth:sanctum`, `IsAdmin`
+* **Doel:** Toont overzicht van alle brandowners
+
+---
+
+### 🌐 Web Routes
+
+#### Homepage SSR
+
+* **GET** `/`
+* **Middleware:** none
+* **Doel:** Serveert `welcome.blade.php` – default Laravel landingspagina
+
+---
+
+> 🔐 Let op: Authenticated routes gebruiken **Sanctum tokens**:
+>
+> * `auth:sanctum` voor `users`
+> * `auth:brand_owner` voor `brand_owner`
+> * Admin vereist beide + `IsAdmin` middleware

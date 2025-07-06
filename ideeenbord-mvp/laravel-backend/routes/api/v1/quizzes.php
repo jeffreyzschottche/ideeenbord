@@ -14,3 +14,4 @@ Route::middleware('auth:brand_owner')->group(function () {
 Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->middleware('auth:sanctum');
 Route::post('/quizzes/{quiz}/submit', [QuizController::class, 'submit'])->middleware('auth:sanctum');
 Route::get('/users/{username}/quiz-submissions', [QuizController::class, 'quizzesForUser'])->middleware('auth:sanctum');
+Route::get('/quizzes', [QuizController::class, 'index']);
