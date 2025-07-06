@@ -18,7 +18,7 @@
       <nav class="hidden md:flex space-x-6 text-md items-center">
         <SearchBarNav />
         <NuxtLink to="/about" class="nav-link">Uitleg</NuxtLink>
-        <NuxtLink to="/news" class="nav-link">Nieuws</NuxtLink>
+        <NuxtLink to="/news/" class="nav-link">Nieuws</NuxtLink>
         <NuxtLink to="/win" class="nav-link">Winacties</NuxtLink>
         <NuxtLink to="/ideas" class="nav-link">Ideeën</NuxtLink>
         <NuxtLink to="/participants" class="nav-link">Deelnemers</NuxtLink>

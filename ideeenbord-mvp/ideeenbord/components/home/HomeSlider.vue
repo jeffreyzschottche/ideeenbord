@@ -1,6 +1,7 @@
 <template>
+  <!-- breekt uit elke container en vult hele viewport-breedte -->
   <div
-    class="relative w-full h-64 md:h-96 overflow-hidden select-none mb-5"
+    class="relative w-screen left-1/2 right-1/2 -mx-[50vw] h-64 md:h-96 overflow-hidden select-none mb-5"
     @mouseenter="pauseCarousel"
     @mouseleave="resumeCarousel"
     @mousedown="startDrag"
@@ -10,28 +11,31 @@
     @touchmove="dragSlide"
     @touchend="endDrag"
   >
+    <!-- flex-rail: iedere slide minimaal zo breed als het scherm -->
     <div
-      class="absolute top-0 left-0 flex w-full h-full transition-transform duration-700 ease-in-out"
+      class="absolute inset-0 flex transition-transform duration-1000 ease-in-out"
       :style="{ transform: `translateX(-${currentSlide * 100}%)` }"
     >
       <div
         v-for="(image, index) in images"
         :key="index"
-        class="w-full h-full flex-shrink-0"
+        class="min-w-full h-full flex-none"
       >
-        <img :src="image" class="w-full h-full object-contain" />
+        <!-- vul de slide volledig -->
+        <img :src="image" class="w-full h-full object-cover" />
       </div>
     </div>
 
+    <!-- bullets -->
     <div
-      class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 bg-gray-900 bg-opacity-50 p-2.5 rounded-full"
+      class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 bg-gray-900/50 p-2.5 rounded-full"
     >
       <button
         v-for="(_, index) in images"
         :key="index"
         @click="goToSlide(index)"
-        class="w-4 h-4 rounded-full transition-transform duration-300 focus:outline-none hover:scale-150"
-        :class="index === currentSlide ? 'bg-orange-500' : 'bg-white'"
+        class="w-4 h-4 rounded-full transition-transform duration-300 hover:scale-150"
+        :class="index === currentSlide ? 'bg-orange-500' : 'bg-white/80'"
       />
     </div>
   </div>

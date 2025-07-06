@@ -19,7 +19,7 @@
             <li
               v-for="(name, idx) in recentBrands"
               :key="idx"
-              class="odd:bg-nav/80 even:bg-nav/60 rounded-md transition hover:bg-[var(--color-brand)]/60"
+              class="odd:bg-nav/80 even:bg-nav/60 rounded-md transition hover:bg-[var(--color-brand)]/70 bg-brand"
             >
               <a
                 :href="`/brands/${name}`"
@@ -67,7 +67,7 @@
             <li
               v-for="quiz in recentQuizzes"
               :key="quiz.id"
-              class="odd:bg-nav/80 even:bg-nav/60 rounded-md transition hover:bg-[var(--color-brand)]/60"
+              class="odd:bg-nav/80 even:bg-nav/60 rounded-md transition hover:bg-[var(--color-brand)]/70 bg-brand"
             >
               <NuxtLink
                 :to="`/brands/${quiz.brand.slug}`"

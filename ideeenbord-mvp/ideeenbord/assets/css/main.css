@@ -51,6 +51,9 @@ Custom Utility Components (Tailwind Layer)
   .btn-primary {
     @apply bg-[var(--color-brand)] text-white px-4 py-2 rounded hover:opacity-90 transition;
   }
+  .about-card {
+    @apply bg-[var(--color-bg)] border border-gray-200 rounded-3xl p-8 md:p-12;
+  }
 
   .text-success {
     color: var(--color-success);
