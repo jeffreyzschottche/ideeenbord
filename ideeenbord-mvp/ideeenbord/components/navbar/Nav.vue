@@ -1,7 +1,7 @@
 <template>
   <header
     :class="[
-      'fixed w-full h-20 z-50 bg-nav light-text text-light transition-transform duration-300',
+      'fixed w-full h-20 z-50 bg-nav text-white transition-transform duration-300',
       { '-translate-y-full': !showHeader, 'translate-y-0': showHeader },
     ]"
   >
@@ -10,53 +10,45 @@
       <NuxtLink to="/" class="relative text-3xl font-bold">
         IDEEEN<span class="font-light">BORD</span>
         <i
-          class="fa-solid fa-lightbulb ml-2 absolute flex items-center justify-center text-orange-400 lamp-glow"
+          class="fa-solid fa-lightbulb ml-2 absolute text-orange-400 lamp-glow"
         ></i>
       </NuxtLink>
 
       <!-- Desktop nav -->
       <nav class="hidden md:flex space-x-6 text-md items-center">
         <SearchBarNav />
+
         <NuxtLink to="/about" class="nav-link">Uitleg</NuxtLink>
-        <NuxtLink to="/news/" class="nav-link">Nieuws</NuxtLink>
+        <NuxtLink to="/news" class="nav-link">Nieuws</NuxtLink>
         <NuxtLink to="/win" class="nav-link">Winacties</NuxtLink>
         <NuxtLink to="/ideas" class="nav-link">Ideeën</NuxtLink>
         <NuxtLink to="/participants" class="nav-link">Deelnemers</NuxtLink>
 
-        <template v-if="!isAuthenticated">
+        <!-- NIET ingelogd -->
+        <template v-if="!isBrandAuth && !isUserAuth">
           <NuxtLink to="/register" class="nav-link">Registreren</NuxtLink>
           <NuxtLink to="/login" class="nav-link">Inloggen</NuxtLink>
         </template>
-        <template v-else>
-          <div class="relative" @click="toggleProfileDropdown">
-            <button class="nav-link flex items-center">
-              Mijn profiel <i class="fa-solid fa-caret-down ml-1"></i>
-            </button>
-            <transition name="fade">
-              <div
-                v-if="profileOpen"
-                class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg py-2 z-50"
-              >
-                <NuxtLink
-                  to="/my-account"
-                  class="block px-4 py-2 text-gray-200 hover:bg-gray-700"
-                >
-                  Account
-                </NuxtLink>
-                <button
-                  @click="logout"
-                  class="w-full text-left px-4 py-2 text-gray-200 hover:bg-gray-700"
-                >
-                  Uitloggen
-                </button>
-              </div>
-            </transition>
-          </div>
+
+        <!-- BRAND-OWNER -->
+        <template v-else-if="isBrandAuth">
+          <NuxtLink :to="`/dashboard/${owner.brand.slug}`" class="nav-link">
+            Dashboard – {{ brandLabel }}
+          </NuxtLink>
+          <button @click="handleLogout" class="nav-link">Uitloggen</button>
         </template>
 
-        <NuxtLink to="/app" class="cta w-35 text-center">
-          + Plaats idee
-        </NuxtLink>
+        <!-- USER -->
+        <template v-else>
+          <NuxtLink :to="`/user/${user.username}`" class="nav-link">
+            {{ user.username }}
+          </NuxtLink>
+          <button @click="handleLogout" class="nav-link">Uitloggen</button>
+        </template>
+
+        <NuxtLink to="/app" class="cta w-35 text-center"
+          >+ Plaats idee</NuxtLink
+        >
       </nav>
 
       <!-- Hamburger -->
@@ -99,9 +91,8 @@
           v-if="menuOpen"
           class="absolute top-16 left-0 w-full bg-gray-800 text-white p-4 flex flex-col space-y-4 md:hidden"
         >
-          <div class="searchBarMobileWrapper mr-auto nav-link">
-            <SearchSearchBarNav />
-          </div>
+          <SearchSearchBarNav class="mr-auto nav-link" />
+
           <NuxtLink to="/about" class="nav-link" @click="toggleMenu"
             >Uitleg</NuxtLink
           >
@@ -118,7 +109,8 @@
             >Deelnemers</NuxtLink
           >
 
-          <template v-if="!isAuthenticated">
+          <!-- NIET ingelogd -->
+          <template v-if="!isBrandAuth && !isUserAuth">
             <NuxtLink to="/register" class="nav-link" @click="toggleMenu"
               >Registreren</NuxtLink
             >
@@ -126,61 +118,88 @@
               >Inloggen</NuxtLink
             >
           </template>
-          <template v-else>
-            <NuxtLink to="/my-account" class="nav-link" @click="toggleMenu"
-              >Mijn profiel</NuxtLink
+
+          <!-- BRAND-OWNER -->
+          <template v-else-if="isBrandAuth">
+            <NuxtLink
+              :to="`/dashboard/${owner.brand.slug}`"
+              class="nav-link"
+              @click="toggleMenu"
             >
-            <button
-              @click="
-                logout;
-                toggleMenu;
-              "
-              class="nav-link text-left"
-            >
+              Dashboard – {{ brandLabel }}
+            </NuxtLink>
+            <button @click="handleLogout" class="nav-link text-left">
               Uitloggen
             </button>
           </template>
 
-          <NuxtLink to="/app" class="cta text-center"> + Plaats idee </NuxtLink>
+          <!-- USER -->
+          <template v-else>
+            <NuxtLink
+              :to="`/user/${user.username}`"
+              class="nav-link"
+              @click="toggleMenu"
+            >
+              {{ user.username }}
+            </NuxtLink>
+            <button @click="handleLogout" class="nav-link text-left">
+              Uitloggen
+            </button>
+          </template>
+
+          <NuxtLink to="/app" class="cta text-center">+ Plaats idee</NuxtLink>
         </div>
       </transition>
     </div>
   </header>
 </template>
 
-<script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
-import { SearchBarNav } from "#components";
+import { useUserAuthStore } from "~/store/useUserAuthStore";
+import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
+import { storeToRefs } from "pinia";
 
-const menuOpen = ref(false);
-const profileOpen = ref(false);
-const showHeader = ref(true);
-const isAuthenticated = ref(false);
-let lastScrollY = 0;
+/* Stores */
+const userStore = useUserAuthStore();
+const boStore = useBrandOwnerAuthStore();
 const router = useRouter();
 
-const toggleMenu = () => (menuOpen.value = !menuOpen.value);
-const toggleProfileDropdown = () => (profileOpen.value = !profileOpen.value);
+const { token: userToken, user } = storeToRefs(userStore);
+const { token: boToken, owner } = storeToRefs(boStore);
 
-const handleScroll = () => {
+const isUserAuth = computed(() => !!userToken.value && !!user.value);
+const isBrandAuth = computed(() => !!boToken.value && !!owner.value);
+const brandLabel = computed(
+  () => owner.value?.brand.title || owner.value?.brand.slug || "Dashboard"
+);
+
+/* UI state */
+const menuOpen = ref(false);
+const showHeader = ref(true);
+let lastScrollY = 0;
+
+const toggleMenu = () => (menuOpen.value = !menuOpen.value);
+
+function handleScroll() {
   const current = window.scrollY;
   showHeader.value = !(current > lastScrollY && current > 100);
   lastScrollY = current;
-};
+}
 
-const logout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("userId");
+function handleLogout() {
+  if (isBrandAuth.value) boStore.logout();
+  if (isUserAuth.value) userStore.logout();
+  menuOpen.value = false;
   router.push("/");
-  isAuthenticated.value = false;
-};
+}
 
-onMounted(() => {
+/* Lifecycle */
+onMounted(async () => {
+  await boStore.initAuth(); // eerst brand-owner
+  await userStore.initAuth(); // dan gewone user
   window.addEventListener("scroll", handleScroll);
-  isAuthenticated.value = !!(
-    localStorage.getItem("token") && localStorage.getItem("userId")
-  );
 });
 onUnmounted(() => window.removeEventListener("scroll", handleScroll));
 </script>
@@ -194,19 +213,5 @@ onUnmounted(() => window.removeEventListener("scroll", handleScroll));
 .slide-leave-to {
   transform: translateY(-20px);
   opacity: 0;
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-@media only screen and (max-width: 600px) {
-  .searchbar {
-    margin-left: 6.5em;
-    margin-top: 0.5em;
-  }
 }
 </style>
