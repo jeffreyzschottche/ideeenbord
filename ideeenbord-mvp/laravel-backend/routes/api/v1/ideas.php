@@ -17,3 +17,5 @@ Route::middleware('auth:brand_owner')->group(function () {
     Route::patch('/ideas/{idea}/pin', [IdeaController::class, 'pin']);
     Route::patch('/ideas/{idea}/unpin', [IdeaController::class, 'unpin']);
 });
+
+Route::get('/ideas-feed', [IdeaController::class, 'feed']);

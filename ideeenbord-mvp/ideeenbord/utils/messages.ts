@@ -67,6 +67,7 @@ export type MessageKey =
   | "request-failed"
   | "admin-brand-acceptance-failed"
   | "admin-brand-accepted"
+  | "idea-login-required"
   | "server-error";
 
 type MessageType = "success" | "error" | "warning";
@@ -93,6 +94,13 @@ export const messages: Record<
     text: {
       nl: "Inloggen mislukt. Controleer je gegevens.",
       en: "Login failed. Check your credentials.",
+    },
+  },
+  "idea-login-required": {
+    type: "error",
+    text: {
+      nl: "Login om je mening op een idee te geven.",
+      en: "Login to give your opinion on ideas.",
     },
   },
   "idea-posted": {

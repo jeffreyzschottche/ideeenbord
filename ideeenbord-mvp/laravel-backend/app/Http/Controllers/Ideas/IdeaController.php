@@ -276,5 +276,12 @@ class IdeaController extends Controller
 
         return response()->json($ideas);
     }
+    public function feed()
+    {
+        return Idea::with('brand:id,slug,title,logo_path')
+            ->orderByDesc('created_at')
+            ->limit(500)        // of wat je wilt
+            ->get();
+    }
 
 }
