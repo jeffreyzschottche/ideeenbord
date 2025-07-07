@@ -1,12 +1,6 @@
 <template>
   <section class="w-full">
     <div class="container mx-auto px-6">
-      <h2
-        class="text-3xl font-bold text-[var(--color-brand)] text-center mb-10"
-      >
-        {{ c["grid-title"] }}
-      </h2>
-
       <!-- Filters + zoek -->
       <div class="flex flex-col md:flex-row gap-6">
         <!-- categorie-filter -->

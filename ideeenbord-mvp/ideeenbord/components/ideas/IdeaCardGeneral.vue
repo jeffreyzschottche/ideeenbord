@@ -14,11 +14,11 @@ const props = defineProps<{ idea: Idea; brand: Brand | null }>();
 const auth = useUserAuthStore();
 const { triggerByKey } = useResponseDisplay();
 
-/* like / dislike helpers */
+/* like / dislike helpers (scoped op brand-id) */
 const { likeIdea, dislikeIdea } = useIdeas(props.idea.brand_id);
 const vote = ref<"like" | "dislike" | null>(null);
 
-/* badge helpers */
+/* status badge helpers */
 const statusColor = computed(
   () =>
     ({
@@ -28,7 +28,6 @@ const statusColor = computed(
       completed: "bg-green-200 text-green-800",
     }[props.idea.status] ?? "bg-gray-200 text-gray-800")
 );
-
 const statusLabel = computed(
   () =>
     ({
@@ -56,9 +55,8 @@ async function onLike() {
   if (!auth.token) return triggerByKey("idea-login-required");
   if (vote.value === "like") return triggerByKey("idea-like-failed");
   vote.value = "like";
-  await likeIdea(props.idea.id);
+  await likeIdea(props.idea.id); // server-call + toast
 }
-
 async function onDislike() {
   if (!auth.token) return triggerByKey("idea-login-required");
   if (vote.value === "dislike") return triggerByKey("idea-dislike-failed");
@@ -70,7 +68,7 @@ async function onDislike() {
 <template>
   <div
     :class="[
-      'w-full max-w-[22rem] mx-auto rounded-2xl border shadow-sm p-4 flex flex-col gap-3 bg-white',
+      'w-full max-w-[22rem] mx-auto rounded-2xl border shadow p-4 flex flex-col gap-3 bg-white',
       idea.is_pinned ? 'border-yellow-400' : 'border-gray-200',
     ]"
   >
@@ -96,7 +94,7 @@ async function onDislike() {
       {{ statusLabel }}
     </span>
 
-    <!-- titel / beschrijving -->
+    <!-- titel & beschrijving -->
     <h3 class="text-lg font-bold text-center">
       <span v-if="idea.is_pinned" class="mr-1">📌</span>{{ idea.title }}
     </h3>

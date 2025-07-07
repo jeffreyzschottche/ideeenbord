@@ -1,27 +1,20 @@
 <template>
-  <section class="light-bg w-full py-12">
-    <div
-      class="container mx-auto flex flex-col md:flex-row items-center gap-10 px-6"
-    >
-      <!-- tekst -->
-      <div class="md:w-1/2 space-y-4">
-        <h1 class="text-4xl md:text-5xl font-bold dark-text">
-          {{ c["banner-title"] }}
-        </h1>
-        <p class="text-lg main-text">
-          {{ c["banner-paragraph"] }}
-        </p>
-      </div>
+  <section class="font-default py-12">
+    <div class="max-w-4xl mx-auto text-center space-y-6 px-4">
+      <!-- image boven tekst -->
+      <img
+        v-if="c['banner-image']"
+        :src="correctImageUrl(c['banner-image'])"
+        class="mx-auto w-full max-w-md rounded-xl shadow"
+        :alt="c['banner-title']"
+      />
 
-      <!-- image -->
-      <div class="md:w-1/2">
-        <img
-          v-if="c['banner-image']"
-          :src="correctImageUrl(c['banner-image'])"
-          class="w-full rounded-lg shadow-lg"
-          :alt="c['banner-title']"
-        />
-      </div>
+      <h1 class="text-3xl md:text-4xl font-bold dark-text">
+        {{ c["banner-title"] }}
+      </h1>
+      <p class="text-lg main-text">
+        {{ c["banner-paragraph"] }}
+      </p>
     </div>
   </section>
 </template>

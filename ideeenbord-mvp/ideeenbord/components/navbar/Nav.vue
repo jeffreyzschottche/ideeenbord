@@ -41,7 +41,7 @@
         <!-- USER -->
         <template v-else>
           <NuxtLink :to="`/user/${user.username}`" class="nav-link">
-            {{ user.username }}
+            Mijn Profiel
           </NuxtLink>
           <button @click="handleLogout" class="nav-link">Uitloggen</button>
         </template>
@@ -140,7 +140,7 @@
               class="nav-link"
               @click="toggleMenu"
             >
-              {{ user.username }}
+              Mijn Profiel
             </NuxtLink>
             <button @click="handleLogout" class="nav-link text-left">
               Uitloggen

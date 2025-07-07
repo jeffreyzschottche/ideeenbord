@@ -4,7 +4,7 @@
     <section class="max-w-4xl mx-auto text-center space-y-6 px-4">
       <img
         v-if="content['hero-image']"
-        :src="correctImageUrl(content['hero-image'])"
+        :src="imageUrl(content['hero-image'])"
         class="mx-auto w-full max-w-md rounded-xl shadow"
         alt="Winactie"
       />
@@ -72,7 +72,7 @@ const steps = computed(() => {
   ];
 });
 
-function correctImageUrl(path?: string) {
+function imageUrl(path?: string) {
   if (!path) return "";
   if (
     path.startsWith("http") ||

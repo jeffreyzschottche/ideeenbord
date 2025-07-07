@@ -5,19 +5,11 @@ import { computed } from "vue";
 
 // Destructure shared state from composable
 const { show, message, type } = useResponseDisplay();
-
-// Close message display
-function close() {
-  show.value = false;
-}
 </script>
 <template>
   <Transition name="slide-fade">
     <div v-if="show" :class="['response-display', type]">
       <span class="message">{{ message }}</span>
-      <button @click="close" class="close-button" aria-label="Sluiten">
-        &times;
-      </button>
     </div>
   </Transition>
 </template>
@@ -38,37 +30,29 @@ function close() {
   align-items: center;
   justify-content: space-between;
   font-weight: bold;
-  color: white;
   font-size: 16px;
 }
 
 /* Style per notification type */
 .success {
-  background-color: #28a745; /* Green for success */
+  border: 3px solid #28a745; /* Green for success */
+  background: white;
 }
 
 .error {
-  background-color: #dc3545; /* Red for error */
+  border: 3px solid #dc3545; /* Red for error */
+  background: white;
 }
 
 .warning {
-  background-color: #fd7e14; /* Orange for warning */
+  border: 3px solid #fd7e14; /* Orange for warning */
+  background: white;
 }
 
 /* Message container */
 .message {
   flex: 1;
   text-align: center;
-}
-
-/* Close button styling */
-.close-button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 24px;
-  margin-left: 10px;
-  cursor: pointer;
 }
 
 /* Slide and fade animation */

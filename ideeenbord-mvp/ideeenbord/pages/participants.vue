@@ -3,7 +3,7 @@
     <ParticipantsCompetitorBanner />
 
     <!-- Grid + filters -->
-    <ParticipantsCompetitorGrid class="py-16" />
+    <ParticipantsCompetitorGrid />
   </div>
 </template>
 

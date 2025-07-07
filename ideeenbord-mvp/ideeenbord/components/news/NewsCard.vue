@@ -16,7 +16,7 @@
       <p class="text-sm main-text opacity-80 line-clamp-3">
         {{ article.excerpt }}
       </p>
-      <span class="text-[var(--color-brand)] font-semibold">Lees verder →</span>
+      <span class="cta font-semibold">Lees verder →</span>
     </div>
   </NuxtLink>
 </template>
