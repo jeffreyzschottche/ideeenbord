@@ -1,5 +1,5 @@
 <template>
-  <section class="py-16">
+  <section class="py-16 px-10">
     <div
       class="flex flex-col md:flex-row items-stretch <!-- ⇽ nieuw --> justify-center gap-6 md:gap-10 max-w-6xl mx-auto"
     >
@@ -41,7 +41,7 @@
 
       <!-- ───────── MIDDEN – knipperende lamp ───────── -->
       <div
-        class="flex-shrink-0 w-40 h-40 md:w-60 md:h-60 flex items-center justify-center relative"
+        class="flex flex-col md:flex-row items-center justify-center gap-6 p-20 md:gap-10 max-w-6xl mx-auto"
       >
         <i
           class="fa-regular fa-lightbulb absolute text-8xl md:text-[7rem] regular-bulb"
