@@ -46,9 +46,10 @@
           <button @click="handleLogout" class="nav-link">Uitloggen</button>
         </template>
 
-        <NuxtLink to="/app" class="cta w-35 text-center"
-          >+ Plaats idee</NuxtLink
+        <Button class="cta w-35 text-center" @click="openModal"
+          >+ Plaats idee</Button
         >
+        <IdeasIdeaSubmitModal v-if="showModal" @close="closeModal" />
       </nav>
 
       <!-- Hamburger -->
@@ -160,11 +161,25 @@ import { useRouter } from "vue-router";
 import { useUserAuthStore } from "~/store/useUserAuthStore";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 import { storeToRefs } from "pinia";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 
 /* Stores */
 const userStore = useUserAuthStore();
 const boStore = useBrandOwnerAuthStore();
 const router = useRouter();
+
+const showModal = ref(false);
+const auth = useUserAuthStore();
+const { trigger } = useResponseDisplay();
+
+function openModal() {
+  if (!auth.token) {
+    trigger("Log in om een idee te plaatsen.", "warning");
+    return;
+  }
+  showModal.value = true;
+}
+const closeModal = () => (showModal.value = false);
 
 const { token: userToken, user } = storeToRefs(userStore);
 const { token: boToken, owner } = storeToRefs(boStore);

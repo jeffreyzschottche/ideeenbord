@@ -21,6 +21,7 @@
                 autofocus
                 @input="onInput"
                 placeholder="Zoek naar merken of pagina’s…"
+                @keyup.enter="directRoute && navigateTo(directRoute)"
                 class="flex-1 border-2 border-orange-500 rounded px-4 py-2"
               />
               <button @click="closeModal" class="ml-3">
@@ -31,17 +32,28 @@
             <div class="space-y-6">
               <div>
                 <h4 class="font-semibold text-orange-500">Merken:</h4>
-                <p v-if="query">{{ query }}</p>
+                <ul v-if="brands.length">
+                  <li v-for="brand in brands" :key="brand.id">
+                    <NuxtLink
+                      :to="`/brands/${brand.slug}`"
+                      class="text-blue-600 underline"
+                    >
+                      {{ brand.title }}
+                    </NuxtLink>
+                  </li>
+                </ul>
                 <p v-else class="text-gray-400">Geen resultaten</p>
               </div>
+
               <div>
                 <h4 class="font-semibold text-orange-500">Pagina’s:</h4>
-                <p v-if="query">{{ query }}</p>
-                <p v-else class="text-gray-400">Geen resultaten</p>
-              </div>
-              <div>
-                <h4 class="font-semibold text-orange-500">Artikelen :</h4>
-                <p v-if="query">{{ query }}</p>
+                <ul v-if="pages.length">
+                  <li v-for="page in pages" :key="page.id">
+                    <NuxtLink :to="page.route" class="text-blue-600 underline">
+                      {{ page.title }}
+                    </NuxtLink>
+                  </li>
+                </ul>
                 <p v-else class="text-gray-400">Geen resultaten</p>
               </div>
             </div>
@@ -53,16 +65,19 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
+import { useSearch } from "~/composables/useSearch";
 
 const query = ref("");
 const showModal = ref(false);
-
 const openModal = () => (showModal.value = true);
 const closeModal = () => (showModal.value = false);
-const onInput = () => {
-  // placeholder voor echte zoek‑API call
-};
+
+const { search, brands, pages, loading } = useSearch();
+
+watch(query, async (val) => {
+  await search(val);
+});
 </script>
 
 <style scoped>

@@ -55,6 +55,10 @@ Custom Utility Components (Tailwind Layer)
     @apply bg-[var(--color-bg)] border border-gray-200 rounded-3xl p-8 md:p-12;
   }
 
+  .brandColorBorder {
+    border: 2px solid var(--color-brand);
+  }
+
   .text-success {
     color: var(--color-success);
   }
