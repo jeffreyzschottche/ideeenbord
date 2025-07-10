@@ -8,7 +8,7 @@
           @submit.prevent="submitNewIdea"
           class="bg-white p-6 rounded-lg w-full max-w-lg space-y-6"
         >
-          <!-- ───────────── 1. A-Z index ───────────── -->
+          <!-- 1. A-Z index -->
           <div class="flex flex-wrap justify-center gap-1">
             <button
               v-for="letter in letters"
@@ -28,19 +28,24 @@
             </button>
           </div>
 
-          <!-- ───────────── 2. Verticale scrolllijst ───────────── -->
+          <!-- 2. Verticale scrolllijst -->
           <div ref="scrollEl" class="max-h-[260px] overflow-y-auto pr-2">
             <div
               v-for="brand in filteredBrands"
               :key="brand.id"
               @click="selectBrand(brand)"
               class="flex items-center gap-3 py-2 px-3 cursor-pointer rounded hover:bg-gray-100"
-              :class="selectedBrand === brand.id && 'bg-brand/10'"
+              :class="[
+                'border-2',
+                selectedBrand === brand.id
+                  ? 'border-brand bg-brand/10'
+                  : 'border-transparent',
+              ]"
             >
               <img
                 :src="correctImageUrl(brand.logo_path)"
                 :alt="brand.title"
-                class="w-14 h-14 object-contain rounded bg-white brandColorBorder shrink-0"
+                class="w-14 h-14 object-contain rounded bg-white shrink-0"
                 loading="lazy"
               />
               <span
@@ -52,7 +57,7 @@
             </div>
           </div>
 
-          <!-- ───────────── 3. Titel & beschrijving ───────────── -->
+          <!-- 3. Titel & beschrijving -->
           <input
             v-model="title"
             placeholder="Titel van je idee"
@@ -81,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, nextTick, watch } from "vue";
+import { ref, onMounted, computed, nextTick } from "vue";
 import { apiFetch } from "~/composables/adapter/useApi";
 import { useIdeas } from "~/composables/ideas/useIdeas";
 import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
@@ -90,10 +95,10 @@ import type { Brand } from "~/types/brand";
 const emit = defineEmits(["close"]);
 const { trigger } = useResponseDisplay();
 
+/* ───────── Mount & brands ophalen ───────── */
 const mounted = ref(false);
-
-/* ───────────── Brands ophalen ───────────── */
 const brands = ref<Brand[]>([]);
+
 onMounted(async () => {
   mounted.value = true;
   brands.value = (await apiFetch<Brand[]>("/brands?accepted=1")).sort((a, b) =>
@@ -101,16 +106,16 @@ onMounted(async () => {
   );
 });
 
-/* ───────────── A-Z logica ───────────── */
+/* ───────── A-Z index ───────── */
 const letters = Array.from({ length: 26 }, (_, i) =>
   String.fromCharCode(65 + i)
 );
 const currentLetter = ref("A");
 
 const lettersWithBrands = computed(() => {
-  const s = new Set<string>();
-  brands.value.forEach((b) => s.add(b.title[0].toUpperCase()));
-  return s;
+  const set = new Set<string>();
+  brands.value.forEach((b) => set.add(b.title[0].toUpperCase()));
+  return set;
 });
 
 function setLetter(letter: string) {
@@ -119,7 +124,7 @@ function setLetter(letter: string) {
   nextTick(() => (scrollEl.value!.scrollTop = 0));
 }
 
-/* ───────────── Filter + selectie ───────────── */
+/* ───────── Filter + selectie ───────── */
 const filteredBrands = computed(() =>
   brands.value.filter((b) => b.title[0].toUpperCase() === currentLetter.value)
 );
@@ -129,7 +134,7 @@ function selectBrand(b: Brand) {
   selectedBrand.value = b.id;
 }
 
-/* ───────────── Form-state ───────────── */
+/* ───────── Form-state & submit ───────── */
 const title = ref("");
 const description = ref("");
 
@@ -148,17 +153,13 @@ async function submitNewIdea() {
   }
 }
 
+/* ───────── Helper ───────── */
 function correctImageUrl(url: string) {
   const apiBase = useRuntimeConfig().public.apiBaseUrl as string;
   return apiBase.replace("/api", "/storage") + "/" + url;
 }
 
-/* Auto-select bij enige item */
-watch(filteredBrands, (l) => {
-  if (l.length === 1) selectedBrand.value = l[0].id;
-});
-
-/* reference naar scroll container */
+/* ───────── Scroll ref ───────── */
 const scrollEl = ref<HTMLElement | null>(null);
 </script>
 
