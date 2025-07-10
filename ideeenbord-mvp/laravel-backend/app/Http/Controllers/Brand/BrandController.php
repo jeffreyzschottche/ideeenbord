@@ -43,6 +43,7 @@ class BrandController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+
         $data = $validator->validated();
 
         // Handle logo upload
@@ -115,6 +116,21 @@ class BrandController extends Controller
 
         return response()->json(['message' => 'Brand geaccepteerd']);
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        if (!$query) {
+            return response()->json([]); // niks terug als query leeg is
+        }
+
+        return Brand::where('title', 'LIKE', $query . '%') // begint met...
+            ->orderBy('title')
+            ->limit(10)
+            ->get(['id', 'title', 'slug']);
+    }
+
 
     /**
      * Show a brand by its slug, including the related main question.

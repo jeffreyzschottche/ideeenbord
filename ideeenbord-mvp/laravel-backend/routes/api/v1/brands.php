@@ -12,9 +12,11 @@ use App\Http\Controllers\Quiz\QuizController;
 Route::get('/main-questions', [MainQuestionController::class, 'index']);
 Route::get('/main-questions/{mainQuestion}', [MainQuestionController::class, 'show']);
 
+
 Route::get('/brands/{brand}/quiz', [QuizController::class, 'activeForBrand']);
 Route::get('/brands/{brand}/quiz/participants', [QuizController::class, 'getParticipants']);
 Route::get('/brands/{brand}/quizzes', [QuizController::class, 'listForBrand']);
+Route::get('/search/brands', [BrandController::class, 'search']);
 
 Route::prefix('brands')->group(function () {
     Route::get('/', [BrandController::class, 'index']);

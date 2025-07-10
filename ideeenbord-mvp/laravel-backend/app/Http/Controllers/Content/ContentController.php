@@ -1,9 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Content;
-
-
-
 use App\Http\Controllers\Controller;
 use App\Models\CmsPage;
 
