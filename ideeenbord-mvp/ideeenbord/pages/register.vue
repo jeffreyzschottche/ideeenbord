@@ -36,7 +36,11 @@ async function handleSubmit() {
   if (success) {
     triggerByKey("register-success");
   } else {
-    triggerByKey("register-failed");
+    if (error.value && error.value.includes("Scheldwoorden")) {
+      triggerByKey("profanity-detected");
+    } else {
+      triggerByKey("register-failed");
+    }
   }
 }
 </script>

@@ -41,8 +41,12 @@ export function useIdeas(brandId: number) {
       await fetchIdeas();
       triggerByKey("idea-posted");
     } catch (err: any) {
-      error.value = err?.message || "Failed to submit idea.";
-      triggerByKey("idea-failed");
+      error.value = err?.data?.message || err?.message || "Failed to submit idea.";
+      if (error.value && error.value.includes("Scheldwoorden")) {
+        triggerByKey("profanity-detected");
+      } else {
+        triggerByKey("idea-failed");
+      }
     }
   }
 

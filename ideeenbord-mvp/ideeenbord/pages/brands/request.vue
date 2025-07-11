@@ -30,7 +30,11 @@ async function handleSubmit() {
     await requestBrand(form.value);
     triggerByKey("request-submitted");
   } catch (e) {
-    triggerByKey("request-failed");
+    if (typeof error.value === "string" && error.value.includes("Scheldwoorden")) {
+      triggerByKey("profanity-detected");
+    } else {
+      triggerByKey("request-failed");
+    }
   }
 }
 </script>
