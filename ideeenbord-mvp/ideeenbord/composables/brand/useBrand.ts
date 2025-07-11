@@ -10,18 +10,18 @@ import type { RequestBrandForm, ClaimForm } from "~/types/brand";
  * - updating brand details (owner only)
  */
 export function useBrand() {
-  const error = ref<string | null>(null);
+  const error = ref<unknown>(null);
 
   /**
    * Submit a request to register a new brand.
    */
   async function requestBrand(form: RequestBrandForm) {
     try {
-      return await brandService.requestBrand(form);
+      await brandService.requestBrand(form);
+      return true;
     } catch (err: any) {
-      error.value =
-        err?.data?.message || "Something went wrong during brand registration.";
-      throw error.value;
+      error.value = err?.response?._data || err?.data || err;
+      return false;
     }
   }
 
