@@ -56,6 +56,7 @@ export type MessageKey =
   | "idea-unpin-failed"
   | "register-success"
   | "register-failed"
+  | "profanity-detected"
   | "brand-rating-failed"
   | "brand-rating-saved"
   | "brand-already-rated"
@@ -406,6 +407,13 @@ export const messages: Record<
     text: {
       nl: "Registratie mislukt. Probeer het opnieuw.",
       en: "Registration failed. Please try again.",
+    },
+  },
+  "profanity-detected": {
+    type: "error",
+    text: {
+      nl: "Ongepaste taal gedetecteerd.",
+      en: "Inappropriate language detected.",
     },
   },
   "brand-load-failed": {
