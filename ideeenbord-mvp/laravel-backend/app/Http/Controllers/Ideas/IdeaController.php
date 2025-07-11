@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Mail\IdeaStatusChangedMail;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreIdeaRequest;
 
 /** *
  * This controller manages all idea-related actions within the application,
@@ -21,37 +22,39 @@ class IdeaController extends Controller
      * @param Request $request The HTTP request containing idea details.
      * @return \Illuminate\Http\JsonResponse JSON response with confirmation or error.
      */
-    public function store(Request $request)
+    public function store(StoreIdeaRequest $request)
     {
-        $request->validate([
-            'brand_id' => 'required|exists:brands,id',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
+        $user = $request->user();          // ingelogde gebruiker
+        $data = $request->validated();     // brand_id, title, description
 
-        $user = $request->user();
-
-        // Check if user already posted 5 ideas for this brand
-        $ideaCount = Idea::where('brand_id', $request->brand_id)
+        // ── Limiet: max 5 ideeën per brand ─────────────────────────
+        $already = Idea::where('brand_id', $data['brand_id'])
             ->where('user_id', $user->id)
             ->count();
 
-        if ($ideaCount >= 5) {
-            return response()->json(['message' => 'Je mag maximaal 5 ideeën per merk plaatsen.'], 403);
+        if ($already >= 5) {
+            return response()->json(
+                ['message' => 'Je mag maximaal 5 ideeën per merk plaatsen.'],
+                403
+            );
         }
 
+        // ── Aanmaken ───────────────────────────────────────────────
         $idea = Idea::create([
-            'brand_id' => $request->brand_id,
+            'brand_id' => $data['brand_id'],
             'user_id' => $user->id,
-            'title' => $request->title,
-            'description' => $request->description,
+            'title' => $data['title'],
+            'description' => $data['description'] ?? null,
         ]);
-        $created = $user->created_posts ?? [];
-        $created[] = $idea->id;
-        $user->created_posts = $created;
+
+        // ── Bijhouden in user->created_posts ───────────────────────
+        $user->created_posts = [...($user->created_posts ?? []), $idea->id];
         $user->save();
 
-        return response()->json(['message' => 'Idee succesvol geplaatst', 'idea' => $idea]);
+        return response()->json([
+            'message' => 'Idee succesvol geplaatst',
+            'idea' => $idea,
+        ]);
     }
     /**
      * Get all ideas for a specific brand, sorted by pinned and created date.

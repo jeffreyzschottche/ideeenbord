@@ -91,9 +91,11 @@ import { apiFetch } from "~/composables/adapter/useApi";
 import { useIdeas } from "~/composables/ideas/useIdeas";
 import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 import type { Brand } from "~/types/brand";
+import { useProfanity } from "~/composables/useProfanity";
 
 const emit = defineEmits(["close"]);
-const { trigger } = useResponseDisplay();
+const { trigger, triggerByKey } = useResponseDisplay();
+const { init: initProfanity, validate } = useProfanity();
 
 /* ───────── Mount & brands ophalen ───────── */
 const mounted = ref(false);
@@ -104,6 +106,7 @@ onMounted(async () => {
   brands.value = (await apiFetch<Brand[]>("/brands?accepted=1")).sort((a, b) =>
     a.title.localeCompare(b.title)
   );
+  await initProfanity();
 });
 
 /* ───────── A-Z index ───────── */
@@ -141,6 +144,10 @@ const description = ref("");
 async function submitNewIdea() {
   if (!selectedBrand.value) {
     trigger("Kies eerst een merk 😅", "warning");
+    return;
+  }
+  if (!validate(title.value, description.value)) {
+    triggerByKey("profanity-detected");
     return;
   }
   const { submitIdea } = useIdeas(selectedBrand.value);

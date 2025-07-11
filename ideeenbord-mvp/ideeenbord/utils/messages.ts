@@ -68,6 +68,7 @@ export type MessageKey =
   | "admin-brand-acceptance-failed"
   | "admin-brand-accepted"
   | "idea-login-required"
+  | "profanity-detected"
   | "server-error";
 
 type MessageType = "success" | "error" | "warning";
@@ -493,6 +494,13 @@ export const messages: Record<
     text: {
       nl: "Brand niet geaccepteerd er ging iets fout.",
       en: "Brand not accepted, something went wrong.",
+    },
+  },
+  "profanity-detected": {
+    type: "error",
+    text: {
+      nl: "Gebruik geen ongepaste taal ✋",
+      en: "Please avoid offensive language ✋",
     },
   },
 };

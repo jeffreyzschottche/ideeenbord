@@ -8,3 +8,5 @@ require __DIR__ . '/v1/ideas.php';
 require __DIR__ . '/v1/quizzes.php';
 require __DIR__ . '/v1/admin.php';
 require __DIR__ . '/v1/content.php';
+require __DIR__ . '/v1/profanity.php';
+
