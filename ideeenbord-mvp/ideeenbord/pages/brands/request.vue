@@ -22,7 +22,24 @@ const form = ref<RequestBrandForm>({
 });
 
 const { requestBrand, error } = useBrand();
-const { triggerByKey } = useResponseDisplay();
+const { trigger, triggerByKey } = useResponseDisplay();
+
+/* ---------- helper: extract first Laravel error message ---------- */
+function firstLaravelMessage(raw: unknown): string | null {
+  if (!raw) return null;
+
+  if (typeof raw === "string") return raw;
+
+  const obj = raw as { message?: string; errors?: Record<string, string[]> };
+
+  if (obj.errors && Object.keys(obj.errors).length) {
+    const firstField = Object.keys(obj.errors)[0];
+    const firstMsg = obj.errors[firstField]?.[0];
+    if (firstMsg) return firstMsg;
+  }
+
+  return obj.message ?? null;
+}
 
 // Submit the form to request a new brand
 async function handleSubmit() {
@@ -30,7 +47,15 @@ async function handleSubmit() {
     await requestBrand(form.value);
     triggerByKey("request-submitted");
   } catch (e) {
-    triggerByKey("request-failed");
+    const msg = firstLaravelMessage(error.value);
+
+    if (msg === "profanity-detected") {
+      triggerByKey(msg);
+    } else if (msg) {
+      trigger(msg, "error");
+    } else {
+      triggerByKey("request-failed");
+    }
   }
 }
 </script>

@@ -6,7 +6,7 @@ use App\Models\Brand;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StoreBrandRequest;
 use Illuminate\Support\Str;
 
 /**
@@ -26,25 +26,9 @@ class BrandController extends Controller
      * @param Request $request The HTTP request containing brand data.
      * @return \Illuminate\Http\JsonResponse The created brand data or validation errors.
      */
-    public function store(Request $request)
+    public function store(StoreBrandRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
-            'website_url' => 'nullable|url',
-            'intro' => 'nullable|string',
-            'intro_short' => 'nullable|string|max:160',
-            'email' => 'required|email|unique:brands,email',
-            'logo' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048',
-            'socials' => 'nullable|json',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-
-        $data = $validator->validated();
+        $data = $request->validated();
 
         // Handle logo upload
         if ($request->hasFile('logo')) {
