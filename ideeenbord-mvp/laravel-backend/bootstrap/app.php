@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth' => Authenticate::class,
         ]);
         // $middleware->append(IsAdmin::class);
+        $middleware->append(\App\Http\Middleware\CheckProfanity::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

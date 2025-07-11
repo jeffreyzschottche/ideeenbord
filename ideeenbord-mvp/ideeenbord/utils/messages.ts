@@ -65,6 +65,7 @@ export type MessageKey =
   | "claim-failed"
   | "request-submitted"
   | "request-failed"
+  | "profanity-detected"
   | "server-error";
 
 type MessageType = "success" | "error" | "warning";
@@ -469,6 +470,13 @@ export const messages: Record<
     text: {
       nl: "Aanvraag mislukt.",
       en: "Brand request failed.",
+    },
+  },
+  "profanity-detected": {
+    type: "error",
+    text: {
+      nl: "Scheldwoorden zijn verboden.",
+      en: "Profanity is not allowed.",
     },
   },
 };
