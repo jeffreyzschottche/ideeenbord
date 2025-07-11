@@ -43,19 +43,21 @@ function firstLaravelMessage(raw: unknown): string | null {
 
 // Submit the form to request a new brand
 async function handleSubmit() {
-  try {
-    await requestBrand(form.value);
-    triggerByKey("request-submitted");
-  } catch (e) {
-    const msg = firstLaravelMessage(error.value);
+  const ok = await requestBrand(form.value);
 
-    if (msg === "profanity-detected") {
-      triggerByKey(msg);
-    } else if (msg) {
-      trigger(msg, "error");
-    } else {
-      triggerByKey("request-failed");
-    }
+  if (ok) {
+    triggerByKey("request-submitted");
+    return;
+  }
+
+  const msg = firstLaravelMessage(error.value);
+
+  if (msg === "profanity-detected") {
+    triggerByKey(msg);
+  } else if (msg) {
+    trigger(msg, "error");
+  } else {
+    triggerByKey("request-failed");
   }
 }
 </script>
