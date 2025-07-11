@@ -5,27 +5,39 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use App\Rules\ProfanityFree;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
+        $validator = Validator::make($request->all(), [
+            'name' => ['required','string','max:255', new ProfanityFree],
             'email' => 'required|email|unique:users,email',
-            'username' => 'required|string|unique:users,username',
+            'username' => ['required','string','unique:users,username', new ProfanityFree],
             'password' => 'required|string|min:6',
             'gender' => 'nullable|string',
             'birthdate' => 'nullable|date',
             'education_level' => 'nullable|string',
             'education' => 'nullable|string',
-            'job' => 'nullable|string',
+            'job' => ['nullable','string', new ProfanityFree],
             'sector' => 'nullable|string',
             'city' => 'nullable|string',
             'birth_city' => 'nullable|string',
             'relationship_status' => 'nullable|string',
             'postal_code' => 'nullable|string',
         ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            if (in_array('profanity-detected', $errors->all())) {
+                return response()->json(['message' => 'profanity-detected'], 422);
+            }
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        $data = $validator->validated();
 
         $data['password'] = Hash::make($data['password']);
 
