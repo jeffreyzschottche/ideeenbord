@@ -16,7 +16,7 @@
 
       <!-- Desktop nav -->
       <nav class="hidden md:flex space-x-6 text-md items-center">
-        <SearchBarNav />
+        <SearchSearchbarnav />
 
         <NuxtLink to="/about" class="nav-link">Uitleg</NuxtLink>
         <NuxtLink to="/news" class="nav-link">Nieuws</NuxtLink>
@@ -162,6 +162,7 @@ import { useUserAuthStore } from "~/store/useUserAuthStore";
 import { useBrandOwnerAuthStore } from "~/store/useBrandOwnerAuthStore";
 import { storeToRefs } from "pinia";
 import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
+import { SearchSearchbarnav } from "#components";
 
 /* Stores */
 const userStore = useUserAuthStore();

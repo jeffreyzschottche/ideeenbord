@@ -26,7 +26,6 @@ class ProfanityFree implements Rule
 
     public function message(): string
     {
-        // resources/lang/nl/validation.php   ->  'profanity' => 'Ongepaste taal gedetecteerd.'
-        return trans('validation.profanity');
+        return 'profanity-detected';
     }
 }

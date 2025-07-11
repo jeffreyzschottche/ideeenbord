@@ -1,10 +1,4 @@
 <script setup lang="ts">
-/*
-  This page handles user registration using a comprehensive form.
-  It uses `useRegister()` composable to send form data to the backend.
-  On success, a 'register-success' response is triggered; otherwise, 'register-failed'.
-*/
-
 import { ref } from "vue";
 import type { RegisterForm } from "~/types/auth";
 import { useRegister } from "~/composables/user/useAuth";
@@ -28,14 +22,45 @@ const form = ref<RegisterForm>({
 });
 
 const { register, error } = useRegister();
-const { triggerByKey } = useResponseDisplay();
+const { trigger, triggerByKey } = useResponseDisplay();
+
+/* ---------- helper: haal 1e foutboodschap uit Laravel-payload ---------- */
+function firstLaravelMessage(raw: unknown): string | null {
+  if (!raw) return null;
+
+  // plain string
+  if (typeof raw === "string") return raw;
+
+  // { message, errors: { field: [msg,…] } }
+  const obj = raw as { message?: string; errors?: Record<string, string[]> };
+
+  if (obj.errors && Object.keys(obj.errors).length) {
+    const firstField = Object.keys(obj.errors)[0];
+    const firstMsg = obj.errors[firstField]?.[0];
+    if (firstMsg) return firstMsg;
+  }
+
+  return obj.message ?? null;
+}
 
 async function handleSubmit() {
-  const success = await register(form.value);
+  const ok = await register(form.value);
 
-  if (success) {
+  if (ok) {
     triggerByKey("register-success");
+    return;
+  }
+
+  const msg = firstLaravelMessage(error.value);
+
+  if (msg === "profanity-detected") {
+    // ProfanityFree-rule faalde
+    triggerByKey(msg);
+  } else if (msg) {
+    // andere validatiefout → toon bericht letterlijk
+    trigger(msg, "error");
   } else {
+    // geen details → generieke melding
     triggerByKey("register-failed");
   }
 }

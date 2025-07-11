@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterUserRequest;
 /**
  * Class AuthController
  *
@@ -27,24 +28,9 @@ class AuthController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException If input validation fails.
      */
-    public function register(Request $request)
+    public function register(RegisterUserRequest $request)
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'username' => 'required|string|unique:users,username',
-            'password' => 'required|string|min:6',
-            'gender' => 'nullable|string',
-            'birthdate' => 'nullable|date',
-            'education_level' => 'nullable|string',
-            'education' => 'nullable|string',
-            'job' => 'nullable|string',
-            'sector' => 'nullable|string',
-            'city' => 'nullable|string',
-            'birth_city' => 'nullable|string',
-            'relationship_status' => 'nullable|string',
-            'postal_code' => 'nullable|string',
-        ]);
+        $data = $request->validated();
 
         $data['password'] = Hash::make($data['password']);
 
