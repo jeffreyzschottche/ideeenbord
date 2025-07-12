@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Mail\QuizWinnerMail;
 use Illuminate\Support\Facades\Mail;
+use App\Rules\ProfanityFree;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Class QuizController
@@ -28,14 +30,38 @@ class QuizController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string',
-            'description' => 'nullable|string',
-            'prize' => 'nullable|string',
-            'quiz_questions' => 'required|array',
-            'quiz_answers' => 'required|array',
-        ]);
+        // ── 1) basis-regels ─────────────────────────────────────────────
+        $rules = [
+            'title' => ['required', 'string', new ProfanityFree()],
+            'description' => ['nullable', 'string', new ProfanityFree()],
+            'prize' => ['nullable', 'string', new ProfanityFree()],
+            'quiz_questions' => ['required', 'array', 'min:1'],
+            'quiz_questions.*.title' => ['required', 'string', new ProfanityFree()],
+            'quiz_answers' => ['required', 'array', 'min:1'],
+        ];
 
+        // ── 2) validator opzetten ──────────────────────────────────────
+        $validator = Validator::make($request->all(), $rules);
+
+        // ── 3) extra check: alle answer-teksten door ProfanityFree ─────
+        if ($validator->passes()) {
+            foreach ($request->quiz_answers as $set) {
+                foreach (array_keys($set['answers'] ?? []) as $answerText) {
+                    if (!(new ProfanityFree())->passes('answer', $answerText)) {
+                        $validator->errors()->add('quiz_answers', 'profanity-detected');
+                        break 2;   // één fout is genoeg
+                    }
+                }
+            }
+        }
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $validated = $validator->validated();
+
+        // ── 4) aanmaken zoals je al deed ───────────────────────────────
         $user = auth('brand_owner')->user();
         $brand = $user->brand;
 
@@ -51,6 +77,32 @@ class QuizController extends Controller
 
         return response()->json(['quiz' => $quiz], 201);
     }
+
+    // public function store(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'title' => 'required|string',
+    //         'description' => 'nullable|string',
+    //         'prize' => 'nullable|string',
+    //         'quiz_questions' => 'required|array',
+    //         'quiz_answers' => 'required|array',
+    //     ]);
+
+    //     $user = auth('brand_owner')->user();
+    //     $brand = $user->brand;
+
+    //     $quiz = Quiz::create([
+    //         'brand_id' => $brand->id,
+    //         'title' => $validated['title'],
+    //         'slug' => Str::slug($validated['title']),
+    //         'description' => $validated['description'] ?? null,
+    //         'prize' => $validated['prize'] ?? null,
+    //         'quiz_questions' => $validated['quiz_questions'],
+    //         'quiz_answers' => $validated['quiz_answers'],
+    //     ]);
+
+    //     return response()->json(['quiz' => $quiz], 201);
+    // }
     public function index(Request $request)
     {
         // optionele query-params
@@ -87,9 +139,44 @@ class QuizController extends Controller
     public function update(Request $request, Quiz $quiz)
     {
         $this->authorizeOwner($quiz);
-        $quiz->update($request->only(['title', 'description', 'prize', 'quiz_questions', 'quiz_answers']));
+
+        $rules = [
+            'title' => ['sometimes', 'string', new ProfanityFree()],
+            'description' => ['nullable', 'string', new ProfanityFree()],
+            'prize' => ['nullable', 'string', new ProfanityFree()],
+            'quiz_questions' => ['sometimes', 'array'],
+            'quiz_questions.*.title' => ['required_with:quiz_questions', 'string', new ProfanityFree()],
+            'quiz_answers' => ['sometimes', 'array'],
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->passes() && $request->filled('quiz_answers')) {
+            foreach ($request->quiz_answers as $set) {
+                foreach (array_keys($set['answers'] ?? []) as $answerText) {
+                    if (!(new ProfanityFree())->passes('answer', $answerText)) {
+                        $validator->errors()->add('quiz_answers', 'profanity-detected');
+                        break 2;
+                    }
+                }
+            }
+        }
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $quiz->update($validator->validated());
+
         return response()->json(['quiz' => $quiz]);
     }
+
+    // public function update(Request $request, Quiz $quiz)
+    // {
+    //     $this->authorizeOwner($quiz);
+    //     $quiz->update($request->only(['title', 'description', 'prize', 'quiz_questions', 'quiz_answers']));
+    //     return response()->json(['quiz' => $quiz]);
+    // }
 
     /**
      * Submit a user's answers to a quiz.

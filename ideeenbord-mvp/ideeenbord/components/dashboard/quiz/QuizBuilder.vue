@@ -80,6 +80,15 @@ async function submitQuiz() {
       },
     ];
   } catch (err: any) {
+    /* ── HIER: check op profanity ────────────── */
+    const rawErrors = err?.validationErrors;
+    if (rawErrors) {
+      const all = Object.values(rawErrors).flat();
+      if (all.includes("profanity-detected")) {
+        triggerByKey("profanity-detected");
+        return;
+      }
+    }
     triggerByKey("quiz-create-failed");
   }
 }
