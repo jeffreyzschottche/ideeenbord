@@ -7,6 +7,8 @@ use App\Models\BrandOwner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
+use App\Rules\ProfanityFree;
+
 
 /**
  * Class BrandOwnerController
@@ -31,7 +33,7 @@ class BrandOwnerController extends Controller
     {
         $data = $request->validate([
             'brand_id' => 'required|exists:brands,id',
-            'name' => 'required|string|max:255',
+            'name' => ['required', 'string', 'max:255', new ProfanityFree()],
             'email' => 'required|email|unique:brand_owners,email',
             'phone' => 'nullable|string',
             'url' => 'nullable|url',

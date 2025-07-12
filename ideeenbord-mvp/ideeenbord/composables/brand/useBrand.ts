@@ -33,8 +33,9 @@ export function useBrand() {
     try {
       return await brandService.claimBrand(form);
     } catch (err: any) {
-      error.value = err?.data?.message || "Brand claim failed.";
-      throw error.value;
+      // error.value = err?.data?.message || "Brand claim failed.";
+      // throw error.value;
+      throw err;
     }
   }
 

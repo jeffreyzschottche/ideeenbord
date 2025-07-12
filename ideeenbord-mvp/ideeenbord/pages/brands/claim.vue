@@ -24,7 +24,7 @@ const form = ref<ClaimForm>({
 
 const { claimBrand, error } = useBrand();
 const brands = ref<{ id: number; title: string }[]>([]);
-const { triggerByKey } = useResponseDisplay();
+const { triggerByKey, trigger } = useResponseDisplay();
 
 // Fetch all unverified brands on mount
 onMounted(async () => {
@@ -47,12 +47,18 @@ async function handleSubmit() {
     await claimBrand(form.value);
     triggerByKey("claim-submitted");
   } catch (e) {
-    switch (e) {
-      case "The email has already been taken.":
-        alert("email al in gebruik");
-        break;
-      default:
-        triggerByKey("claim-failed");
+    const rawErrors = e?.data?.errors || e?.response?._data?.errors;
+
+    if (rawErrors) {
+      const allMessages = Object.values(rawErrors).flat();
+
+      if (allMessages.includes("profanity-detected")) {
+        triggerByKey("profanity-detected");
+      } else if (allMessages.includes("The email has already been taken.")) {
+        trigger("Deze email is al in gebruik voor een merk.", "error");
+      }
+    } else {
+      triggerByKey("request-failed");
     }
   }
 }
