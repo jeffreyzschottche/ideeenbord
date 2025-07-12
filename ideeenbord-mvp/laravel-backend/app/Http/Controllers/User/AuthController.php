@@ -101,7 +101,7 @@ class AuthController extends Controller
             'username' => ['sometimes', 'string', 'unique:users,username,' . $user->id, new ProfanityFree()],
             'gender' => 'nullable|string',
             'education_level' => 'nullable|string',
-            'education' => 'nullable|string',
+            'education' => ['nullable', 'string', new ProfanityFree()],
             'job' => ['nullable', 'string', new ProfanityFree()],
             'sector' => 'nullable|string',
             'city' => 'nullable|string',

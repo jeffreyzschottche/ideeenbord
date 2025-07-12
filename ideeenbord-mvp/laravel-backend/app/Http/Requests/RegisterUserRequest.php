@@ -22,7 +22,7 @@ class RegisterUserRequest extends FormRequest
             'gender' => ['nullable', 'string'],
             'birthdate' => ['nullable', 'date'],
             'education_level' => ['nullable', 'string'],
-            'education' => ['nullable', 'string'],
+            'education' => ['nullable', 'string', new ProfanityFree],
             'job' => ['nullable', 'string', new ProfanityFree],
             'sector' => ['nullable', 'string'],
             'city' => ['nullable', 'string'],
