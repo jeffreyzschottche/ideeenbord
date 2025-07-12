@@ -29,8 +29,20 @@ async function handleSubmit() {
   try {
     await requestBrand(form.value);
     triggerByKey("request-submitted");
-  } catch (e) {
-    triggerByKey("request-failed");
+  } catch (e: any) {
+    const rawErrors = e?.data?.errors || e?.response?._data?.errors;
+
+    if (rawErrors) {
+      const allMessages = Object.values(rawErrors).flat();
+
+      if (allMessages.includes("profanity-detected")) {
+        triggerByKey("profanity-detected");
+      } else {
+        triggerByKey("request-failed");
+      }
+    } else {
+      triggerByKey("request-failed");
+    }
   }
 }
 </script>

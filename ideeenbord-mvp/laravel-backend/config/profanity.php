@@ -4,6 +4,7 @@ return [
     'bad_words' => [
         'woord1',
         'woord2',
+        'aids',
         'obsceniteit',
         'afberen',
         'aflebberen',

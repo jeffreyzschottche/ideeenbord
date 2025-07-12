@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use App\Rules\ProfanityFree;
 
 /**
  * Class BrandController
@@ -29,15 +30,16 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
-            'website_url' => 'nullable|url',
-            'intro' => 'nullable|string',
-            'intro_short' => 'nullable|string|max:160',
-            'email' => 'required|email|unique:brands,email',
-            'logo' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048',
-            'socials' => 'nullable|json',
+            'title' => ['required', 'string', 'max:255', new ProfanityFree],
+            'category' => ['required', 'string', 'max:255'],
+            'website_url' => ['nullable', 'url', new ProfanityFree],
+            'intro' => ['nullable', 'string', new ProfanityFree],
+            'intro_short' => ['nullable', 'string', 'max:160', new ProfanityFree],
+            'email' => ['required', 'email', 'unique:brands,email'],
+            'logo' => ['nullable', 'file', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'socials' => ['nullable', 'json'],
         ]);
+
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);

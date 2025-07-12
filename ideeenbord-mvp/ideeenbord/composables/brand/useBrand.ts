@@ -19,9 +19,10 @@ export function useBrand() {
     try {
       return await brandService.requestBrand(form);
     } catch (err: any) {
-      error.value =
-        err?.data?.message || "Something went wrong during brand registration.";
-      throw error.value;
+      // alert(err);
+      // error.value =
+      //   err?.data?.message || "Something went wrong during brand registration.";
+      throw err;
     }
   }
 
