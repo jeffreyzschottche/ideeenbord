@@ -80,8 +80,20 @@ async function submitForm() {
     triggerByKey("brand-updated"); // Show success message
     emit("updated"); // Notify parent component
     closeModal(); // Close modal after save
-  } catch (e) {
-    triggerByKey("brand-update-failed"); // Show error message
+  } catch (e: any) {
+    const rawErrors = e?.validationErrors;
+
+    if (rawErrors) {
+      const allMessages = Object.values(rawErrors).flat();
+
+      if (allMessages.includes("profanity-detected")) {
+        triggerByKey("profanity-detected");
+      } else {
+        triggerByKey("brand-update-failed");
+      }
+    } else {
+      triggerByKey("brand-update-failed");
+    }
   }
 }
 </script>

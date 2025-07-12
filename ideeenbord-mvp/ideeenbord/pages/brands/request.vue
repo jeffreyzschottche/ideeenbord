@@ -30,6 +30,7 @@ async function handleSubmit() {
     await requestBrand(form.value);
     triggerByKey("request-submitted");
   } catch (e: any) {
+    console.log(e.messages);
     const rawErrors = e?.data?.errors || e?.response?._data?.errors;
 
     if (rawErrors) {

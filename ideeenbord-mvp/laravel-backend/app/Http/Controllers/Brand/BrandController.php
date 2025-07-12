@@ -232,16 +232,23 @@ class BrandController extends Controller
             return response()->json(['message' => 'Geen toegang tot dit merk.'], 403);
         }
 
-        $validated = $request->validate([
-            'title' => 'sometimes|string|max:255',
-            'category' => 'sometimes|string|max:255',
-            'website_url' => 'nullable|url',
-            'intro' => 'nullable|string',
-            'intro_short' => 'nullable|string|max:160',
+        $validator = Validator::make($request->all(), [
+            'title' => ['sometimes', 'string', 'max:255', new ProfanityFree()],
+            'category' => ['sometimes', 'string', 'max:255'],
+            'website_url' => ['nullable', 'url'],
+            'intro' => ['nullable', 'string', new ProfanityFree()],
+            'intro_short' => ['nullable', 'string', 'max:160', new ProfanityFree()],
             'email' => 'nullable|email',
             'subscription' => 'nullable|string',
             'socials' => 'nullable|array',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $validated = $validator->validated();
+
 
         $brand->update($validated);
 

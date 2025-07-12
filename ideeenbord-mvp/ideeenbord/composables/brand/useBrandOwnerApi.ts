@@ -31,9 +31,23 @@ export async function brandOwnerApiFetch<T = any>(
     headers,
   });
 
+  // if (!res.ok) {
+  //   const errText = await res.text();
+  //   console.log(errText);
+  //   throw new Error(`API error: ${errText}`);
+  // }
   if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`API error: ${errText}`);
+    let errorBody;
+    try {
+      errorBody = await res.json();
+    } catch (e) {
+      const fallback = await res.text();
+      throw new Error(fallback);
+    }
+
+    const error = new Error(errorBody?.message || "Onbekende fout");
+    (error as any).validationErrors = errorBody?.errors || null;
+    throw error;
   }
 
   return await res.json();
