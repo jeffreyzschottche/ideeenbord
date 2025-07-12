@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterUserRequest;
+use Illuminate\Support\Facades\Validator;
+use App\Rules\ProfanityFree;
 /**
  * Class AuthController
  *
@@ -92,25 +94,35 @@ class AuthController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
+        $rules = [
+            'name' => ['sometimes', 'string', 'max:255', new ProfanityFree()],
             'email' => 'sometimes|email|unique:users,email,' . $user->id,
             'password' => 'sometimes|string|min:6',
-            'username' => 'sometimes|string|unique:users,username,' . $user->id,
+            'username' => ['sometimes', 'string', 'unique:users,username,' . $user->id, new ProfanityFree()],
             'gender' => 'nullable|string',
             'education_level' => 'nullable|string',
             'education' => 'nullable|string',
-            'job' => 'nullable|string',
+            'job' => ['nullable', 'string', new ProfanityFree()],
             'sector' => 'nullable|string',
             'city' => 'nullable|string',
             'relationship_status' => 'nullable|string',
             'postal_code' => 'nullable|string',
-        ]);
+        ];
 
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $validated = $validator->validated();
+
+        /* ── 3) wachtwoord hashen indien aanwezig ─────────────────── */
         if (isset($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         }
 
+        /* ── 4) opslaan & response ─────────────────────────────────── */
         $user->update($validated);
 
         return response()->json(['message' => 'Gegevens bijgewerkt', 'user' => $user]);

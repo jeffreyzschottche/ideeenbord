@@ -69,8 +69,26 @@ async function updateProfile() {
 
     auth.user = updated.user; // Update local auth state with new user data
     triggerByKey("profile-updated"); // Trigger success message
-  } catch (e) {
-    triggerByKey("profile-update-failed"); // Trigger error message
+  } catch (e: any) {
+    // 1. Zoek de Laravel-validation errors op ALLE bekende plekken
+    const rawErrors =
+      e?.errors ?? //  ← FetchError (jouw geval)
+      e?.validationErrors ?? //  ← andere wrapper
+      e?.data?.errors ?? //  ← oudere Nuxt-versies
+      e?.response?._data?.errors ??
+      null;
+
+    // 2. Staat 'profanity-detected' erin?
+    if (rawErrors) {
+      const all = Object.values(rawErrors).flat();
+      if (all.includes("profanity-detected")) {
+        triggerByKey("profanity-detected"); // ✅ juiste toast
+        return; //  ← blokkéér fallback
+      }
+    }
+
+    // 3. Generieke fout
+    triggerByKey("profile-update-failed");
   } finally {
     saving.value = false;
   }
