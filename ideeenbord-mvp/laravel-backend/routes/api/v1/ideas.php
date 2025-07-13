@@ -10,12 +10,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/ideas/{idea}/dislike', [IdeaController::class, 'dislike']);
     Route::get('/ideas', [IdeaController::class, 'getMultipleByIds']);
     Route::get('/users/{username}/ideas', [IdeaController::class, 'getIdeasByUser']);
+    // Route::delete('/ideas/{idea}', [IdeaController::class, 'destroyByUser']);
+    Route::delete('/ideas/{idea}/self', [IdeaController::class, 'destroyByUser']);
 });
 
 Route::middleware('auth:brand_owner')->group(function () {
     Route::patch('/ideas/{idea}', [IdeaController::class, 'update']);
     Route::patch('/ideas/{idea}/pin', [IdeaController::class, 'pin']);
     Route::patch('/ideas/{idea}/unpin', [IdeaController::class, 'unpin']);
+    Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy']);   // 👈
 });
 
 Route::get('/ideas-feed', action: [IdeaController::class, 'feed']);

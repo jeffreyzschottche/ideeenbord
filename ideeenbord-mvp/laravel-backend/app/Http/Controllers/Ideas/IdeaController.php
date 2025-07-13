@@ -299,6 +299,34 @@ class IdeaController extends Controller
 
         return response()->json($ideas);
     }
+    public function destroyByUser(Idea $idea)
+    {
+        $user = auth()->user();                     // ingelogde “user”
+
+        if ($idea->user_id !== $user->id) {
+            return response()->json(['message' => 'Geen toegang tot dit idee.'], 403);
+        }
+
+        /* 1. created_posts veld bijwerken */
+        $user->created_posts = array_values(
+            array_diff($user->created_posts ?? [], [$idea->id])
+        );
+        $user->save();
+
+        /* 2. pinned_ideas op het merk bijwerken, indien nodig */
+        $brand = $idea->brand;
+        if ($brand && is_array($brand->pinned_ideas)) {
+            $brand->pinned_ideas = array_values(
+                array_diff($brand->pinned_ideas, [$idea->id])
+            );
+            $brand->save();
+        }
+
+        /* 3. finally delete */
+        $idea->delete();
+
+        return response()->json(['message' => 'Idee succesvol verwijderd.']);
+    }
     public function feed()
     {
         return \App\Models\Idea::with([
@@ -320,12 +348,38 @@ class IdeaController extends Controller
                 'created_at',
             ]);
     }
-    // public function feed()
-    // {
-    //     return Idea::with('brand:id,slug,title,logo_path')
-    //         ->orderByDesc('created_at')
-    //         ->limit(500)        // of wat je wilt
-    //         ->get();
-    // }
+    public function destroy(Idea $idea)
+    {
+        $owner = auth('brand_owner')->user();
+
+        // 1. Check of deze brand-owner het merk bezit
+        if (!$owner || $idea->brand->brand_owner_id !== $owner->id) {
+            return response()->json(['message' => 'Geen toegang tot dit idee.'], 403);
+        }
+
+        // 2. User-relaties schonen (notifications, created_posts, pinned)
+        $user = $idea->user;
+        if ($user) {
+            // created_posts bijwerken
+            $user->created_posts = array_values(
+                array_diff($user->created_posts ?? [], [$idea->id])
+            );
+            $user->save();
+        }
+
+        // 3. pinned_ideas op het merk bijwerken
+        $brand = $idea->brand;
+        if ($brand && is_array($brand->pinned_ideas)) {
+            $brand->pinned_ideas = array_values(
+                array_diff($brand->pinned_ideas, [$idea->id])
+            );
+            $brand->save();
+        }
+
+        // 4. Idee verwijderen
+        $idea->delete();
+
+        return response()->json(['message' => 'Idee succesvol verwijderd.']);
+    }
 
 }

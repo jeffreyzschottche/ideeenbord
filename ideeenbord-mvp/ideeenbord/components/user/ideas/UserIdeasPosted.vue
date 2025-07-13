@@ -9,6 +9,7 @@ import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { apiFetch } from "~/composables/adapter/useApi";
 import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
+import { ideaService } from "~/services/api/ideas/ideaService";
 
 const route = useRoute();
 const username = route.params.slug as string;
@@ -30,6 +31,18 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+
+async function deleteIdea(id: number) {
+  if (!confirm("Weet je zeker dat je dit idee wilt verwijderen?")) return;
+
+  try {
+    await ideaService.deleteIdea(id);
+    ideas.value = ideas.value.filter((i) => i.id !== id); // lijst bijwerken
+    triggerByKey("idea-deleted");
+  } catch (e) {
+    triggerByKey("idea-delete-failed");
+  }
+}
 </script>
 
 <template>
@@ -66,6 +79,12 @@ onMounted(async () => {
         </i>
         <br />
         <span class="text-sm text-gray-600">{{ idea.description }}</span>
+        <button
+          class="block text-red-600 text-sm mt-1 hover:underline"
+          @click="deleteIdea(idea.id)"
+        >
+          Verwijder dit idee
+        </button>
       </li>
     </ul>
 

@@ -64,6 +64,24 @@ export function useManageIdeas(brandId: number) {
       triggerByKey("idea-unpin-failed");
     }
   }
+  async function deleteIdea(ideaId: number) {
+    try {
+      await brandOwnerService.deleteIdea(ideaId);
+      triggerByKey("idea-deleted");
+      await fetchIdeas(); // lijst verversen
+    } catch (err: any) {
+      error.value = err?.message || "Error deleting idea.";
+      triggerByKey("idea-delete-failed");
+    }
+  }
 
-  return { ideas, fetchIdeas, updateIdeaStatus, pinIdea, unpinIdea, error };
+  return {
+    ideas,
+    fetchIdeas,
+    updateIdeaStatus,
+    pinIdea,
+    unpinIdea,
+    error,
+    deleteIdea,
+  };
 }

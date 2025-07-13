@@ -66,4 +66,9 @@ export const brandOwnerService = {
   async getMainQuestionById(id: number | string): Promise<MainQuestion> {
     return await apiFetch(`/main-questions/${id}`);
   },
+  async deleteIdea(id: number) {
+    return await brandOwnerApiFetch(`/ideas/${id}`, {
+      method: "DELETE",
+    });
+  },
 };

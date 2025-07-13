@@ -69,6 +69,8 @@ export type MessageKey =
   | "admin-brand-accepted"
   | "idea-login-required"
   | "profanity-detected"
+  | "idea-delete-failed"
+  | "idea-deleted"
   | "server-error";
 
 type MessageType = "success" | "error" | "warning";
@@ -403,6 +405,20 @@ export const messages: Record<
     text: {
       nl: "Fout bij losmaken van idee.",
       en: "Error unpinning idea.",
+    },
+  },
+  "idea-delete-failed": {
+    type: "error",
+    text: {
+      nl: "Er ging iets fout tijdens het verwijderen van het idee. Probeer het later opnieuw.",
+      en: "Something went wrong while deleting this idea, try again later.",
+    },
+  },
+  "idea-deleted": {
+    type: "success",
+    text: {
+      nl: "Het idee is succesvol verwijderd.",
+      en: "The idea has been succesfully deleted.",
     },
   },
   "register-success": {

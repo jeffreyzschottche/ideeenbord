@@ -27,4 +27,7 @@ export const ideaService = {
   async dislikeIdea(id: number) {
     return await apiFetch(`/ideas/${id}/dislike`, { method: "POST" });
   },
+  async deleteIdea(id: number) {
+    return await apiFetch(`/ideas/${id}/self`, { method: "DELETE" });
+  },
 };

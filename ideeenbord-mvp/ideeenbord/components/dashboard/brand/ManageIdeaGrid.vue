@@ -10,11 +10,17 @@ type EditableIdea = Idea & { newStatus?: string };
 const props = defineProps<{ brandId: number }>();
 
 // Load state and actions from custom composable
-const { ideas, fetchIdeas, updateIdeaStatus, pinIdea, unpinIdea } =
+const { ideas, fetchIdeas, updateIdeaStatus, pinIdea, unpinIdea, deleteIdea } =
   useManageIdeas(props.brandId);
 
 // Load ideas on component mount
 onMounted(fetchIdeas);
+
+async function deleteIdeaAction(idea: Idea) {
+  if (confirm("Weet je zeker dat je dit idee wilt verwijderen?")) {
+    await deleteIdea(idea.id);
+  }
+}
 
 /*
   Save updated status for an idea.
@@ -89,6 +95,12 @@ async function unpinIdeaAction(idea: Idea) {
           class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
         >
           Maak idee los
+        </button>
+        <button
+          @click="deleteIdeaAction(idea)"
+          class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+        >
+          Verwijder
         </button>
       </div>
     </div>
