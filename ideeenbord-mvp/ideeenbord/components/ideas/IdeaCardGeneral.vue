@@ -4,7 +4,6 @@ import type { Idea } from "~/types/idea";
 import type { Brand } from "~/types/brand";
 import { useRuntimeConfig } from "nuxt/app";
 import { useUserAuthStore } from "~/store/useUserAuthStore";
-import { useIdeas } from "~/composables/ideas/useIdeas";
 import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 
 /* props */
@@ -15,7 +14,6 @@ const auth = useUserAuthStore();
 const { triggerByKey } = useResponseDisplay();
 
 /* like / dislike helpers (scoped op brand-id) */
-const { likeIdea, dislikeIdea } = useIdeas(props.idea.brand_id);
 const vote = ref<"like" | "dislike" | null>(null);
 
 /* status badge helpers */
@@ -48,20 +46,6 @@ function logoUrl(p?: string | null) {
     "/storage"
   );
   return `${base}/${p.replace(/^\/+/, "")}`;
-}
-
-/* click-handlers */
-async function onLike() {
-  if (!auth.token) return triggerByKey("idea-login-required");
-  if (vote.value === "like") return triggerByKey("idea-like-failed");
-  vote.value = "like";
-  await likeIdea(props.idea.id); // server-call + toast
-}
-async function onDislike() {
-  if (!auth.token) return triggerByKey("idea-login-required");
-  if (vote.value === "dislike") return triggerByKey("idea-dislike-failed");
-  vote.value = "dislike";
-  await dislikeIdea(props.idea.id);
 }
 </script>
 
@@ -101,6 +85,10 @@ async function onDislike() {
     <p class="text-sm text-gray-700 text-center line-clamp-4">
       {{ idea.description }}
     </p>
+    <p>
+      <i>@{{ idea.user.username }}</i>
+    </p>
+    <!-- <span class="text-grey">{{ idea.user.username }}</span> -->
 
     <!-- CTA -->
     <NuxtLink

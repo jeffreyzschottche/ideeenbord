@@ -62,15 +62,35 @@ class IdeaController extends Controller
      * @param int $brandId The ID of the brand.
      * @return \Illuminate\Http\JsonResponse JSON response containing a list of ideas.
      */
-    public function index($brandId)
+    public function index(Request $request, $brandId)
     {
-        $ideas = Idea::where('brand_id', $brandId)
-            ->orderBy('is_pinned', 'desc')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $ideas = \App\Models\Idea::with('user:id,username')   // 👈 alleen id + username
+            ->where('brand_id', $brandId)
+            ->latest()
+            ->get([
+                'id',
+                'brand_id',
+                'title',
+                'description',
+                'status',
+                'likes',
+                'dislikes',
+                'is_pinned',
+                'user_id',
+            ]);
 
         return response()->json($ideas);
     }
+
+    // public function index($brandId)
+    // {
+    //     $ideas = Idea::where('brand_id', $brandId)
+    //         ->orderBy('is_pinned', 'desc')
+    //         ->orderBy('created_at', 'desc')
+    //         ->get();
+
+    //     return response()->json($ideas);
+    // }
     /**
      * Like a specific idea by the authenticated user.
      *
@@ -281,10 +301,31 @@ class IdeaController extends Controller
     }
     public function feed()
     {
-        return Idea::with('brand:id,slug,title,logo_path')
+        return \App\Models\Idea::with([
+            'brand:id,slug,title,logo_path',
+            'user:id,username',            // 👈 username ophalen
+        ])
             ->orderByDesc('created_at')
-            ->limit(500)        // of wat je wilt
-            ->get();
+            ->limit(500)
+            ->get([
+                'id',
+                'brand_id',
+                'user_id',
+                'title',
+                'description',
+                'status',
+                'likes',
+                'dislikes',
+                'is_pinned',
+                'created_at',
+            ]);
     }
+    // public function feed()
+    // {
+    //     return Idea::with('brand:id,slug,title,logo_path')
+    //         ->orderByDesc('created_at')
+    //         ->limit(500)        // of wat je wilt
+    //         ->get();
+    // }
 
 }

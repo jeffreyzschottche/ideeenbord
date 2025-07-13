@@ -12,6 +12,10 @@ export interface Idea {
   status: IdeaStatus;
   created_at: string;
   updated_at: string;
+  user: {
+    id: number;
+    username: string;
+  };
 }
 
 export interface IdeaNotification {

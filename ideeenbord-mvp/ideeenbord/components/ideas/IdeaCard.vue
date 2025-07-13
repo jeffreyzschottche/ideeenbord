@@ -64,7 +64,9 @@ const statusLabel = computed(() => {
         <!-- Pin icon for pinned ideas -->
         {{ idea.title }}
       </h3>
-      <span class="text-grey">{{ idea.user_id }}</span>
+      <span class="text-grey"
+        ><i>@{{ idea.user.username }}</i></span
+      >
 
       <!-- Status badge -->
       <span
