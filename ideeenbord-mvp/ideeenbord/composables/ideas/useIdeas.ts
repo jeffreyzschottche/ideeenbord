@@ -43,6 +43,7 @@ export function useIdeas(brandId: number) {
     } catch (err: any) {
       error.value = err?.message || "Failed to submit idea.";
       triggerByKey("idea-failed");
+      throw err;
     }
   }
 

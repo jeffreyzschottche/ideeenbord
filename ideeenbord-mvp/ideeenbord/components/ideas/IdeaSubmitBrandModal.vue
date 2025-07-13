@@ -65,8 +65,17 @@ async function submit() {
     await submitIdea(title.value, description.value);
     trigger("Idee succesvol geplaatst!", "success");
     emit("close");
-  } catch {
-    trigger("Plaatsen mislukt, probeer opnieuw.", "error");
+  } catch (err: any) {
+    // deze blok wordt nu wél bereikt
+    const rawErrors = err?.errors ?? err?.data?.errors ?? null;
+    if (
+      rawErrors &&
+      Object.values(rawErrors).flat().includes("profanity-detected")
+    ) {
+      triggerByKey("profanity-detected");
+    } else {
+      trigger("Plaatsen mislukt, probeer opnieuw.", "error");
+    }
   }
 }
 </script>

@@ -499,8 +499,8 @@ export const messages: Record<
   "profanity-detected": {
     type: "error",
     text: {
-      nl: "Gebruik geen ongepaste taal ✋",
-      en: "Please avoid offensive language ✋",
+      nl: "Gebruik geen ongepaste taal, Spam of zelfpromotie. ✋",
+      en: "Please avoid offensive language, Spam or selfpromotion. ✋",
     },
   },
 };
