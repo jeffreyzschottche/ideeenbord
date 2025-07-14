@@ -8,6 +8,7 @@ use App\Mail\IdeaStatusChangedMail;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreIdeaRequest;
+use App\Models\IdeaReport;
 
 /** *
  * This controller manages all idea-related actions within the application,
@@ -381,5 +382,28 @@ class IdeaController extends Controller
 
         return response()->json(['message' => 'Idee succesvol verwijderd.']);
     }
+    public function report(Request $request, Idea $idea)
+    {
+        $request->validate(['reason' => 'nullable|string|max:255']);
+        $user = $request->user();
+
+        // Dubbele melding voorkomen
+        if (
+            IdeaReport::where('idea_id', $idea->id)
+                ->where('user_id', $user->id)->exists()
+        ) {
+            return response()->json(['message' => 'Je hebt dit idee al gemeld.'], 409);
+        }
+
+        IdeaReport::create([
+            'idea_id' => $idea->id,
+            'user_id' => $user->id,
+            'reason' => $request->reason,
+        ]);
+
+        /* ── Notificatie voor de brand-owner ───────────── */
+        return response()->json(['message' => 'Rapport succesvol verzonden.']);
+    }
+
 
 }

@@ -30,4 +30,10 @@ export const ideaService = {
   async deleteIdea(id: number) {
     return await apiFetch(`/ideas/${id}/self`, { method: "DELETE" });
   },
+  async reportIdea(id: number, reason = "") {
+    return await apiFetch(`/ideas/${id}/report`, {
+      method: "POST",
+      body: { reason },
+    });
+  },
 };

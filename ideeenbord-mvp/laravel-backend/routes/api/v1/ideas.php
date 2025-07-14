@@ -12,6 +12,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/{username}/ideas', [IdeaController::class, 'getIdeasByUser']);
     // Route::delete('/ideas/{idea}', [IdeaController::class, 'destroyByUser']);
     Route::delete('/ideas/{idea}/self', [IdeaController::class, 'destroyByUser']);
+    Route::post('/ideas/{idea}/report', [IdeaController::class, 'report']);
 });
 
 Route::middleware('auth:brand_owner')->group(function () {
@@ -22,3 +23,4 @@ Route::middleware('auth:brand_owner')->group(function () {
 });
 
 Route::get('/ideas-feed', action: [IdeaController::class, 'feed']);
+

@@ -71,6 +71,8 @@ export type MessageKey =
   | "profanity-detected"
   | "idea-delete-failed"
   | "idea-deleted"
+  | "idea-reported"
+  | "idea-report-failed"
   | "server-error";
 
 type MessageType = "success" | "error" | "warning";
@@ -517,6 +519,20 @@ export const messages: Record<
     text: {
       nl: "Gebruik geen ongepaste taal, Spam of zelfpromotie. ✋",
       en: "Please avoid offensive language, Spam or selfpromotion. ✋",
+    },
+  },
+  "idea-reported": {
+    type: "success",
+    text: {
+      nl: "Idee succesvol geraporteerd.",
+      en: "Succesfully reported the idea",
+    },
+  },
+  "idea-report-failed": {
+    type: "error",
+    text: {
+      nl: "Er ging iets mis tijdens het rapporteren van het idee.",
+      en: "Something went wrong reporting this idea.",
     },
   },
 };

@@ -6,10 +6,25 @@
 */
 
 import type { Idea, IdeaStatus } from "~/types/idea";
+import { ideaService } from "~/services/api/ideas/ideaService";
+import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
+import { useUserAuthStore } from "~/store/useUserAuthStore";
+const { triggerByKey } = useResponseDisplay();
+const auth = useUserAuthStore();
 
 const props = defineProps<{
   idea: Idea;
 }>();
+
+async function onReport() {
+  if (!confirm("Rapporteer dit idee als ongepast?")) return;
+  try {
+    await ideaService.reportIdea(props.idea.id);
+    triggerByKey("idea-reported");
+  } catch {
+    triggerByKey("idea-report-failed");
+  }
+}
 
 // Extract status from the idea
 const status = computed<IdeaStatus>(() => props.idea.status);
@@ -75,6 +90,14 @@ const statusLabel = computed(() => {
       >
         {{ statusLabel }}
       </span>
+
+      <button
+        v-if="auth.token"
+        class="text-red-600 text-sm hover:underline"
+        @click="onReport"
+      >
+        Rapporteer
+      </button>
     </div>
 
     <!-- Idea description -->
