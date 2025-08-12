@@ -97,6 +97,13 @@ onMounted(async () => {
       <!-- or loading spinner -->
     </div>
 
+    <img
+      v-if="owner.brand.logo_path"
+      :src="`${imageBase}/${owner.brand.logo_path}`"
+      alt="Logo van merk"
+      class="w-48 h-auto mb-4 rounded"
+    />
+
     <div v-else-if="owner">
       <p class="mb-2">
         Welkom, <strong>{{ owner.name }}</strong
@@ -114,13 +121,6 @@ onMounted(async () => {
         :brand="fullBrand"
         @close="showModal = false"
         @updated="reloadData()"
-      />
-
-      <img
-        v-if="owner.brand.logo_path"
-        :src="`${imageBase}/${owner.brand.logo_path}`"
-        alt="Logo van merk"
-        class="w-48 h-auto mb-4 rounded"
       />
 
       <button

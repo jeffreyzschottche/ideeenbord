@@ -31,14 +31,53 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <form @submit.prevent="handleSubmit">
-    <input v-model="form.email" type="email" placeholder="Email" required />
-    <input
-      v-model="form.password"
-      type="password"
-      placeholder="Wachtwoord"
-      required
-    />
-    <button type="submit">Login</button>
-  </form>
+  <section class="register-section">
+    <div class="register-container">
+      <div class="register-card">
+        <header>
+          <h1 class="register-title">Inloggen</h1>
+          <p class="register-subtitle">
+            Welkom terug! Vul je gegevens in om verder te gaan.
+          </p>
+        </header>
+
+        <form @submit.prevent="handleSubmit">
+          <div class="form-row">
+            <div class="form-field full-width">
+              <label for="email" class="form-label required-dot">E‑mail</label>
+              <input
+                id="email"
+                v-model="form.email"
+                type="email"
+                class="form-input"
+                placeholder="naam@voorbeeld.nl"
+                required
+              />
+            </div>
+
+            <div class="form-field full-width">
+              <label for="password" class="form-label required-dot"
+                >Wachtwoord</label
+              >
+              <input
+                id="password"
+                v-model="form.password"
+                type="password"
+                class="form-input"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-submit">Inloggen</button>
+            <span class="form-note">
+              Wachtwoord vergeten? <a href="/forgot-password">Herstel hier</a>.
+            </span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
 </template>

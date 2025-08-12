@@ -37,6 +37,7 @@
                     <NuxtLink
                       :to="`/brands/${brand.slug}`"
                       class="text-blue-600 underline"
+                      @click="closeModal"
                     >
                       {{ brand.title }}
                     </NuxtLink>
