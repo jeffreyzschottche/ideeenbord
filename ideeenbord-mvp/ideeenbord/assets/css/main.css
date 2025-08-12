@@ -243,3 +243,173 @@ input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px #fff inset;
   transition: background-color 9999s ease-in-out 0s;
 }
+
+/* === Dashboard UI kit (sluit aan op register-* en form-* styles) === */
+
+/* Pagina wrapper / container */
+.page-block {
+  max-width: 64rem; /* ~max-w-4xl */
+  margin: 2.5rem auto 0 auto;
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+/* Compacte cards binnen pagina's (lijkt op register-card maar kleiner) */
+.card-compact {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+/* Typography helpers */
+.title-md {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 1rem;
+}
+.title-lg {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 1rem;
+}
+.muted-text {
+  color: #6b7280;
+}
+
+/* Afstand helpers */
+.block-spacer {
+  margin-top: 2rem;
+}
+.divider {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 1.5rem 0;
+}
+
+/* Inputs (zelfde look als .form-input) */
+.input,
+.select-input,
+.textarea-input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  outline: none;
+  background-color: white;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input:focus,
+.select-input:focus,
+.textarea-input:focus {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px rgba(247, 138, 29, 0.25);
+}
+.textarea-input {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-brand);
+  color: #fff;
+  font-weight: 600;
+  padding: 0.75rem 1.25rem;
+  border-radius: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.02s;
+}
+.btn:hover {
+  opacity: 0.9;
+}
+.btn:active {
+  transform: translateY(0.5px);
+}
+.btn--sm {
+  padding: 0.5rem 0.9rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+}
+.btn--block {
+  width: 100%;
+}
+
+/* Variantkleuren */
+.btn--success {
+  background-color: var(--color-success);
+}
+.btn--danger {
+  background-color: var(--color-error);
+}
+.btn--warning {
+  background-color: var(--color-warning);
+}
+.btn--blue {
+  background-color: #3b82f6;
+} /* optioneel */
+
+/* Link-achtige actieknoppen */
+.btn-link {
+  background: transparent;
+  color: var(--color-brand);
+  border: none;
+  padding: 0;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Lijsten / items */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.list-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Rijtje met input + radio (quiz antwoorden) */
+.answer-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.answer-row .input {
+  flex: 1;
+}
+
+/* Logo */
+.brand-logo {
+  width: 12rem;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+/* Grid helpers */
+.grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.full-width {
+  width: 100%;
+}

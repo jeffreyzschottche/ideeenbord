@@ -55,14 +55,14 @@ async function submit() {
 </script>
 
 <template>
-  <!--   UI for selecting a predefined "main question" for a brand.
-    If the brand already has a question, it appears as the disabled default option.
-  -->
-  <div class="mt-8">
-    <h2 class="text-xl font-bold mb-4">Kies een algemene vraag</h2>
+  <div class="block-spacer">
+    <h2 class="title-md">Kies een algemene vraag</h2>
 
-    <!-- Dropdown menu with available questions -->
-    <select v-model="selectedId" class="w-full border rounded p-2 mb-4">
+    <select
+      v-model="selectedId"
+      class="select-input full-width"
+      style="margin-bottom: 1rem"
+    >
       <option disabled value="" v-if="currentQuestion?.text">
         {{ currentQuestion.text }}
       </option>
@@ -71,12 +71,7 @@ async function submit() {
       </option>
     </select>
 
-    <!-- Button to submit the selected question -->
-    <button
-      @click="submit"
-      :disabled="!selectedId"
-      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-    >
+    <button @click="submit" :disabled="!selectedId" class="btn">
       Vraag instellen
     </button>
   </div>

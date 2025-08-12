@@ -74,43 +74,56 @@ async function selectWinner(quizId: number, userId: number) {
 }
 </script>
 <template>
-  <div class="bg-white rounded shadow p-6">
-    <h2 class="text-xl font-bold mb-4">Jouw Quizzen</h2>
+  <div class="register-card">
+    <h2 class="title-md">Jouw Quizzen</h2>
 
-    <div v-if="quizzes.length === 0">Nog geen quizzen aangemaakt.</div>
+    <div v-if="quizzes.length === 0" class="muted-text">
+      Nog geen quizzen aangemaakt.
+    </div>
 
-    <div v-for="quiz in quizzes" :key="quiz.id" class="border p-4 mb-6 rounded">
-      <h3 class="text-lg font-semibold">{{ quiz.title }}</h3>
-      <p>
+    <div
+      v-for="quiz in quizzes"
+      :key="quiz.id"
+      class="card-compact"
+      style="margin-bottom: 1.5rem"
+    >
+      <h3 class="title-md" style="margin-bottom: 0.25rem">{{ quiz.title }}</h3>
+      <p class="muted-text" style="margin-bottom: 0.25rem">
         Status: <strong>{{ quiz.status }}</strong>
       </p>
-      <p v-if="quiz.winner_id">Winnaar ID: {{ quiz.winner_id }}</p>
+      <p v-if="quiz.winner_id" class="muted-text" style="margin-bottom: 0.5rem">
+        Winnaar ID: {{ quiz.winner_id }}
+      </p>
 
-      <!-- Button to close the quiz -->
       <button
         v-if="quiz.status === 'open'"
         @click="closeQuiz(quiz.id)"
-        class="bg-yellow-500 text-white px-3 py-1 rounded mt-2"
+        class="btn btn--warning btn--sm"
+        style="margin-top: 0.25rem"
       >
         Sluit quiz
       </button>
 
-      <!-- Participants + winner selection -->
-      <div v-if="quiz.status === 'open'" class="mt-4">
-        <h4 class="text-md font-bold mb-2">Deelnemers</h4>
-        <div v-if="quiz.participants.length === 0">
-          <p>Geen deelnemers gevonden.</p>
+      <div
+        v-if="quiz.status === 'open'"
+        class="block-spacer"
+        style="margin-top: 1rem"
+      >
+        <h4 class="title-md" style="margin-bottom: 0.5rem">Deelnemers</h4>
+        <div v-if="quiz.participants.length === 0" class="muted-text">
+          Geen deelnemers gevonden.
         </div>
-        <ul v-else>
+        <ul v-else class="list">
           <li
             v-for="participant in quiz.participants"
             :key="participant.user_id"
-            class="mb-2 p-2 border rounded flex justify-between items-center"
+            class="list-item"
+            style="margin-bottom: 0.5rem"
           >
             <span>Gebruiker : {{ participant.name }}</span>
             <button
               @click="selectWinner(quiz.id, participant.user_id)"
-              class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+              class="btn btn--success btn--sm"
             >
               Selecteer als winnaar
             </button>

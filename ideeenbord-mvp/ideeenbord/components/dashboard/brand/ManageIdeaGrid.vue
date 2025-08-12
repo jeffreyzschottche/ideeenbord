@@ -42,29 +42,37 @@ async function unpinIdeaAction(idea: Idea) {
 }
 </script>
 <template>
-  <div>
-    <h2 class="text-2xl font-bold mb-4">Beheer Ideeën</h2>
+  <div class="block-spacer">
+    <h2 class="title-md">Beheer Ideeën</h2>
 
-    <!-- Show message when no ideas are available -->
     <div v-if="ideas.length === 0">
-      <p>Er zijn nog geen ideeën.</p>
+      <p class="muted-text">Er zijn nog geen ideeën.</p>
     </div>
 
-    <!-- Loop through and display each idea block -->
-    <div v-for="idea in ideas" :key="idea.id" class="border p-4 mb-4 rounded">
-      <h3 class="text-xl font-semibold">{{ idea.title }}</h3>
-      <p class="text-gray-600 mb-2">{{ idea.description }}</p>
+    <div
+      v-for="idea in ideas"
+      :key="idea.id"
+      class="card-compact"
+      style="margin-bottom: 1rem"
+    >
+      <h3 class="title-md" style="margin-bottom: 0.25rem">{{ idea.title }}</h3>
+      <p class="muted-text" style="margin-bottom: 0.5rem">
+        {{ idea.description }}
+      </p>
 
-      <div class="mb-2">
+      <div class="muted-text" style="margin-bottom: 0.25rem">
         <strong>Huidige status:</strong> {{ idea.status || "Nog geen status" }}
       </div>
 
-      <div class="mb-2">
+      <div class="muted-text" style="margin-bottom: 0.5rem">
         <strong>Is vastgezet:</strong> {{ idea.is_pinned ? "Ja" : "Nee" }}
       </div>
 
-      <!-- Dropdown to select a new status for the idea -->
-      <select v-model="idea.newStatus" class="border p-2 rounded mb-2">
+      <select
+        v-model="idea.newStatus"
+        class="select-input"
+        style="margin-bottom: 0.5rem"
+      >
         <option disabled value="">Kies nieuwe status</option>
         <option value="rejected">Afgekeurd</option>
         <option value="in_progress">In behandeling genomen</option>
@@ -72,19 +80,15 @@ async function unpinIdeaAction(idea: Idea) {
         <option value="pending">Tijdelijk gepauzeerd</option>
       </select>
 
-      <!-- Actions: save status, pin or unpin -->
-      <div class="flex gap-2">
-        <button
-          @click="updateStatus(idea)"
-          class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-        >
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap">
+        <button @click="updateStatus(idea)" class="btn btn--blue btn--sm">
           Status opslaan
         </button>
 
         <button
           v-if="!idea.is_pinned"
           @click="pinIdeaAction(idea)"
-          class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+          class="btn btn--success btn--sm"
         >
           Zet idee vast
         </button>
@@ -92,14 +96,12 @@ async function unpinIdeaAction(idea: Idea) {
         <button
           v-else
           @click="unpinIdeaAction(idea)"
-          class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+          class="btn btn--warning btn--sm"
         >
           Maak idee los
         </button>
-        <button
-          @click="deleteIdeaAction(idea)"
-          class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-        >
+
+        <button @click="deleteIdeaAction(idea)" class="btn btn--danger btn--sm">
           Verwijder
         </button>
       </div>

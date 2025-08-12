@@ -88,12 +88,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto mt-10 p-6 bg-white rounded shadow">
-    <h1 class="text-3xl font-bold mb-6">
-      Dashboard voor {{ route.params.slug }}
-    </h1>
+  <div class="page-block">
+    <h1 class="title-lg">Dashboard voor {{ route.params.slug }}</h1>
+
     <div v-if="loading">
-      <p>Bezig met laden...</p>
+      <p class="muted-text">Bezig met laden...</p>
       <!-- or loading spinner -->
     </div>
 
@@ -101,7 +100,7 @@ onMounted(async () => {
       v-if="owner.brand.logo_path"
       :src="`${imageBase}/${owner.brand.logo_path}`"
       alt="Logo van merk"
-      class="w-48 h-auto mb-4 rounded"
+      class="brand-logo"
     />
 
     <div v-else-if="owner">
@@ -112,9 +111,11 @@ onMounted(async () => {
       <p class="mb-4">
         Merk: <strong>{{ owner.brand.title }}</strong>
       </p>
-      <button @click="showModal = true" class="text-blue-600">
+
+      <button @click="showModal = true" class="btn-link">
         ✏️ Bewerk alles
       </button>
+
       <BrandEditModal
         v-if="fullBrand"
         :open="showModal"
@@ -125,19 +126,22 @@ onMounted(async () => {
 
       <button
         @click="logout"
-        class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+        class="btn btn--danger btn--sm"
+        style="margin-left: 0.75rem"
       >
         Uitloggen
       </button>
     </div>
 
     <div v-else>
-      <p>Je bent niet ingelogd.</p>
+      <p class="muted-text">Je bent niet ingelogd.</p>
     </div>
   </div>
+
   <client-only>
     <ManageIdeaGrid :brandId="owner.brand.id" v-if="owner?.brand?.id" />
   </client-only>
+
   <MainQuestionSelect />
   <QuizBuilder />
   <QuizOverview />
