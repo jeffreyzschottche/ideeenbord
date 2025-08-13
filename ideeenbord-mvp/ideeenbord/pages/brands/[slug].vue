@@ -117,4 +117,5 @@ async function submitRating() {
   <IdeaGrid v-if="brand" :brandId="brand.id" />
   <BrandMainQuestion v-if="brand" :brand="brand" />
   <QuizParticipant v-if="brand" :brand="brand" />
+  <IdeasIdeaPopup />
 </template>

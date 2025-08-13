@@ -405,5 +405,41 @@ class IdeaController extends Controller
         return response()->json(['message' => 'Rapport succesvol verzonden.']);
     }
 
+    public function showPublic(\App\Models\Idea $idea)
+    {
+        // Optioneel: alleen tonen als het bijbehorende merk publiek/accepted is
+        $idea->loadMissing(['brand:id,slug,title,accepted', 'user:id,username']);
+
+        if (!$idea->brand || !$idea->brand->accepted) {
+            // Laat het voelen als 'niet gevonden' i.p.v. toegang geweigerd
+            abort(404, 'Idea not found');
+        }
+
+        // Eventueel extra velden verbergen
+        return response()->json([
+            'id' => $idea->id,
+            'brand_id' => $idea->brand_id,
+            'user' => $idea->user ? [
+                'id' => $idea->user->id,
+                'username' => $idea->user->username,
+            ] : null,
+            'title' => $idea->title,
+            'description' => $idea->description,
+            'likes' => (int) $idea->likes,
+            'dislikes' => (int) $idea->dislikes,
+            'is_pinned' => (bool) $idea->is_pinned,
+            'status' => $idea->status,
+            'brand' => [
+                'id' => $idea->brand->id,
+                'slug' => $idea->brand->slug,
+                'title' => $idea->brand->title,
+                'accepted' => (bool) $idea->brand->accepted,
+            ],
+            'created_at' => $idea->created_at,
+            'updated_at' => $idea->updated_at,
+        ]);
+    }
+
+
 
 }

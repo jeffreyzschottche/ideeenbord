@@ -23,4 +23,4 @@ Route::middleware('auth:brand_owner')->group(function () {
 });
 
 Route::get('/ideas-feed', action: [IdeaController::class, 'feed']);
-
+Route::get('/ideas/{idea}', [IdeaController::class, 'showPublic']);
