@@ -62,6 +62,7 @@ export type MessageKey =
   | "brand-load-failed"
   | "claim-load-failed"
   | "claim-submitted"
+  | "link-copied"
   | "claim-failed"
   | "request-submitted"
   | "request-failed"
@@ -533,6 +534,13 @@ export const messages: Record<
     text: {
       nl: "Er ging iets mis tijdens het rapporteren van het idee.",
       en: "Something went wrong reporting this idea.",
+    },
+  },
+  "link-copied": {
+    type: "success",
+    text: {
+      nl: "Link succesvol gekopieerd",
+      en: "Copied the link succesfully",
     },
   },
 };
