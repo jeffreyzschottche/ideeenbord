@@ -32,7 +32,7 @@ class BrandController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:255', new ProfanityFree],
             'category' => ['required', 'string', 'max:255'],
-            'website_url' => ['nullable', 'url', new ProfanityFree],
+            'website_url' => ['nullable', 'url'],
             'intro' => ['nullable', 'string', new ProfanityFree],
             'intro_short' => ['nullable', 'string', 'max:160', new ProfanityFree],
             'email' => ['required', 'email', 'unique:brands,email'],

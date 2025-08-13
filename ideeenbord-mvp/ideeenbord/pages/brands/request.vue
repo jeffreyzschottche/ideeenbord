@@ -49,23 +49,114 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <form @submit.prevent="handleSubmit">
-    <input v-model="form.title" placeholder="Merknaam" required />
-    <input v-model="form.category" placeholder="Categorie" required />
-    <input v-model="form.websiteUrl" placeholder="Website URL" />
+  <section class="register-section">
+    <div class="register-container">
+      <div class="register-card">
+        <header>
+          <h1 class="register-title">Nieuw merk aanvragen</h1>
+          <p class="register-subtitle">
+            Vraag een merk aan en laat het beoordelen door ons team.
+          </p>
+        </header>
 
-    <textarea v-model="form.intro" placeholder="Introductie" />
-    <input
-      v-model="form.introShort"
-      placeholder="Korte Intro (max 160 tekens)"
-    />
-    <input v-model="form.email" type="email" placeholder="Email" required />
+        <form @submit.prevent="handleSubmit">
+          <div class="form-row">
+            <div class="form-field">
+              <label for="title" class="form-label required-dot"
+                >Merknaam</label
+              >
+              <input
+                id="title"
+                v-model="form.title"
+                type="text"
+                class="form-input"
+                placeholder="Bijv. FEBO"
+                required
+              />
+            </div>
 
-    <input
-      type="file"
-      @change="e => form.logo = (e.target as HTMLInputElement).files?.[0] || null"
-    />
+            <div class="form-field">
+              <label for="category" class="form-label required-dot"
+                >Categorie</label
+              >
+              <input
+                id="category"
+                v-model="form.category"
+                type="text"
+                class="form-input"
+                placeholder="Bijv. Fastfood, Retail…"
+                required
+              />
+            </div>
 
-    <button type="submit">Verstuur aanvraag</button>
-  </form>
+            <div class="form-field full-width">
+              <label for="websiteUrl" class="form-label">Website URL</label>
+              <input
+                id="websiteUrl"
+                v-model="form.websiteUrl"
+                type="url"
+                class="form-input"
+                placeholder="https://voorbeeld.nl"
+              />
+            </div>
+
+            <div class="form-field full-width">
+              <label for="intro" class="form-label">Introductie</label>
+              <textarea
+                id="intro"
+                v-model="form.intro"
+                class="form-input textarea-input"
+                placeholder="Korte beschrijving van het merk"
+              />
+            </div>
+
+            <div class="form-field full-width">
+              <label for="introShort" class="form-label"
+                >Korte Intro (max 160 tekens)</label
+              >
+              <input
+                id="introShort"
+                v-model="form.introShort"
+                type="text"
+                class="form-input"
+                placeholder="One-liner over het merk"
+              />
+            </div>
+
+            <div class="form-field full-width">
+              <label for="email" class="form-label required-dot">E-mail</label>
+              <input
+                id="email"
+                v-model="form.email"
+                type="email"
+                class="form-input"
+                placeholder="contact@merk.nl"
+                required
+              />
+            </div>
+
+            <div class="form-field full-width">
+              <label for="logo" class="form-label">Logo (optioneel)</label>
+              <input
+                id="logo"
+                type="file"
+                class="form-input"
+                @change="e => form.logo = (e.target as HTMLInputElement).files?.[0] || null"
+              />
+              <p class="form-help">Ondersteund: jpg, png, gif (max 2MB).</p>
+            </div>
+          </div>
+
+          <hr class="form-divider" />
+
+          <div class="form-actions">
+            <button type="submit" class="btn-submit">Verstuur aanvraag</button>
+            <span class="form-note">
+              Na goedkeuring wordt het merk zichtbaar op het platform.
+            </span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
 </template>
