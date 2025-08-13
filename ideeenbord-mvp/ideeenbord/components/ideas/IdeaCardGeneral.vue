@@ -93,7 +93,7 @@ function logoUrl(p?: string | null) {
     <!-- CTA -->
     <NuxtLink
       v-if="brand"
-      :to="`/brands/${brand.slug}?idea=${idea.id}`"
+      :to="`/brands/${brand.slug}?idea-id=${idea.id}`"
       class="cta w-max mx-auto mt-auto mb-3 px-4 py-2 rounded text-white bg-[var(--color-brand)] hover:opacity-90"
     >
       Bekijk idee
