@@ -17,6 +17,7 @@ import { useResponseDisplay } from "~/composables/notifications/useResponseDispl
 import { useBrand } from "~/composables/brand/useBrand";
 import BrandEditModal from "~/components/dashboard/brand/BrandEditModal.vue";
 import RawData from "~/components/dashboard/brand/RawData.vue";
+import ApiAccess from "~/components/dashboard/brand/ApiAccess.vue";
 import AccountEditModal from "~/components/dashboard/account/AccountEditModal.vue";
 import type { BrandOwner } from "~/types/brand-owner";
 import type { Brand } from "~/types/brand";
@@ -54,6 +55,7 @@ type TabId =
   | "quiz-builder"
   | "quiz-overview"
   | "raw-data"
+  | "apiaccess"
   | "account";
 const tabs: { id: TabId; label: string; icon?: string }[] = [
   { id: "ideas", label: "Ideeën beheren", icon: "💡" },
@@ -61,6 +63,7 @@ const tabs: { id: TabId; label: string; icon?: string }[] = [
   { id: "quiz-builder", label: "Quiz aanmaken", icon: "🛠️" },
   { id: "quiz-overview", label: "Quizzes overzicht", icon: "📋" },
   { id: "raw-data", label: "Rauwe gegevens", icon: "🧾" },
+  { id: "apiaccess", label: "Api toegang", icon: "🧾" },
   { id: "account", label: "Account instellingen", icon: "👤" },
 ];
 
@@ -248,6 +251,18 @@ watch(
           <h2 class="title-md">Rauwe gegevens</h2>
           <client-only>
             <RawData
+              v-if="owner?.brand?.id && owner?.brand?.slug"
+              :brandId="owner.brand.id"
+              :brandSlug="owner.brand.slug"
+            />
+            <div v-else class="muted-text">Merkinformatie wordt geladen…</div>
+          </client-only>
+        </div>
+
+        <div v-else-if="activeTab === 'apiaccess'">
+          <h2 class="title-md">Rauwe gegevens</h2>
+          <client-only>
+            <ApiAccess
               v-if="owner?.brand?.id && owner?.brand?.slug"
               :brandId="owner.brand.id"
               :brandSlug="owner.brand.slug"
