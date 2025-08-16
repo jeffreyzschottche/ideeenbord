@@ -45,9 +45,16 @@ onMounted(fetchIdeas);
       Login om je idee te plaatsen!
     </div>
 
-    <!-- Lijst met cards -->
-    <div v-for="idea in sortedIdeas" :key="idea.id">
-      <IdeaCard :idea="idea" @like="likeIdea" @dislike="dislikeIdea" />
+    <!-- Grid met IdeaCards -->
+    <div class="grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
+      <div v-for="idea in sortedIdeas" :key="idea.id" class="w-full h-full">
+        <!-- Sterke wrapper: klipt ALLES binnen de kaart -->
+        <div
+          class="relative isolate overflow-hidden h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+        >
+          <IdeaCard :idea="idea" @like="likeIdea" @dislike="dislikeIdea" />
+        </div>
+      </div>
     </div>
 
     <!-- Modal component -->

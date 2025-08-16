@@ -67,7 +67,7 @@ const brandSlugFromRoute = computed(() => {
   return m ? m[1] : undefined;
 });
 
-// Bouw deel-URL (relatief) en absolute URL voor clipboard
+// Bouw deel-URL
 const sharePath = computed(() =>
   brandSlugFromRoute.value
     ? `/brands/${brandSlugFromRoute.value}?idea-id=${props.idea.id}`
@@ -81,7 +81,6 @@ function copyShareUrl() {
       : "";
   const url = origin + sharePath.value;
 
-  // Voorkeur: moderne clipboard API
   if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
     navigator.clipboard.writeText(url).then(
       () => triggerByKey("link-copied"),
@@ -89,7 +88,6 @@ function copyShareUrl() {
     );
     return;
   }
-  // Fallback voor oudere browsers/contexts
   fallbackCopy(url);
 }
 
@@ -106,40 +104,39 @@ function fallbackCopy(text: string) {
     document.execCommand("copy");
     document.body.removeChild(ta);
     triggerByKey("link-copied");
-  } catch {
-    // geen harde error gooien; desnoods kun je hier een andere melding doen
-  }
+  } catch {}
 }
 </script>
 
 <template>
+  <!-- Sterke container zodat niks ‘lekt’ buiten de kaart -->
   <div
     :class="[
-      'border p-4 rounded shadow mb-4 relative',
-      idea.is_pinned ? 'border-yellow-400' : 'border-gray-300',
+      'relative isolate overflow-hidden rounded-xl border bg-white p-4 shadow-sm h-full',
+      idea.is_pinned ? 'border-yellow-400' : 'border-gray-200',
     ]"
   >
-    <div class="flex items-center justify-between mb-2">
-      <h3 class="text-xl font-bold">
+    <!-- Header: titel links, meta rechts -->
+    <div class="flex flex-wrap items-start justify-between gap-3 mb-2">
+      <h3 class="text-lg md:text-xl font-bold leading-snug">
         <span v-if="idea.is_pinned" class="mr-1">📌</span>
         {{ idea.title }}
       </h3>
 
-      <span class="text-grey"
-        ><i>@{{ idea.user?.username || "anoniem" }}</i></span
-      >
-
-      <span
-        class="text-xs font-semibold px-2 py-1 rounded"
-        :class="statusColor"
-      >
-        {{ statusLabel }}
-      </span>
-
-      <div class="flex items-center gap-2">
+      <!-- Meta cluster rechts -->
+      <div class="flex items-center gap-3 ml-auto flex-col">
+        <span class="text-sm text-gray-500 italic"
+          >@{{ idea.user?.username || "anoniem" }}</span
+        >
+        <span
+          class="text-xs font-semibold px-2 py-1 rounded whitespace-nowrap"
+          :class="statusColor"
+        >
+          {{ statusLabel }}
+        </span>
         <button
           v-if="auth.token"
-          class="text-red-600 text-sm hover:underline"
+          class="text-red-600 text-xs hover:underline"
           @click="onReport"
         >
           Rapporteer
@@ -147,16 +144,28 @@ function fallbackCopy(text: string) {
       </div>
     </div>
 
-    <p class="text-sm text-gray-600">{{ idea.description }}</p>
+    <!-- Body -->
+    <p class="text-sm text-gray-700 mb-3">
+      {{ idea.description }}
+    </p>
 
-    <!-- Like/dislike -->
-    <div class="flex gap-2 mt-2">
-      <button @click="$emit('like', idea.id)">👍 {{ idea.likes }}</button>
-      <button @click="$emit('dislike', idea.id)">👎 {{ idea.dislikes }}</button>
-    </div>
+    <!-- Actions -->
+    <div class="flex flex-wrap items-center gap-3">
+      <div class="flex items-center gap-2">
+        <button
+          class="inline-flex items-center gap-1 text-sm px-2 py-1 rounded border border-gray-200 hover:bg-gray-50"
+          @click="$emit('like', idea.id)"
+        >
+          👍 <span>{{ idea.likes }}</span>
+        </button>
+        <button
+          class="inline-flex items-center gap-1 text-sm px-2 py-1 rounded border border-gray-200 hover:bg-gray-50"
+          @click="$emit('dislike', idea.id)"
+        >
+          👎 <span>{{ idea.dislikes }}</span>
+        </button>
+      </div>
 
-    <!-- Deel (kopieert URL) -->
-    <div class="flex gap-3 mt-3">
       <button class="btn-link text-sm" @click="copyShareUrl">Deel</button>
     </div>
   </div>

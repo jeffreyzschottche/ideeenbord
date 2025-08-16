@@ -79,43 +79,98 @@ async function submitRating() {
 </script>
 
 <template>
-  <div v-if="brand">
-    <h1>{{ brand.title }}</h1>
-    <img
-      v-if="brand.logo_path"
-      :src="`${imageBase}/${brand.logo_path}`"
-      alt="Logo van merk"
-      class="w-48 h-auto mb-4 rounded"
-    />
-
-    <p>{{ brand.intro }}</p>
-    <p>Email: {{ brand.email }}</p>
-    <a :href="brand.website_url" target="_blank">Website</a>
-
-    <div v-if="auth.token">
-      <p>
-        Fans geven dit merk gemiddeld een:
-        <strong>{{ averageRating }}</strong> / 10
-      </p>
-      <div v-if="!hasRated">
-        <h3>Wat vind jij van {{ brand.title }}?</h3>
-        <input type="range" min="1" max="10" v-model="rating" />
-        <span>{{ rating }}</span>
-        <button @click="submitRating">Geef Rating</button>
+  <div class="page-block">
+    <!-- Header / Brand Hero -->
+    <div v-if="brand" class="flex flex-col gap-4">
+      <div class="flex items-start gap-4">
+        <img
+          v-if="brand.logo_path"
+          :src="`${imageBase}/${brand.logo_path}`"
+          alt="Logo van merk"
+          class="brand-logo"
+        />
+        <div class="flex-1">
+          <h1 class="title-lg mb-2">{{ brand.title }}</h1>
+          <p class="muted-text mb-2">{{ brand.intro }}</p>
+          <div class="flex flex-wrap items-center gap-3">
+            <a
+              :href="brand.website_url"
+              target="_blank"
+              class="btn btn--blue btn--sm"
+              >Website</a
+            >
+            <span class="text-sm text-gray-500">Email: {{ brand.email }}</span>
+          </div>
+        </div>
       </div>
-      <div v-else>
-        <p>Je hebt al een beoordeling gegeven.</p>
+
+      <!-- Rating blok -->
+      <div class="card-compact">
+        <div
+          v-if="auth.token"
+          class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+        >
+          <p class="main-text">
+            Fans geven dit merk gemiddeld een:
+            <strong class="text-success">{{ averageRating }}</strong> / 10
+          </p>
+
+          <div
+            v-if="!hasRated"
+            class="flex items-center gap-3 w-full md:w-auto"
+          >
+            <label class="text-sm text-gray-600">Jouw rating:</label>
+            <input
+              type="range"
+              min="1"
+              max="10"
+              v-model="rating"
+              class="w-full md:w-64 cursor-pointer"
+            />
+            <span class="font-semibold w-8 text-center">{{ rating }}</span>
+            <button @click="submitRating" class="btn btn--sm">
+              Geef Rating
+            </button>
+          </div>
+
+          <div v-else class="text-sm text-gray-600">
+            Je hebt al een beoordeling gegeven.
+          </div>
+        </div>
+
+        <div v-else class="text-sm text-gray-600">
+          <strong>Login</strong> om een beoordeling te kunnen geven.
+        </div>
       </div>
     </div>
-    <div v-else>
-      <p><strong>Login</strong> om een beoordeling te kunnen geven.</p>
+
+    <div v-else class="muted-text">Merk wordt geladen...</div>
+
+    <!-- Content secties -->
+    <div
+      v-if="brand"
+      class="block-spacer grid grid-cols-1 lg:grid-cols-3 gap-6"
+    >
+      <!-- Linker kolom: Hoofdvraag + Quiz -->
+      <div class="space-y-6">
+        <div class="card-compact">
+          <h2 class="title-md">Hoofdvraag</h2>
+          <BrandMainQuestion :brand="brand" />
+        </div>
+
+        <div class="card-compact">
+          <h2 class="title-md">Doe mee met de quiz</h2>
+          <QuizParticipant :brand="brand" />
+        </div>
+      </div>
+
+      <!-- Rechter kolom (breed): Ideeën -->
+      <div class="lg:col-span-2 card-compact">
+        <h2 class="title-md">Ideeën van de community</h2>
+        <IdeaGrid :brandId="brand.id" />
+      </div>
     </div>
   </div>
-  <div v-else>
-    <p>Merk wordt geladen...</p>
-  </div>
-  <IdeaGrid v-if="brand" :brandId="brand.id" />
-  <BrandMainQuestion v-if="brand" :brand="brand" />
-  <QuizParticipant v-if="brand" :brand="brand" />
+
   <IdeasIdeaPopup />
 </template>
