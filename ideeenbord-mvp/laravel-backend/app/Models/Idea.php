@@ -16,6 +16,7 @@ class Idea extends Model
         'likes',
         'dislikes',
         'is_pinned',
+        'category',
         'status',
     ];
 

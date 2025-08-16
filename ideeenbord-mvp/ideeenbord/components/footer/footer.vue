@@ -19,17 +19,20 @@
         <h3 class="font-semibold mb-2 light-text">Navigatie</h3>
         <ul class="space-y-1">
           <li><NuxtLink to="/" class="footer-link">Home</NuxtLink></li>
-          <li><NuxtLink to="/nieuws" class="footer-link">Nieuws</NuxtLink></li>
+          <li><NuxtLink to="/news" class="footer-link">Nieuws</NuxtLink></li>
           <li>
-            <NuxtLink to="/voor-merken" class="footer-link"
+            <NuxtLink to="/become-a-brandowner" class="footer-link"
               >Voor merken</NuxtLink
             >
           </li>
           <li>
-            <NuxtLink to="/winacties" class="footer-link">Winacties</NuxtLink>
+            <NuxtLink to="/win" class="footer-link">Winacties</NuxtLink>
           </li>
           <li>
             <NuxtLink to="/register" class="footer-link">Aanmelden</NuxtLink>
+          </li>
+          <li>
+            <NuxtLink to="/login" class="footer-link">Inloggen</NuxtLink>
           </li>
         </ul>
       </div>
@@ -38,42 +41,32 @@
         <h3 class="font-semibold mb-2 light-text">Voor merken</h3>
         <ul class="space-y-1">
           <li>
-            <NuxtLink to="/voorwaarden" class="footer-link"
+            <NuxtLink to="/subscriptions" class="footer-link"
               >Abonnementen</NuxtLink
             >
           </li>
           <li>
-            <NuxtLink to="/voorwaarden" class="footer-link"
-              >Voorwaarden</NuxtLink
-            >
-          </li>
-          <li>
-            <NuxtLink to="/voorwaarden" class="footer-link"
+            <NuxtLink to="/privacy-statement" class="footer-link"
               >Privacy Statement</NuxtLink
             >
           </li>
           <li>
-            <NuxtLink to="/over" class="footer-link"
+            <NuxtLink to="/dashboard" class="footer-link"
               >Inloggen als merk</NuxtLink
             >
           </li>
           <li>
-            <NuxtLink to="/contact" class="footer-link"
-              >Dashboard voor merken</NuxtLink
-            >
-          </li>
-          <li>
-            <NuxtLink to="/privacy" class="footer-link"
+            <NuxtLink to="/brands/request" class="footer-link"
               >Registreer merk</NuxtLink
             >
           </li>
           <li>
-            <NuxtLink to="/privacy" class="footer-link"
+            <NuxtLink to="/brands/claim" class="footer-link"
               >Claim een pagina</NuxtLink
             >
           </li>
           <li>
-            <NuxtLink to="/privacy" class="footer-link"
+            <NuxtLink to="/become-a-brandowner" class="footer-link"
               >Meer informatie voor merken</NuxtLink
             >
           </li>

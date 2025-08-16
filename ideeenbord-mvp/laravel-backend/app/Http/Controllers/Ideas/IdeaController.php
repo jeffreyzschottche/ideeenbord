@@ -344,6 +344,7 @@ class IdeaController extends Controller
                 'description',
                 'status',
                 'likes',
+                'category',
                 'dislikes',
                 'is_pinned',
                 'created_at',
