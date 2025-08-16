@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Rules\ProfanityFree;
+use App\Models\User;
 
 /**
  * Class BrandController
@@ -254,4 +255,60 @@ class BrandController extends Controller
 
         return response()->json(['message' => 'Merk bijgewerkt.', 'brand' => $brand]);
     }
+    public function rawExport(Request $request, Brand $brand)
+    {
+        // ✅ Alleen de eigenaar van dit brand mag dit ophalen
+        $owner = auth('brand_owner')->user();
+        if (!$owner || $brand->brand_owner_id !== $owner->id) {
+            return response()->json(['message' => 'Geen toegang tot dit merk.'], 403);
+        }
+
+        // 1) Brand data
+        $brandData = $brand->toArray();
+
+        // 2) Ideas (met minimal user info)
+        $ideas = $brand->ideas()
+            ->with(['user:id,username'])
+            ->orderByDesc('id')
+            ->get([
+                'id',
+                'brand_id',
+                'user_id',
+                'title',
+                'description',
+                'likes',
+                'dislikes',
+                'is_pinned',
+                'status',
+                'created_at',
+                'updated_at'
+            ]);
+
+        // 3) Participants: unieke user_ids uit ideas
+        $userIds = $ideas->pluck('user_id')->filter()->unique()->values();
+
+        // Alleen whitelisted velden (géén email)
+        $participants = User::whereIn('id', $userIds)->get([
+            'id',
+            'gender',
+            'birthdate',
+            'education_level',
+            'education',
+            'job',
+            'sector',
+            'city',
+            'birth_city',
+            'relationship_status',
+            'postal_code',
+            'ratings_given',
+            'created_posts',
+        ]);
+
+        return response()->json([
+            'brand' => $brandData,
+            'ideas' => $ideas,
+            'participants' => $participants,
+        ]);
+    }
+
 }

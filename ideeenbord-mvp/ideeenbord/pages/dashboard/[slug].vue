@@ -16,6 +16,7 @@ import QuizOverview from "~/components/dashboard/quiz/QuizOverview.vue";
 import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
 import { useBrand } from "~/composables/brand/useBrand";
 import BrandEditModal from "~/components/dashboard/brand/BrandEditModal.vue";
+import RawData from "~/components/dashboard/brand/RawData.vue";
 import AccountEditModal from "~/components/dashboard/account/AccountEditModal.vue";
 import type { BrandOwner } from "~/types/brand-owner";
 import type { Brand } from "~/types/brand";
@@ -52,12 +53,14 @@ type TabId =
   | "main-question"
   | "quiz-builder"
   | "quiz-overview"
+  | "raw-data"
   | "account";
 const tabs: { id: TabId; label: string; icon?: string }[] = [
   { id: "ideas", label: "Ideeën beheren", icon: "💡" },
   { id: "main-question", label: "Hoofdvraag", icon: "❓" },
   { id: "quiz-builder", label: "Quiz aanmaken", icon: "🛠️" },
   { id: "quiz-overview", label: "Quizzes overzicht", icon: "📋" },
+  { id: "raw-data", label: "Rauwe gegevens", icon: "🧾" },
   { id: "account", label: "Account instellingen", icon: "👤" },
 ];
 
@@ -239,6 +242,18 @@ watch(
           <!-- Als je AccountEditModal als modaal wil: toon een knop die 'm opent;
                Als het een inline-form ondersteunt, render je 'm direct. -->
           <AccountEditModal />
+        </div>
+
+        <div v-else-if="activeTab === 'raw-data'">
+          <h2 class="title-md">Rauwe gegevens</h2>
+          <client-only>
+            <RawData
+              v-if="owner?.brand?.id && owner?.brand?.slug"
+              :brandId="owner.brand.id"
+              :brandSlug="owner.brand.slug"
+            />
+            <div v-else class="muted-text">Merkinformatie wordt geladen…</div>
+          </client-only>
         </div>
       </section>
     </div>

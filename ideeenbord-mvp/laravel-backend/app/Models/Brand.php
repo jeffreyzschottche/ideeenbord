@@ -61,6 +61,10 @@ class Brand extends Model
     {
         return $this->belongsTo(MainQuestion::class);
     }
+    public function ideas()
+    {
+        return $this->hasMany(\App\Models\Idea::class);
+    }
 
 
 }

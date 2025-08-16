@@ -32,9 +32,11 @@ Route::prefix('brands')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/brands/{brand}/rate', [BrandController::class, 'rate']);
     Route::post('/brands/{brand}/main-question-response', [MainQuestionResponseController::class, 'store']);
+    Route::get('/brands/{brand}/participants', [BrandController::class, 'participants']);
 });
 
 Route::middleware('auth:brand_owner')->group(function () {
     Route::patch('/brands/{brand}/main-questions', [BrandController::class, 'setMainQuestion']);
     Route::patch('/brands/{brand}', [BrandController::class, 'update']);
+    Route::get('/brands/{brand}/raw-export', [BrandController::class, 'rawExport']);
 });
