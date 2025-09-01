@@ -31,11 +31,11 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => ['required', 'string', 'max:255', new ProfanityFree],
+            'title' => ['required', 'string', 'max:255'],
             'category' => ['required', 'string', 'max:255'],
             'website_url' => ['nullable', 'url'],
-            'intro' => ['nullable', 'string', new ProfanityFree],
-            'intro_short' => ['nullable', 'string', 'max:160', new ProfanityFree],
+            'intro' => ['nullable', 'string'],
+            'intro_short' => ['nullable', 'string', 'max:160'],
             'email' => ['required', 'email', 'unique:brands,email'],
             'logo' => ['nullable', 'file', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'socials' => ['nullable', 'json'],

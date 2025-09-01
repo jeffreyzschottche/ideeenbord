@@ -14,7 +14,7 @@ class RegisterUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255', new ProfanityFree],
+            'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
             'username' => ['required', 'string', 'unique:users,username', new ProfanityFree],
             'password' => ['required', 'string', 'min:6'],
@@ -22,8 +22,8 @@ class RegisterUserRequest extends FormRequest
             'gender' => ['nullable', 'string'],
             'birthdate' => ['nullable', 'date'],
             'education_level' => ['nullable', 'string'],
-            'education' => ['nullable', 'string', new ProfanityFree],
-            'job' => ['nullable', 'string', new ProfanityFree],
+            'education' => ['nullable', 'string',],
+            'job' => ['nullable', 'string',],
             'sector' => ['nullable', 'string'],
             'city' => ['nullable', 'string'],
             'birth_city' => ['nullable', 'string'],
