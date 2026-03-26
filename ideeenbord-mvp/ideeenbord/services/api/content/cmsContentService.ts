@@ -2,6 +2,19 @@ import { apiFetch } from "~/composables/adapter/useApi";
 
 type CmsFieldResponse = { key: string; value: string };
 
+function normalizeCmsImageValue(value: string, backendBase: string): string {
+  if (value.startsWith("/storage/")) {
+    return `${backendBase}${value}`;
+  }
+
+  const storagePathMatch = value.match(/\/storage\/[^"')\s]+/);
+  if (storagePathMatch) {
+    return `${backendBase}${storagePathMatch[0]}`;
+  }
+
+  return value;
+}
+
 export async function getCmsContent(
   slug: string
 ): Promise<Record<string, string>> {
@@ -12,9 +25,10 @@ export async function getCmsContent(
 
   const content: Record<string, string> = {};
   for (const field of res.data) {
-    const isImage =
-      typeof field.value === "string" && field.value.startsWith("/storage/");
-    content[field.key] = isImage ? `${backendBase}${field.value}` : field.value;
+    content[field.key] =
+      typeof field.value === "string"
+        ? normalizeCmsImageValue(field.value, backendBase)
+        : field.value;
   }
 
   return content;
