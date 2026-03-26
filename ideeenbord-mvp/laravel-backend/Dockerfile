@@ -1,20 +1,13 @@
-FROM php:8.2-cli-alpine AS composer_deps
+FROM composer:2 AS composer_deps
 
 WORKDIR /app
-
-RUN apk add --no-cache \
-        git \
-        libzip-dev \
-        unzip \
-    && docker-php-ext-install zip
-
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 COPY composer.json composer.lock ./
 RUN composer install \
     --no-dev \
     --no-interaction \
     --no-scripts \
+    --ignore-platform-req=php \
     --prefer-dist \
     --optimize-autoloader
 
