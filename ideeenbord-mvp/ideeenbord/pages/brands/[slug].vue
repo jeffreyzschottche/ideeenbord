@@ -17,10 +17,11 @@ import { useResponseDisplay } from "~/composables/notifications/useResponseDispl
 import BrandMainQuestion from "~/components/brand/BrandMainQuestion.vue";
 import QuizParticipant from "~/components/quiz/QuizParticipant.vue";
 import type { Brand } from "~/types/brand";
+import { storageBaseFromApiBase } from "~/utils/apiUrl";
 
 const rawApiBase = useRuntimeConfig().public.apiBaseUrl;
 const apiBase = rawApiBase as string;
-const imageBase = apiBase.replace("/api", "/storage");
+const imageBase = storageBaseFromApiBase(apiBase);
 
 const auth = useUserAuthStore();
 const route = useRoute();

@@ -22,6 +22,7 @@ import AccountEditModal from "~/components/dashboard/account/AccountEditModal.vu
 import type { BrandOwner } from "~/types/brand-owner";
 import type { Brand } from "~/types/brand";
 import { apiFetch } from "~/composables/adapter/useApi";
+import { storageBaseFromApiBase } from "~/utils/apiUrl";
 
 definePageMeta({
   middleware: "brand-owner", // 🔒 protected route for brand owners only
@@ -41,7 +42,7 @@ const showBrandEdit = ref(false);
 
 const rawApiBase = useRuntimeConfig().public.apiBaseUrl as string;
 const apiBase = rawApiBase;
-const imageBase = apiBase.replace("/api", "/storage");
+const imageBase = storageBaseFromApiBase(apiBase);
 
 const { updateBrand } = useBrand();
 const editing = ref<Record<string, boolean>>({});

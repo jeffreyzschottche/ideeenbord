@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import { apiFetch } from "~/composables/adapter/useApi";
 import type { Brand } from "~/types/brand";
+import { storageBaseFromApiBase } from "~/utils/apiUrl";
 
 // ── State ──
 const brands = ref<Brand[]>([]);
@@ -24,7 +25,7 @@ function slugify(text: string): string {
 function correctImageUrl(url: string): string {
   const rawApiBase = useRuntimeConfig().public.apiBaseUrl;
   const apiBase = rawApiBase as string;
-  const imageBase = apiBase.replace("/api", "/storage");
+  const imageBase = storageBaseFromApiBase(apiBase);
   return imageBase + "/" + url;
 }
 </script>

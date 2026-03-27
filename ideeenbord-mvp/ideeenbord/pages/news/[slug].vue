@@ -20,6 +20,7 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useCmsContent } from "~/composables/content/useCmsContent";
 import { useRuntimeConfig } from "nuxt/app";
+import { storageBaseFromApiBase } from "~/utils/apiUrl";
 
 const slug = useRoute().params.slug as string;
 const { content, isLoading } = useCmsContent("news");
@@ -33,7 +34,7 @@ function correctImageUrl(path?: string) {
     path.startsWith("/img")
   )
     return path;
-  return `${cfg.public.apiBaseUrl.replace("/api", "/storage")}/${path.replace(
+  return `${storageBaseFromApiBase(cfg.public.apiBaseUrl)}/${path.replace(
     /^\/+/,
     ""
   )}`;

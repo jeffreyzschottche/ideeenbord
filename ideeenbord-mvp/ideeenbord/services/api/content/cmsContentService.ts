@@ -1,4 +1,5 @@
 import { apiFetch } from "~/composables/adapter/useApi";
+import { backendBaseFromApiBase } from "~/utils/apiUrl";
 
 type CmsFieldResponse = { key: string; value: string };
 
@@ -19,7 +20,7 @@ export async function getCmsContent(
   slug: string
 ): Promise<Record<string, string>> {
   const config = useRuntimeConfig();
-  const backendBase = config.public.apiBaseUrl.replace("/api", "");
+  const backendBase = backendBaseFromApiBase(config.public.apiBaseUrl);
 
   const res = await apiFetch<{ data: CmsFieldResponse[] }>(`/content/${slug}`);
 

@@ -86,6 +86,7 @@
 </template>
 
 <script setup lang="ts">
+import { storageBaseFromApiBase } from "~/utils/apiUrl";
 import { ref, onMounted, computed, nextTick } from "vue";
 import { apiFetch } from "~/composables/adapter/useApi";
 import { useIdeas } from "~/composables/ideas/useIdeas";
@@ -163,7 +164,7 @@ async function submitNewIdea() {
 /* ───────── Helper ───────── */
 function correctImageUrl(url: string) {
   const apiBase = useRuntimeConfig().public.apiBaseUrl as string;
-  return apiBase.replace("/api", "/storage") + "/" + url;
+  return storageBaseFromApiBase(apiBase) + "/" + url;
 }
 
 /* ───────── Scroll ref ───────── */
