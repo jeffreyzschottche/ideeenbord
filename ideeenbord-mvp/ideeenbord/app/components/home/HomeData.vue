@@ -1,74 +1,47 @@
 <template>
-  <section
-    class="w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16 py-10 md:py-20"
-  >
-    <!-- DATA BOX -->
-    <div class="flex-1 flex items-center justify-center">
-      <div class="relative rounded-2xl bg-nav px-8 py-10 shadow-xl glow-box">
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 min-w-[320px]"
-        >
-          <div class="flex flex-col items-center">
-            <span
-              class="text-4xl font-extrabold text-[var(--color-brand)] drop-shadow"
+  <section class="py-16 md:py-24">
+    <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16">
+      <!-- Stats panel -->
+      <div class="flex-1 w-full">
+        <div class="relative rounded-3xl bg-[var(--color-nav)] p-8 md:p-10 overflow-hidden">
+          <!-- subtiele accent-cirkel -->
+          <div class="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-[var(--color-brand)]/20 blur-2xl"></div>
+
+          <div class="relative grid grid-cols-2 gap-6 md:gap-8">
+            <div
+              v-for="stat in stats"
+              :key="stat.key"
+              class="rounded-2xl bg-white/5 border border-white/10 p-5 text-center"
             >
-              +{{ content["stat-companies"] }}
-            </span>
-            <span class="mt-1 text-lg font-medium light-text text-center">
-              {{ content["stat-companies-label"] }}
-            </span>
-          </div>
-          <div class="flex flex-col items-center">
-            <span
-              class="text-4xl font-extrabold text-[var(--color-brand)] drop-shadow"
-            >
-              +{{ content["stat-idea-makers"] }}
-            </span>
-            <span class="mt-1 text-lg font-medium light-text text-center">
-              {{ content["stat-idea-makers-label"] }}
-            </span>
-          </div>
-          <div class="flex flex-col items-center">
-            <span
-              class="text-4xl font-extrabold text-[var(--color-brand)] drop-shadow"
-            >
-              +{{ content["stat-ideas-submitted"] }}
-            </span>
-            <span class="mt-1 text-lg font-medium light-text text-center">
-              {{ content["stat-ideas-submitted-label"] }}
-            </span>
-          </div>
-          <div class="flex flex-col items-center">
-            <span
-              class="text-4xl font-extrabold text-[var(--color-brand)] drop-shadow"
-            >
-              +{{ content["stat-ideas-implemented"] }}
-            </span>
-            <span class="mt-1 text-lg font-medium light-text text-center">
-              {{ content["stat-ideas-implemented-label"] }}
-            </span>
+              <span class="block text-3xl md:text-4xl font-extrabold text-[var(--color-brand)]">
+                +{{ content[stat.key] || "0" }}
+              </span>
+              <span class="mt-1 block text-sm text-gray-300">
+                {{ content[stat.label] }}
+              </span>
+            </div>
           </div>
         </div>
-        <div
-          class="absolute -inset-2 rounded-2xl pointer-events-none z-0 glow-overlay"
-        ></div>
       </div>
-    </div>
 
-    <!-- MOTIVATIE TEKST -->
-    <div class="flex-1 flex flex-col items-start gap-4 max-w-xl z-10">
-      <h2
-        v-if="content['motivation-title']"
-        class="text-2xl md:text-3xl font-bold dark-text mb-2"
-      >
-        {{ content["motivation-title"] }}
-      </h2>
-      <p
-        v-if="content['motivation-description']"
-        class="text-base md:text-lg dark-text"
-      >
-        {{ content["motivation-description"] }}
-      </p>
+      <!-- Motivatie -->
+      <div class="flex-1">
+        <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-brand)] mb-3">
+          Waarom Ideeënbord
+        </span>
+        <h2
+          v-if="content['motivation-title']"
+          class="text-3xl md:text-4xl font-extrabold text-[var(--color-nav)] leading-tight"
+        >
+          {{ content["motivation-title"] }}
+        </h2>
+        <p
+          v-if="content['motivation-description']"
+          class="mt-5 text-lg text-gray-600 leading-relaxed"
+        >
+          {{ content["motivation-description"] }}
+        </p>
+      </div>
     </div>
   </section>
 </template>
@@ -76,21 +49,11 @@
 <script setup lang="ts">
 import { useCmsContent } from "~/composables/content/useCmsContent";
 const { content } = useCmsContent("home");
-</script>
 
-<style scoped>
-.glow-box {
-  box-shadow: 0 0 32px 0 var(--color-brand), 0 0 0 4px var(--color-brand);
-  position: relative;
-  z-index: 2;
-}
-.glow-overlay {
-  background: radial-gradient(
-    circle at 50% 50%,
-    var(--color-brand) 0%,
-    transparent 80%
-  );
-  opacity: 0.18;
-  z-index: 1;
-}
-</style>
+const stats = [
+  { key: "stat-companies", label: "stat-companies-label" },
+  { key: "stat-idea-makers", label: "stat-idea-makers-label" },
+  { key: "stat-ideas-submitted", label: "stat-ideas-submitted-label" },
+  { key: "stat-ideas-implemented", label: "stat-ideas-implemented-label" },
+];
+</script>

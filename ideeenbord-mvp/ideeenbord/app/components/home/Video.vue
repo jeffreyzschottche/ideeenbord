@@ -1,30 +1,31 @@
 <template>
-  <section class="py-20">
-    <div
-      class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-10 px-4"
-    >
-      <!-- VIDEO --------------------------------------------------------- -->
+  <section class="py-16 md:py-24">
+    <div class="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+      <!-- Video -->
       <div class="w-full lg:w-7/12">
-        <div
-          class="rounded-xl overflow-hidden ring-4 ring-[var(--color-brand)] shadow-xl"
-        >
-          <!-- Youtube-embed: 16/9 aspect ratio -->
-          <iframe
-            class="w-full aspect-video"
-            :src="embedUrl"
-            title="Demo-video"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-          />
+        <div class="relative">
+          <div class="absolute -inset-3 rounded-3xl bg-[var(--color-brand)]/10 -z-10 -rotate-2"></div>
+          <div class="rounded-2xl overflow-hidden shadow-2xl border border-gray-100">
+            <iframe
+              class="w-full aspect-video"
+              :src="embedUrl"
+              title="Demo-video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            />
+          </div>
         </div>
       </div>
 
-      <!-- TEKST ---------------------------------------------------------- -->
+      <!-- Tekst -->
       <div class="w-full lg:w-5/12">
-        <h2 class="text-2xl md:text-3xl font-bold dark-text mb-4">
+        <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-brand)] mb-3">
+          Bekijk de demo
+        </span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-[var(--color-nav)] leading-tight">
           {{ content["video-title"] }}
         </h2>
-        <p class="text-base md:text-lg leading-relaxed">
+        <p class="mt-5 text-lg text-gray-600 leading-relaxed">
           {{ content["video-description"] }}
         </p>
       </div>
@@ -38,34 +39,12 @@ import { useCmsContent } from "~/composables/content/useCmsContent";
 
 const { content } = useCmsContent("home");
 
-/* Zet gewone YouTube-URL uit het CMS om naar een embed-URL */
 const embedUrl = computed(() => {
   const raw = content.value["video-url"] as string | undefined;
-
-  /* fallback → Rick Astley 😉 */
   const url = raw?.trim() || "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-
-  /**  ▸ https://www.youtube.com/watch?v=ID   ->  https://www.youtube.com/embed/ID
-   *  ▸ https://youtu.be/ID                 ->  https://www.youtube.com/embed/ID
-   */
   const idMatch =
     url.match(/youtu\.be\/([\w-]{11})/) ?? url.match(/v=([\w-]{11})/);
   const id = idMatch ? idMatch[1] : "dQw4w9WgXcQ";
-
   return `https://www.youtube.com/embed/${id}?rel=0`;
 });
 </script>
-
-<style scoped>
-.dark-text {
-  color: var(--color-text-dark, #111);
-}
-.light-text {
-  color: var(--color-text-light, #555);
-}
-
-/* brand-kleur lichtere variant indien nodig */
-:root {
-  --color-brand-light: color-mix(in srgb, var(--color-brand) 50%, #fff);
-}
-</style>

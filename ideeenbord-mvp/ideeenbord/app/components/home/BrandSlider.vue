@@ -1,8 +1,11 @@
 <template>
   <section class="w-full py-8 md:py-16">
-    <div class="flex items-center justify-center mb-4">
-      <h2 class="text-2xl md:text-3xl font-bold dark-text mb-2">
-        {{ content["brandslider-title"] }}
+    <div class="text-center mb-8">
+      <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-brand)] mb-3">
+        Merken
+      </span>
+      <h2 class="text-3xl md:text-4xl font-extrabold text-[var(--color-nav)]">
+        {{ content["brandslider-title"] || "Merken die luisteren" }}
       </h2>
     </div>
     <div
@@ -33,7 +36,7 @@
                 loading="lazy"
               />
               <span
-                class="text-xs md:text-base text-center light-text font-medium mt-1 line-clamp-2"
+                class="text-xs md:text-base text-center text-[var(--color-nav)] font-semibold mt-1 line-clamp-2"
               >
                 {{ brand.title }}
               </span>
@@ -50,7 +53,7 @@
                 loading="lazy"
               />
               <span
-                class="text-xs md:text-base text-center light-text font-medium mt-1 line-clamp-2"
+                class="text-xs md:text-base text-center text-[var(--color-nav)] font-semibold mt-1 line-clamp-2"
               >
                 {{ brand.title }}
               </span>
