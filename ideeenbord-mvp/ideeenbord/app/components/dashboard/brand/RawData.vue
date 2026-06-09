@@ -95,6 +95,39 @@ function downloadCSV(name: string, rows: any[]) {
   downloadBlob(`${name}.csv`, csv, "text/csv;charset=utf-8");
 }
 
+// ===== XML =====
+function escapeXML(value: any): string {
+  const v =
+    value === null || value === undefined
+      ? ""
+      : typeof value === "object"
+      ? JSON.stringify(value)
+      : String(value);
+  return v
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+function safeTag(key: string): string {
+  const tag = String(key).replace(/[^a-zA-Z0-9_.-]/g, "_");
+  return /^[a-zA-Z_]/.test(tag) ? tag : `_${tag}`;
+}
+function recordToXML(record: Record<string, any>, indent = "    "): string {
+  return Object.entries(record)
+    .map(([k, v]) => `${indent}<${safeTag(k)}>${escapeXML(v)}</${safeTag(k)}>`)
+    .join("\n");
+}
+function objectsToXML(rows: any[], root: string, item: string): string {
+  const body = rows
+    .map((r) => `  <${item}>\n${recordToXML(r)}\n  </${item}>`)
+    .join("\n");
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<${root}>\n${body}\n</${root}>`;
+}
+function downloadXML(name: string, rows: any[], root: string, item: string) {
+  downloadBlob(`${name}.xml`, objectsToXML(rows, root, item), "application/xml;charset=utf-8");
+}
+
 // flatten voor combined CSV
 function isPlainObject(val: any) {
   return val && typeof val === "object" && !Array.isArray(val);
@@ -154,6 +187,11 @@ function downloadCombinedCSV() {
   if (!rows.length) return;
   downloadCSV(`${filenameBase.value}-raw-export-combined`, rows);
 }
+function downloadCombinedXML() {
+  const rows = buildCombinedRows();
+  if (!rows.length) return;
+  downloadXML(`${filenameBase.value}-raw-export-combined`, rows, "export", "record");
+}
 
 onMounted(loadAll);
 </script>
@@ -181,6 +219,13 @@ onMounted(loadAll);
           @click="downloadCombinedJSON"
         >
           ⬇️ JSON · gecombineerd
+        </button>
+        <button
+          class="btn btn--sm"
+          :disabled="!canDownloadAnything"
+          @click="downloadCombinedXML"
+        >
+          ⬇️ XML · gecombineerd
         </button>
       </div>
     </div>
@@ -212,6 +257,13 @@ onMounted(loadAll);
               @click="downloadCSV('brand', brandExport ? [brandExport] : [])"
             >
               Download CSV
+            </button>
+            <button
+              class="btn btn--sm"
+              :disabled="!brandExport"
+              @click="downloadXML('brand', brandExport ? [brandExport] : [], 'brand', 'field')"
+            >
+              Download XML
             </button>
           </div>
         </div>
@@ -261,6 +313,13 @@ onMounted(loadAll);
               @click="downloadCSV('ideas', ideasExport)"
             >
               Download CSV
+            </button>
+            <button
+              class="btn btn--sm"
+              :disabled="!ideasExport.length"
+              @click="downloadXML('ideas', ideasExport, 'ideas', 'idea')"
+            >
+              Download XML
             </button>
           </div>
         </div>
@@ -319,6 +378,13 @@ onMounted(loadAll);
               @click="downloadCSV('participants', participantsExport)"
             >
               Download CSV
+            </button>
+            <button
+              class="btn btn--sm"
+              :disabled="!participantsExport.length"
+              @click="downloadXML('participants', participantsExport, 'participants', 'participant')"
+            >
+              Download XML
             </button>
           </div>
         </div>

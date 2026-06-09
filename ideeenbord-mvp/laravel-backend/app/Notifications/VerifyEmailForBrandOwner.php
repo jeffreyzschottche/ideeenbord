@@ -38,11 +38,15 @@ class VerifyEmailForBrandOwner extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $verificationUrl = $this->verificationUrl($notifiable);
+
         return (new MailMessage)
-            ->subject(Lang::get('Verifieer je E-mailadres'))
-            ->line(Lang::get('Klik op de knop hieronder om je e-mailadres te verifiëren.'))
-            ->action(Lang::get('Verifieer E-mailadres'), $verificationUrl)
-            ->line(Lang::get('Als je geen account hebt aangemaakt, hoef je niets te doen.'));
+            ->subject('Verifieer je merkaccount op Ideeënbord')
+            ->view('emails.verify', [
+                'url' => $verificationUrl,
+                'heading' => 'Bevestig je merkaccount',
+                'intro' => 'Bevestig je e-mailadres om toegang te krijgen tot je merkdashboard en te beginnen met luisteren naar je klanten.',
+                'button' => 'Verifieer e-mailadres',
+            ]);
     }
 
     /**

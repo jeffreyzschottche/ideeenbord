@@ -38,11 +38,15 @@ class VerifyEmailForUser extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $verificationUrl = $this->verificationUrl($notifiable);
+
         return (new MailMessage)
-            ->subject(Lang::get('Verify Email Address'))
-            ->line(Lang::get('Please click the button below to verify your email address.'))
-            ->action(Lang::get('Verify Email Address'), $verificationUrl)
-            ->line(Lang::get('If you did not create an account, no further action is required.'));
+            ->subject('Bevestig je account op Ideeënbord')
+            ->view('emails.verify', [
+                'url' => $verificationUrl,
+                'heading' => 'Welkom bij Ideeënbord!',
+                'intro' => 'Nog één stap: bevestig je e-mailadres om je account te activeren en ideeën te gaan delen met merken.',
+                'button' => 'Bevestig mijn account',
+            ]);
     }
 
     /**
