@@ -8,7 +8,7 @@
     <div class="container mx-auto flex justify-between items-center py-4 px-2">
       <!-- Logo -->
       <NuxtLink to="/" class="relative text-3xl font-bold">
-        IDEEEN<span class="font-light">BORD</span>
+        IDEEEN<span class="font-light">BORD</span>DDDDD
         <i
           class="fa-solid fa-lightbulb ml-2 absolute text-orange-400 lamp-glow"
         ></i>
@@ -188,7 +188,7 @@ const { token: boToken, owner } = storeToRefs(boStore);
 const isUserAuth = computed(() => !!userToken.value && !!user.value);
 const isBrandAuth = computed(() => !!boToken.value && !!owner.value);
 const brandLabel = computed(
-  () => owner.value?.brand.title || owner.value?.brand.slug || "Dashboard"
+  () => owner.value?.brand.title || owner.value?.brand.slug || "Dashboard",
 );
 
 /* UI state */
@@ -223,7 +223,9 @@ onUnmounted(() => window.removeEventListener("scroll", handleScroll));
 <style scoped>
 .slide-enter-active,
 .slide-leave-active {
-  transition: transform 0.3s, opacity 0.3s;
+  transition:
+    transform 0.3s,
+    opacity 0.3s;
 }
 .slide-enter-from,
 .slide-leave-to {
