@@ -413,3 +413,26 @@ input:-webkit-autofill:focus {
 .full-width {
   width: 100%;
 }
+
+/* =======================================
+Print / PDF export (brand report)
+========================================== */
+@media print {
+  body.print-report * {
+    visibility: hidden;
+  }
+  body.print-report .report-printable,
+  body.print-report .report-printable * {
+    visibility: visible;
+  }
+  body.print-report .report-printable {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0 1rem;
+  }
+  body.print-report .report-printable canvas {
+    max-height: 320px;
+  }
+}

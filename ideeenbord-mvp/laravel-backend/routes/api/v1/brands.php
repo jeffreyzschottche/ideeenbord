@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Brand\BrandController;
+use App\Http\Controllers\Brand\BrandReportController;
 use App\Http\Controllers\BrandOwner\BrandOwnerController;
 use App\Http\Controllers\MainQuestion\MainQuestionController;
 use App\Http\Controllers\MainQuestion\MainQuestionResponseController;
@@ -39,4 +40,9 @@ Route::middleware('auth:brand_owner')->group(function () {
     Route::patch('/brands/{brand}/main-questions', [BrandController::class, 'setMainQuestion']);
     Route::patch('/brands/{brand}', [BrandController::class, 'update']);
     Route::get('/brands/{brand}/raw-export', [BrandController::class, 'rawExport']);
+
+    // AI brand reports
+    Route::get('/brands/{brand}/reports', [BrandReportController::class, 'index']);
+    Route::post('/brands/{brand}/reports', [BrandReportController::class, 'store']);
+    Route::get('/reports/{report}', [BrandReportController::class, 'show']);
 });

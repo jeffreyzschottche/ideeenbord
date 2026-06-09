@@ -17,6 +17,7 @@ import { useResponseDisplay } from "~/composables/notifications/useResponseDispl
 import { useBrand } from "~/composables/brand/useBrand";
 import BrandEditModal from "~/components/dashboard/brand/BrandEditModal.vue";
 import RawData from "~/components/dashboard/brand/RawData.vue";
+import BrandReport from "~/components/dashboard/brand/BrandReport.vue";
 import ApiAccess from "~/components/dashboard/brand/ApiAccess.vue";
 import AccountEditModal from "~/components/dashboard/account/AccountEditModal.vue";
 import type { BrandOwner } from "~/types/brand-owner";
@@ -55,6 +56,7 @@ type TabId =
   | "main-question"
   | "quiz-builder"
   | "quiz-overview"
+  | "report"
   | "raw-data"
   | "apiaccess"
   | "account";
@@ -63,6 +65,7 @@ const tabs: { id: TabId; label: string; icon?: string }[] = [
   { id: "main-question", label: "Hoofdvraag", icon: "❓" },
   { id: "quiz-builder", label: "Quiz aanmaken", icon: "🛠️" },
   { id: "quiz-overview", label: "Quizzes overzicht", icon: "📋" },
+  { id: "report", label: "Rapport (AI)", icon: "📊" },
   { id: "raw-data", label: "Rauwe gegevens", icon: "🧾" },
   { id: "apiaccess", label: "Api toegang", icon: "🧾" },
   { id: "account", label: "Account instellingen", icon: "👤" },
@@ -246,6 +249,15 @@ watch(
           <!-- Als je AccountEditModal als modaal wil: toon een knop die 'm opent;
                Als het een inline-form ondersteunt, render je 'm direct. -->
           <AccountEditModal />
+        </div>
+
+        <!-- Rapport (AI) -->
+        <div v-else-if="activeTab === 'report'">
+          <h2 class="title-md">Rapport (AI)</h2>
+          <client-only>
+            <BrandReport v-if="owner?.brand?.id" :brandId="owner.brand.id" />
+            <div v-else class="muted-text">Merkinformatie wordt geladen…</div>
+          </client-only>
         </div>
 
         <div v-else-if="activeTab === 'raw-data'">

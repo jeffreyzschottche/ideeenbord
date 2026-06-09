@@ -66,5 +66,8 @@ class Brand extends Model
         return $this->hasMany(\App\Models\Idea::class);
     }
 
-
+    public function reports()
+    {
+        return $this->hasMany(\App\Models\BrandReport::class);
+    }
 }
