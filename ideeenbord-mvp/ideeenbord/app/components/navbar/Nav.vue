@@ -8,7 +8,7 @@
     <div class="container mx-auto flex justify-between items-center py-4 px-2">
       <!-- Logo -->
       <NuxtLink to="/" class="relative text-3xl font-bold">
-        IDEEEN<span class="font-light">BORD</span>DDDDD
+        IDEEEN<span class="font-light">BORD</span>
         <i
           class="fa-solid fa-lightbulb ml-2 absolute text-orange-400 lamp-glow"
         ></i>
