@@ -81,6 +81,17 @@
 </template>
 
 <script setup lang="ts">
+usePageSeo({
+  title: "Ideeën",
+  description:
+    "Bekijk en ontdek de ideeën die gebruikers met merken delen op Ideeënbord.",
+});
+useJsonLd(
+  breadcrumbLd([
+    { name: "Home", path: "/" },
+    { name: "Ideeën", path: "/Ideas" },
+  ])
+);
 import { ref, computed, onMounted } from "vue";
 import { apiFetch } from "~/composables/adapter/useApi";
 import { useUserAuthStore } from "~/store/useUserAuthStore";

@@ -23,6 +23,17 @@
 </template>
 
 <script setup lang="ts">
+usePageSeo({
+  title: "Word merkeigenaar",
+  description:
+    "Claim je merk op Ideeënbord en ga in gesprek met je klanten via hun ideeën, wensen en feedback.",
+});
+useJsonLd(
+  breadcrumbLd([
+    { name: "Home", path: "/" },
+    { name: "Word merkeigenaar", path: "/become-a-brandowner" },
+  ])
+);
 import { computed } from "vue";
 import { useCmsContent } from "~/composables/content/useCmsContent";
 

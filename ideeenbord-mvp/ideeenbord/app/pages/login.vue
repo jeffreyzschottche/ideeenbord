@@ -1,4 +1,9 @@
 <script setup lang="ts">
+usePageSeo({
+  title: "Inloggen",
+  description: "Log in op je Ideeënbord-account.",
+  noindex: true,
+});
 /*
   This page provides a login form for regular users.
   It uses `useLogin()` composable to authenticate and `triggerByKey()` to display feedback.

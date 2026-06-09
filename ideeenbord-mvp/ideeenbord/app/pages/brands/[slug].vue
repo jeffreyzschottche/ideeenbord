@@ -30,6 +30,40 @@ const { triggerByKey } = useResponseDisplay(); // ✅ use triggerByKey for feedb
 const brand = ref<Brand>(null);
 const rating = ref(5);
 
+// --- SEO: SSR-fetch brand meta so crawlers get real title/description ---
+const { data: seoBrand } = await useAsyncData(
+  `brand-seo-${route.params.slug}`,
+  () =>
+    $fetch<Brand>(`${apiBase}/v1/brands/${route.params.slug}`).catch(
+      () => null as any
+    )
+);
+{
+  const sb: any = seoBrand.value;
+  usePageSeo({
+    title: sb?.title ?? "Merk",
+    description:
+      sb?.intro_short ||
+      sb?.intro ||
+      `Deel jouw ideeën en wensen met ${sb?.title ?? "dit merk"} op Ideeënbord.`,
+    image: sb?.logo_path ? `${imageBase}/${sb.logo_path}` : undefined,
+  });
+  if (sb) {
+    useJsonLd([
+      {
+        "@type": "Brand",
+        name: sb.title,
+        description: sb.intro_short || sb.intro || undefined,
+      },
+      breadcrumbLd([
+        { name: "Home", path: "/" },
+        { name: "Merken", path: "/brands" },
+        { name: sb.title, path: `/brands/${sb.slug}` },
+      ]),
+    ]);
+  }
+}
+
 // Calculate the average rating
 const averageRating = computed(() => {
   if (!brand.value || brand.value.rating_count === 0) return 0;

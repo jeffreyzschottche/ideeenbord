@@ -58,5 +58,35 @@ const article = computed(() => {
   return null;
 });
 
-console.log(article);
+// --- SEO ---
+const canonical = useCanonical();
+useSeoMeta({
+  title: () => article.value?.title ?? "Nieuws",
+  description: () =>
+    article.value?.excerpt ?? "Nieuws en updates van Ideeënbord.",
+  ogTitle: () => article.value?.title ?? "Nieuws",
+  ogDescription: () => article.value?.excerpt ?? "",
+  ogType: "article",
+  ogImage: () => correctImageUrl(article.value?.image),
+  twitterCard: "summary_large_image",
+});
+useHead({
+  link: [{ rel: "canonical", href: canonical }],
+  script: [
+    {
+      type: "application/ld+json",
+      innerHTML: computed(() =>
+        JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "NewsArticle",
+          headline: article.value?.title ?? "Nieuws",
+          description: article.value?.excerpt ?? "",
+          image: article.value?.image ? correctImageUrl(article.value.image) : undefined,
+          mainEntityOfPage: canonical,
+          publisher: { "@type": "Organization", name: "Ideeënbord" },
+        })
+      ) as any,
+    },
+  ],
+});
 </script>

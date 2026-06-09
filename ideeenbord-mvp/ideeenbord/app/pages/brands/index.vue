@@ -1,4 +1,16 @@
 <script setup lang="ts">
+usePageSeo({
+  title: "Alle merken",
+  description:
+    "Ontdek alle merken op Ideeënbord en deel jouw ideeën, wensen en feedback met de merken die jij belangrijk vindt.",
+});
+useJsonLd([
+  { "@type": "CollectionPage", name: "Alle merken" },
+  breadcrumbLd([
+    { name: "Home", path: "/" },
+    { name: "Merken", path: "/brands" },
+  ]),
+]);
 import { ref, onMounted } from "vue";
 import { apiFetch } from "~/composables/adapter/useApi";
 import type { Brand } from "~/types/brand";

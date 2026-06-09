@@ -1,4 +1,9 @@
 <script setup lang="ts">
+usePageSeo({
+  title: "Registreren",
+  description: "Maak een gratis Ideeënbord-account aan en deel je ideeën met merken.",
+  noindex: true,
+});
 import { ref } from "vue";
 import type { RegisterForm } from "~/types/auth";
 import { useRegister } from "~/composables/user/useAuth";

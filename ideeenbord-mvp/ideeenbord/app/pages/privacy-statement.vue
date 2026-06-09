@@ -47,6 +47,16 @@
 </template>
 
 <script setup lang="ts">
+usePageSeo({
+  title: "Privacyverklaring",
+  description: "Lees hoe Ideeënbord omgaat met jouw persoonsgegevens.",
+});
+useJsonLd(
+  breadcrumbLd([
+    { name: "Home", path: "/" },
+    { name: "Privacy", path: "/privacy-statement" },
+  ])
+);
 import { computed } from "vue";
 import { useRuntimeConfig } from "nuxt/app";
 import { useCmsContent } from "~/composables/content/useCmsContent";

@@ -66,6 +66,17 @@
 </template>
 
 <script setup lang="ts">
+usePageSeo({
+  title: "Abonnementen",
+  description:
+    "Bekijk de abonnementen voor merken op Ideeënbord: Brons, Zilver en Goud — elk met eigen voordelen.",
+});
+useJsonLd(
+  breadcrumbLd([
+    { name: "Home", path: "/" },
+    { name: "Abonnementen", path: "/subscriptions" },
+  ])
+);
 import { computed } from "vue";
 import { useRuntimeConfig } from "nuxt/app";
 import { useCmsContent } from "~/composables/content/useCmsContent";

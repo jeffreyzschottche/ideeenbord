@@ -23,6 +23,17 @@
 </template>
 
 <script setup lang="ts">
+usePageSeo({
+  title: "Nieuws",
+  description: "Het laatste nieuws en de updates van Ideeënbord.",
+});
+useJsonLd([
+  { "@type": "CollectionPage", name: "Nieuws" },
+  breadcrumbLd([
+    { name: "Home", path: "/" },
+    { name: "Nieuws", path: "/news" },
+  ]),
+]);
 import { computed } from "vue";
 import { useCmsContent } from "~/composables/content/useCmsContent";
 import { useRuntimeConfig } from "nuxt/app";

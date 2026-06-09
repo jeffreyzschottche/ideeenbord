@@ -43,7 +43,16 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: "nl" },
       viewport: "width=device-width, initial-scale=1",
+      titleTemplate: (title?: string) =>
+        title ? `${title} · Ideeënbord` : "Ideeënbord — deel je ideeën met merken",
       link: [{ rel: "icon", type: "image/png", href: "/favicon.png" }],
+      meta: [
+        {
+          name: "description",
+          content:
+            "Ideeënbord is hét platform waar consumenten ideeën, wensen en verbeterpunten delen met merken — en waar merken écht luisteren.",
+        },
+      ],
     },
   },
 });

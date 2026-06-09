@@ -89,6 +89,18 @@
 </template>
 
 <script setup lang="ts">
+usePageSeo({
+  title: "Over Ideeënbord",
+  description:
+    "Ontdek waar Ideeënbord voor staat: consumenten en merken samenbrengen rond échte ideeën, wensen en feedback.",
+});
+useJsonLd([
+  { "@type": "AboutPage", name: "Over Ideeënbord" },
+  breadcrumbLd([
+    { name: "Home", path: "/" },
+    { name: "Over", path: "/about" },
+  ]),
+]);
 import { computed } from "vue";
 import { useCmsContent } from "~/composables/content/useCmsContent";
 import { useRuntimeConfig } from "nuxt/app";

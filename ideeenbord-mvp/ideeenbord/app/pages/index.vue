@@ -15,6 +15,12 @@
 </template>
 
 <script setup lang="ts">
+usePageSeo({
+  title: "Deel je ideeën met merken",
+  description:
+    "Op Ideeënbord deel je ideeën, wensen en verbeterpunten met merken — en merken luisteren écht. Plaats een idee, stem mee en maak kans op prijzen.",
+});
+useJsonLd(breadcrumbLd([{ name: "Home", path: "/" }]));
 definePageMeta({
   layout: "home",
 });
