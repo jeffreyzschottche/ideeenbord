@@ -1,0 +1,13 @@
+# Real environment files (only *.env.example is tracked)
+.env
+.env.*
+!.env.example
+backend.env
+frontend.env
+
+# OS / editor cruft
+.DS_Store
+*.swp
+.idea/
+.fleet/
+.vscode/

@@ -1,0 +1,66 @@
+# Production stack for ideeenbord.nl (run on the VPS).
+#
+# Images are built by GitHub Actions and pushed to GHCR. On the server you only
+# need this file plus two env files (backend.env, frontend.env) and a .env that
+# sets IMAGE_TAG / the image names. See DEPLOYMENT.md.
+#
+#   docker compose -f docker-compose.prod.yml pull
+#   docker compose -f docker-compose.prod.yml up -d
+
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-ideeenbord}
+      MYSQL_USER: ${DB_USERNAME:-ideeenbord}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?set DB_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ideeenbord
+
+  backend:
+    image: ${BACKEND_IMAGE:-ghcr.io/jeffreyzschottche/ideeenbord-backend}:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ./backend.env
+    environment:
+      RUN_MIGRATIONS: "true"
+      RUN_QUEUE: "true"
+      RUN_SCHEDULER: "true"
+    volumes:
+      - backend_storage:/var/www/html/storage/app
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    networks:
+      - ideeenbord
+
+  frontend:
+    image: ${FRONTEND_IMAGE:-ghcr.io/jeffreyzschottche/ideeenbord-frontend}:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    depends_on:
+      - backend
+    env_file:
+      - ./frontend.env
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    networks:
+      - ideeenbord
+
+volumes:
+  db_data:
+  backend_storage:
+
+networks:
+  ideeenbord:
+    driver: bridge

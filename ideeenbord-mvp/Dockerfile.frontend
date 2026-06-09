@@ -1,3 +1,8 @@
+# syntax=docker/dockerfile:1
+
+# ---------------------------------------------------------------------------
+# 1) Install dependencies (cached on lockfile)
+# ---------------------------------------------------------------------------
 FROM node:22-alpine AS deps
 
 WORKDIR /app
@@ -5,28 +10,40 @@ WORKDIR /app
 COPY ideeenbord/package.json ideeenbord/package-lock.json ./
 RUN npm ci
 
+# ---------------------------------------------------------------------------
+# 2) Build the Nuxt app
+# ---------------------------------------------------------------------------
 FROM node:22-alpine AS build
 
 WORKDIR /app
 
+ENV NUXT_TELEMETRY_DISABLED=1
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY ideeenbord/ ./
 
-ENV NUXT_TELEMETRY_DISABLED=1
-
 RUN npm run build
 
+# ---------------------------------------------------------------------------
+# 3) Minimal runtime (only the Nitro server output)
+# ---------------------------------------------------------------------------
 FROM node:22-alpine AS runner
 
 WORKDIR /app
 
-ENV NODE_ENV=production
-ENV HOST=0.0.0.0
-ENV PORT=3000
-ENV NUXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production \
+    HOST=0.0.0.0 \
+    PORT=3000 \
+    NUXT_TELEMETRY_DISABLED=1
 
-COPY --from=build /app/.output ./.output
+# Run as the unprivileged "node" user that ships with the base image
+COPY --from=build --chown=node:node /app/.output ./.output
+
+USER node
 
 EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD wget -qO- http://127.0.0.1:3000/ >/dev/null 2>&1 || exit 1
 
 CMD ["node", ".output/server/index.mjs"]
