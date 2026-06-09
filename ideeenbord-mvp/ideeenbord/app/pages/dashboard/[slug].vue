@@ -138,40 +138,53 @@ watch(
 </script>
 
 <template>
-  <div class="page-block">
-    <h1 class="title-lg">Dashboard voor {{ route.params.slug }}</h1>
-
+  <div class="max-w-6xl mx-auto px-4 py-8">
     <!-- Loader -->
-    <div v-if="loading" class="muted-text">Bezig met laden...</div>
+    <div v-if="loading" class="muted-text mb-4">Bezig met laden...</div>
 
-    <!-- Welkomstkop (ALTIJD zichtbaar, ook als owner nog niet geladen is) -->
-    <div class="mt-3 flex items-start gap-4">
-      <!-- Logo -->
+    <!-- Header card -->
+    <div
+      class="relative overflow-hidden rounded-3xl bg-[var(--color-nav)] text-white p-6 md:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-5"
+    >
+      <div class="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-[var(--color-brand)]/20 blur-3xl"></div>
+
       <img
         v-if="owner?.brand?.logo_path"
         :src="`${imageBase}/${owner.brand.logo_path}`"
         alt="Logo van merk"
-        class="brand-logo"
+        class="relative w-20 h-20 rounded-2xl object-cover bg-white p-1 shadow-lg"
       />
-      <div class="flex-1">
-        <p class="mb-2">
-          Welkom, <strong>{{ owner?.name || "..." }}</strong
-          >!
-        </p>
-        <p class="mb-4">
-          Merk:
-          <strong>{{ owner?.brand?.title || "..." }}</strong>
-        </p>
+      <div
+        v-else
+        class="relative w-20 h-20 rounded-2xl bg-white/10 flex items-center justify-center"
+      >
+        <i class="fa-solid fa-lightbulb text-3xl text-[var(--color-brand)]"></i>
+      </div>
 
-        <div class="flex flex-wrap gap-3">
-          <button @click="showBrandEdit = true" class="btn-link">
-            ✏️ Bewerk alles
-          </button>
+      <div class="relative flex-1">
+        <p class="text-sm text-gray-300">Welkom terug,</p>
+        <h1 class="text-2xl md:text-3xl font-extrabold leading-tight">
+          {{ owner?.name || "..." }}
+        </h1>
+        <p class="text-gray-300 mt-1">
+          Merk: <span class="font-semibold text-white">{{ owner?.brand?.title || "..." }}</span>
+        </p>
+      </div>
 
-          <button v-if="owner" @click="logout" class="btn btn--danger btn--sm">
-            Uitloggen
-          </button>
-        </div>
+      <div class="relative flex flex-wrap gap-2">
+        <button
+          @click="showBrandEdit = true"
+          class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-sm font-semibold transition"
+        >
+          <i class="fa-solid fa-pen mr-1"></i> Merk bewerken
+        </button>
+        <button
+          v-if="owner"
+          @click="logout"
+          class="px-4 py-2 rounded-xl bg-[var(--color-error)] hover:opacity-90 text-sm font-semibold transition"
+        >
+          Uitloggen
+        </button>
       </div>
     </div>
 
@@ -184,30 +197,23 @@ watch(
       @updated="reloadData()"
     />
 
-    <hr class="divider" />
-
     <!-- Layout: Sidebar tabs + Content -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 mt-6">
       <!-- Sidebar -->
       <aside class="md:col-span-4 lg:col-span-3">
-        <nav class="card-compact">
-          <ul class="list">
-            <li
-              v-for="t in tabs"
-              :key="t.id"
-              class="list-item mb-2"
-              :class="
-                activeTab === t.id
-                  ? 'brandColorBorder bg-[var(--color-bg)]'
-                  : ''
-              "
-            >
+        <nav class="card p-2 md:sticky md:top-24">
+          <ul class="flex md:flex-col gap-1 overflow-x-auto">
+            <li v-for="t in tabs" :key="t.id" class="shrink-0 md:shrink">
               <button
-                class="w-full text-left font-default"
+                class="w-full flex items-center gap-2 text-left px-4 py-3 rounded-xl font-semibold text-sm transition-colors whitespace-nowrap"
+                :class="
+                  activeTab === t.id
+                    ? 'bg-[var(--color-nav)] text-white'
+                    : 'text-gray-600 hover:bg-[var(--color-bg)]'
+                "
                 @click="setTab(t.id)"
               >
-                <span class="mr-2">{{ t.icon }}</span
-                >{{ t.label }}
+                <span>{{ t.icon }}</span><span>{{ t.label }}</span>
               </button>
             </li>
           </ul>
@@ -215,7 +221,7 @@ watch(
       </aside>
 
       <!-- Content -->
-      <section class="md:col-span-8 lg:col-span-9 space-y-4">
+      <section class="md:col-span-8 lg:col-span-9 card p-5 md:p-7 space-y-4">
         <!-- Ideeën beheren -->
         <div v-if="activeTab === 'ideas'">
           <h2 class="title-md">Ideeën beheren</h2>

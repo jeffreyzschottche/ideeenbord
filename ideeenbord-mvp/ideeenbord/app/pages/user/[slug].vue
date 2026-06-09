@@ -42,32 +42,50 @@ const isActive = (key: string) => activeTab.value === key;
 </script>
 
 <template>
-  <div v-if="showPage" class="container mx-auto py-12 px-6 font-default">
-    <h1 class="text-3xl font-bold mb-6">Welkom, {{ auth.user.name }} 👋</h1>
+  <div v-if="showPage" class="max-w-6xl mx-auto py-8 px-4 font-default">
+    <!-- Header card -->
+    <div
+      class="relative overflow-hidden rounded-3xl bg-[var(--color-nav)] text-white p-6 md:p-8 flex items-center gap-5"
+    >
+      <div class="absolute -top-16 -left-16 w-56 h-56 rounded-full bg-[var(--color-brand)]/20 blur-3xl"></div>
+      <div
+        class="relative w-20 h-20 rounded-full bg-[var(--color-brand)] flex items-center justify-center text-2xl font-extrabold shrink-0"
+      >
+        {{ (auth.user.name || "?").charAt(0).toUpperCase() }}
+      </div>
+      <div class="relative">
+        <p class="text-sm text-gray-300">Jouw profiel</p>
+        <h1 class="text-2xl md:text-3xl font-extrabold leading-tight">
+          {{ auth.user.name }}
+        </h1>
+        <p class="text-gray-300 mt-1">@{{ auth.user.username }}</p>
+      </div>
+    </div>
 
-    <div class="flex flex-col md:flex-row gap-8">
-      <!-- LINKS: tabs -->
-      <aside class="md:w-1/4 border p-4 rounded shadow h-fit">
-        <h2 class="text-xl font-semibold mb-4">Mijn dashboard</h2>
-        <ul class="space-y-2">
-          <li
-            v-for="tab in tabs"
-            :key="tab.key"
-            @click="activeTab = tab.key"
-            :class="[
-              'cursor-pointer px-4 py-2 rounded',
-              isActive(tab.key)
-                ? 'bg-[var(--color-brand)] text-white'
-                : 'bg-gray-100 hover:bg-gray-200 text-gray-700',
-            ]"
-          >
-            {{ tab.label }}
-          </li>
-        </ul>
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 mt-6">
+      <!-- Tabs -->
+      <aside class="md:col-span-4 lg:col-span-3">
+        <nav class="card p-2 md:sticky md:top-24">
+          <ul class="flex md:flex-col gap-1 overflow-x-auto">
+            <li v-for="tab in tabs" :key="tab.key" class="shrink-0 md:shrink">
+              <button
+                @click="activeTab = tab.key"
+                :class="[
+                  'w-full text-left px-4 py-3 rounded-xl font-semibold text-sm transition-colors whitespace-nowrap',
+                  isActive(tab.key)
+                    ? 'bg-[var(--color-nav)] text-white'
+                    : 'text-gray-600 hover:bg-[var(--color-bg)]',
+                ]"
+              >
+                {{ tab.label }}
+              </button>
+            </li>
+          </ul>
+        </nav>
       </aside>
 
-      <!-- RECHTS: inhoud -->
-      <section class="md:w-3/4 min-h-[500px] transition-all duration-300">
+      <!-- Inhoud -->
+      <section class="md:col-span-8 lg:col-span-9 card p-5 md:p-7 min-h-[500px]">
         <UserProfileEdit v-if="isActive('profile')" />
         <UserIdeasPosted v-if="isActive('ideas')" />
         <UserRatingsInsights v-if="isActive('ratings')" />
