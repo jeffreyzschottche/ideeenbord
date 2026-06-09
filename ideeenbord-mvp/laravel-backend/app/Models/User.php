@@ -40,6 +40,8 @@ class User extends Authenticatable implements MustVerifyEmail
     'disliked_posts',
     'created_posts',
     'quiz_submissions',
+    'role',
+    'is_bot',
     ];
 
 
@@ -70,7 +72,8 @@ class User extends Authenticatable implements MustVerifyEmail
             'birthdate' => 'date',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'notifications' => 'array'
+            'notifications' => 'array',
+            'is_bot' => 'boolean',
         ];
     }
     public function sendEmailVerificationNotification()
