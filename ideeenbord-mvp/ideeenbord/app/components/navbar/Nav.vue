@@ -1,11 +1,15 @@
 <template>
   <header
     :class="[
-      'fixed w-full h-20 z-50 bg-nav text-white transition-transform duration-300',
+      'fixed w-full h-20 z-50 bg-nav text-white transition-all duration-300',
       { '-translate-y-full': !showHeader, 'translate-y-0': showHeader },
+      scrolled ? 'shadow-xl bg-gray-900/95 backdrop-blur' : '',
     ]"
   >
-    <div class="container mx-auto flex justify-between items-center py-4 px-2">
+    <div
+      ref="navInner"
+      class="container mx-auto flex justify-between items-center py-4 px-2"
+    >
       <!-- Logo -->
       <NuxtLink to="/" class="relative text-3xl font-bold">
         IDEEEN<span class="font-light">BORD</span>
@@ -194,6 +198,8 @@ const brandLabel = computed(
 /* UI state */
 const menuOpen = ref(false);
 const showHeader = ref(true);
+const scrolled = ref(false);
+const navInner = ref<HTMLElement | null>(null);
 let lastScrollY = 0;
 
 const toggleMenu = () => (menuOpen.value = !menuOpen.value);
@@ -201,6 +207,7 @@ const toggleMenu = () => (menuOpen.value = !menuOpen.value);
 function handleScroll() {
   const current = window.scrollY;
   showHeader.value = !(current > lastScrollY && current > 100);
+  scrolled.value = current > 20;
   lastScrollY = current;
 }
 
@@ -216,6 +223,18 @@ onMounted(async () => {
   await boStore.initAuth(); // eerst brand-owner
   await userStore.initAuth(); // dan gewone user
   window.addEventListener("scroll", handleScroll);
+
+  // Subtle entrance animation
+  const { gsap, prefersReducedMotion } = useGsap();
+  if (!prefersReducedMotion.value && gsap && navInner.value) {
+    gsap.from(navInner.value.children, {
+      y: -16,
+      opacity: 0,
+      duration: 0.5,
+      stagger: 0.06,
+      ease: "power2.out",
+    });
+  }
 });
 onUnmounted(() => window.removeEventListener("scroll", handleScroll));
 </script>

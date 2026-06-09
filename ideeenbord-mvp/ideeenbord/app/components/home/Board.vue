@@ -1,19 +1,27 @@
 <template>
   <div class="w-full flex flex-col items-center py-12 select-none mt-10">
-    <!-- Logo -->
-    <NuxtLink to="/" class="relative text-3xl font-bold mb-6">
-      IDEEEN<span class="font-light">BORD</span>
-      <i
-        class="fa-solid fa-lightbulb ml-2 absolute text-orange-400 lamp-glow"
-      ></i>
-    </NuxtLink>
-
-    <h3 class="font-bold text-xl mb-10">
-      {{ content["home-tagline"] }}
-    </h3>
+    <!-- Hero copy -->
+    <div class="text-center max-w-3xl px-4 mb-12">
+      <p ref="eyebrow" class="uppercase tracking-[0.2em] text-sm font-semibold text-[var(--color-brand)] mb-4">
+        {{ content["home-tagline"] || "Jouw stem telt bij merken" }}
+      </p>
+      <h1 ref="heading" class="text-4xl md:text-6xl font-extrabold leading-tight text-[var(--color-nav)]">
+        Jouw idee.<br class="hidden md:block" />
+        <span class="text-[var(--color-brand)]">Direct bij het merk.</span>
+      </h1>
+      <p ref="subline" class="mt-6 text-lg md:text-xl text-gray-600 leading-relaxed">
+        Op Ideeënbord deel je ideeën, wensen en verbeterpunten met merken — en zij
+        luisteren écht. Plaats een idee, stem op dat van anderen en bepaal samen
+        wat merken morgen maken.
+      </p>
+      <div ref="cta" class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <NuxtLink to="/brands" class="cta px-6 py-3 text-base">Ontdek merken</NuxtLink>
+        <NuxtLink to="/about" class="btn-outline px-6 py-3 text-base">Zo werkt het</NuxtLink>
+      </div>
+    </div>
 
     <!-- Bord + frame -->
-    <div class="relative w-full max-w-[880px]">
+    <div ref="boardWrap" class="relative w-full max-w-[880px]">
       <!-- Rode pin -->
       <div class="pin" aria-hidden="true"></div>
 
@@ -174,9 +182,46 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
 import { useCmsContent } from "~/composables/content/useCmsContent";
+import { useGsap } from "~/composables/useGsap";
 
 const { content } = useCmsContent("home");
+
+const eyebrow = ref<HTMLElement | null>(null);
+const heading = ref<HTMLElement | null>(null);
+const subline = ref<HTMLElement | null>(null);
+const cta = ref<HTMLElement | null>(null);
+const boardWrap = ref<HTMLElement | null>(null);
+
+onMounted(() => {
+  const { gsap, prefersReducedMotion } = useGsap();
+  if (prefersReducedMotion.value || !gsap) return;
+
+  const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+  tl.from([eyebrow.value, heading.value, subline.value, cta.value], {
+    y: 30,
+    opacity: 0,
+    duration: 0.7,
+    stagger: 0.12,
+  }).from(
+    boardWrap.value,
+    { y: 40, opacity: 0, scale: 0.96, duration: 0.8 },
+    "-=0.3"
+  );
+
+  if (boardWrap.value) {
+    gsap.from(boardWrap.value.querySelectorAll(".note"), {
+      scale: 0,
+      opacity: 0,
+      duration: 0.5,
+      stagger: 0.08,
+      ease: "back.out(1.7)",
+      delay: 0.6,
+    });
+  }
+});
+
 type NoteDef = { x: string; y: string; r?: number | string; small?: boolean };
 
 const notes: NoteDef[] = [

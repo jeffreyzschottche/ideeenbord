@@ -5,13 +5,15 @@
     >
       <div>
         <h2 class="text-3xl font-bold light-text">
-          IDEEEN<span class="font-light">BORD</span>
-          <i
-            class="fa-solid fa-lightbulb ml-2 absolute flex items-center justify-center text-orange-400 lamp-glow"
-          ></i>
+          IDEEËN<span class="font-light">BORD</span>
+          <i class="fa-solid fa-lightbulb ml-1 text-orange-400 lamp-glow"></i>
         </h2>
-        <p class="text-sm light-text">
-          &copy; {{ year }} Alle rechten voorbehouden.
+        <p class="text-sm text-gray-300 mt-3 max-w-xs mx-auto md:mx-0">
+          Waar jouw ideeën, wensen en feedback bij merken terechtkomen — en merken
+          écht luisteren.
+        </p>
+        <p class="text-xs text-gray-400 mt-3">
+          &copy; {{ year }} Ideeënbord. Alle rechten voorbehouden.
         </p>
       </div>
 
@@ -98,7 +100,7 @@
           <input
             type="email"
             placeholder="E-mailadres"
-            class="px-4 py-2 rounded w-60 border-2 border-white rounded-xl text-white placeholder-gray-500 sm:w-auto"
+            class="px-4 py-2 w-60 rounded-xl bg-white/10 border border-white/30 text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 sm:w-auto"
           />
           <button type="submit" class="cta sm:mt-2 md:mt-4 lg:mt-4 xl:mt-0">
             Inschrijven
