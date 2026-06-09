@@ -112,61 +112,58 @@ function fallbackCopy(text: string) {
   <!-- Sterke container zodat niks ‘lekt’ buiten de kaart -->
   <div
     :class="[
-      'relative isolate overflow-hidden rounded-xl border bg-white p-4 shadow-sm h-full',
-      idea.is_pinned ? 'border-yellow-400' : 'border-gray-200',
+      'relative isolate overflow-hidden rounded-2xl border bg-white p-5 shadow-[0_6px_20px_rgba(31,41,55,0.05)] h-full flex flex-col transition-shadow hover:shadow-lg',
+      idea.is_pinned ? 'border-[var(--color-brand)]' : 'border-gray-100',
     ]"
   >
-    <!-- Header: titel links, meta rechts -->
-    <div class="flex flex-wrap items-start justify-between gap-3 mb-2">
-      <h3 class="text-lg md:text-xl font-bold leading-snug">
-        <span v-if="idea.is_pinned" class="mr-1">📌</span>
-        {{ idea.title }}
+    <!-- Header -->
+    <div class="flex items-start justify-between gap-3 mb-2">
+      <h3 class="text-lg font-bold leading-snug text-[var(--color-nav)]">
+        <span v-if="idea.is_pinned" class="mr-1">📌</span>{{ idea.title }}
       </h3>
-
-      <!-- Meta cluster rechts -->
-      <div class="flex items-center gap-3 ml-auto flex-col">
-        <span class="text-sm text-gray-500 italic"
-          >@{{ idea.user?.username || "anoniem" }}</span
-        >
-        <span
-          class="text-xs font-semibold px-2 py-1 rounded whitespace-nowrap"
-          :class="statusColor"
-        >
-          {{ statusLabel }}
-        </span>
-        <button
-          v-if="auth.token"
-          class="text-red-600 text-xs hover:underline"
-          @click="onReport"
-        >
-          Rapporteer
-        </button>
-      </div>
+      <span
+        class="text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap shrink-0"
+        :class="statusColor"
+      >
+        {{ statusLabel }}
+      </span>
     </div>
 
+    <span class="text-sm text-gray-400 mb-3">@{{ idea.user?.username || "anoniem" }}</span>
+
     <!-- Body -->
-    <p class="text-sm text-gray-700 mb-3">
-      {{ idea.description }}
-    </p>
+    <p class="text-sm text-gray-600 mb-4 flex-1">{{ idea.description }}</p>
 
     <!-- Actions -->
-    <div class="flex flex-wrap items-center gap-3">
+    <div class="flex items-center justify-between gap-3 pt-3 border-t border-gray-100">
       <div class="flex items-center gap-2">
         <button
-          class="inline-flex items-center gap-1 text-sm px-2 py-1 rounded border border-gray-200 hover:bg-gray-50"
+          class="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border border-gray-200 hover:border-green-400 hover:text-green-600 transition"
           @click="$emit('like', idea.id)"
         >
-          👍 <span>{{ idea.likes }}</span>
+          <i class="fa-solid fa-thumbs-up"></i><span>{{ idea.likes }}</span>
         </button>
         <button
-          class="inline-flex items-center gap-1 text-sm px-2 py-1 rounded border border-gray-200 hover:bg-gray-50"
+          class="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border border-gray-200 hover:border-red-400 hover:text-red-500 transition"
           @click="$emit('dislike', idea.id)"
         >
-          👎 <span>{{ idea.dislikes }}</span>
+          <i class="fa-solid fa-thumbs-down"></i><span>{{ idea.dislikes }}</span>
         </button>
       </div>
 
-      <button class="btn-link text-sm" @click="copyShareUrl">Deel</button>
+      <div class="flex items-center gap-3">
+        <button class="text-sm text-gray-500 hover:text-[var(--color-brand)]" @click="copyShareUrl">
+          <i class="fa-solid fa-share-nodes mr-1"></i>Deel
+        </button>
+        <button
+          v-if="auth.token"
+          class="text-sm text-gray-400 hover:text-red-600"
+          @click="onReport"
+          title="Rapporteer"
+        >
+          <i class="fa-solid fa-flag"></i>
+        </button>
+      </div>
     </div>
   </div>
 </template>

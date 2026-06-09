@@ -44,31 +44,44 @@ function correctImageUrl(url: string): string {
 
 <template>
   <div class="container mx-auto px-4 py-12">
-    <h1 class="text-3xl md:text-4xl font-bold text-center mb-12">
-      Alle Brands
-    </h1>
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-brand)] mb-3">
+        Merken
+      </span>
+      <h1 class="text-3xl md:text-5xl font-extrabold text-[var(--color-nav)]">
+        Ontdek alle merken
+      </h1>
+      <p class="mt-4 text-lg text-gray-600">
+        Kies een merk en deel jouw idee, wens of verbeterpunt.
+      </p>
+    </div>
 
     <div
-      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6"
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5"
     >
       <NuxtLink
         v-for="brand in brands"
         :key="brand.id"
         :to="`/brands/${slugify(brand.title)}`"
-        class="flex flex-col items-center p-4 rounded shadow hover:shadow-lg transition group bg-white"
+        class="group flex flex-col items-center p-5 rounded-2xl bg-white border border-gray-100 shadow-[0_6px_20px_rgba(31,41,55,0.05)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
       >
-        <img
-          :src="correctImageUrl(brand.logo_path)"
-          :alt="brand.title"
-          class="w-20 h-20 md:w-28 md:h-28 object-contain bg-white rounded mb-3 shadow-sm"
-          loading="lazy"
-        />
-        <span
-          class="text-sm md:text-base text-center font-medium group-hover:underline"
-        >
+        <div class="w-24 h-24 flex items-center justify-center rounded-2xl bg-[var(--color-bg)] mb-4 overflow-hidden">
+          <img
+            :src="correctImageUrl(brand.logo_path)"
+            :alt="brand.title"
+            class="w-full h-full object-contain p-2 transition-transform duration-300 group-hover:scale-110"
+            loading="lazy"
+          />
+        </div>
+        <span class="text-sm md:text-base text-center font-semibold text-[var(--color-nav)] line-clamp-2">
           {{ brand.title }}
         </span>
+        <span v-if="brand.category" class="mt-1 text-xs text-gray-400">{{ brand.category }}</span>
       </NuxtLink>
     </div>
+
+    <p v-if="!brands.length" class="text-center text-gray-500 mt-12">
+      Merken worden geladen…
+    </p>
   </div>
 </template>

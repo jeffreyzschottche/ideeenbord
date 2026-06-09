@@ -31,27 +31,33 @@
     <!-- layout komt ALTIJD zodra er geen fout/loading is -->
     <div v-else class="flex flex-col md:flex-row gap-8">
       <!-- ───────── LINKERKOLUM – filters ───────── -->
-      <aside
-        class="md:w-1/4 border-color-ideas p-6 rounded-lg shadow-lg shadow-[var(--color-brand)] h-fit"
-      >
+      <aside class="md:w-1/4 card p-5 h-fit md:sticky md:top-24">
         <!-- zoekveld -->
-        <input
-          v-model="search"
-          type="text"
-          placeholder="Zoek op merk of inhoud…"
-          class="w-full mb-4 p-2 rounded border border-color-ideas text-dark"
-        />
-
-        <h3 class="text-xl font-bold text-[var(--color-brand)] mb-3">Merken</h3>
-        <div v-for="b in uniqueBrands" :key="b" class="mb-1">
+        <div class="relative mb-5">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
           <input
-            type="checkbox"
-            :id="b"
-            :value="b"
-            v-model="selectedBrands"
-            class="mr-2 w-4 h-4 rounded-sm accent-[var(--color-brand)] /* vult en kleurt het vinkje */ ring-1 ring-inset ring-[var(--color-brand)] /* ‘rand’ in brand-kleur */ focus:ring-2 focus:ring-[var(--color-brand)] focus:ring-offset-0"
+            v-model="search"
+            type="text"
+            placeholder="Zoek op merk of inhoud…"
+            class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-gray-200 focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-brand)]/20 outline-none"
           />
-          <label :for="b" class="text-dark">{{ b }}</label>
+        </div>
+
+        <h3 class="text-sm font-bold uppercase tracking-wider text-[var(--color-nav)] mb-3">Merken</h3>
+        <div class="space-y-1 max-h-72 overflow-y-auto pr-1">
+          <label
+            v-for="b in uniqueBrands"
+            :key="b"
+            class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[var(--color-bg)] cursor-pointer"
+          >
+            <input
+              type="checkbox"
+              :value="b"
+              v-model="selectedBrands"
+              class="w-4 h-4 rounded accent-[var(--color-brand)]"
+            />
+            <span class="text-gray-700 text-sm">{{ b }}</span>
+          </label>
         </div>
       </aside>
 

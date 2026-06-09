@@ -52,51 +52,51 @@ function logoUrl(p?: string | null) {
 <template>
   <div
     :class="[
-      'w-full max-w-[22rem] mx-auto rounded-2xl border shadow p-4 flex flex-col gap-3 bg-white',
-      idea.is_pinned ? 'border-yellow-400' : 'border-gray-200',
+      'group h-full flex flex-col rounded-2xl bg-white border shadow-[0_6px_20px_rgba(31,41,55,0.05)] p-5 transition-all duration-300 hover:shadow-xl hover:-translate-y-1',
+      idea.is_pinned ? 'border-[var(--color-brand)]' : 'border-gray-100',
     ]"
   >
-    <!-- merk -->
-    <NuxtLink
-      v-if="brand"
-      :to="`/brands/${brand.slug}`"
-      class="flex items-center gap-2 hover:underline"
-    >
-      <img
-        :src="logoUrl(brand.logo_path)"
-        :alt="brand.title"
-        class="w-6 h-6 object-contain rounded bg-white"
-      />
-      <span class="text-sm font-semibold">{{ brand.title }}</span>
-    </NuxtLink>
-
-    <!-- status badge -->
-    <span
-      class="self-center text-xs font-semibold px-2 py-1 rounded"
-      :class="statusColor"
-    >
-      {{ statusLabel }}
-    </span>
+    <!-- header: merk + status -->
+    <div class="flex items-center justify-between gap-2 mb-3">
+      <NuxtLink
+        v-if="brand"
+        :to="`/brands/${brand.slug}`"
+        class="flex items-center gap-2 min-w-0"
+      >
+        <img
+          :src="logoUrl(brand.logo_path)"
+          :alt="brand.title"
+          class="w-7 h-7 object-contain rounded-lg bg-[var(--color-bg)] p-0.5 shrink-0"
+        />
+        <span class="text-sm font-semibold text-[var(--color-nav)] truncate group-hover:text-[var(--color-brand)] transition-colors">
+          {{ brand.title }}
+        </span>
+      </NuxtLink>
+      <span class="text-xs font-semibold px-2.5 py-1 rounded-full shrink-0" :class="statusColor">
+        {{ statusLabel }}
+      </span>
+    </div>
 
     <!-- titel & beschrijving -->
-    <h3 class="text-lg font-bold text-center">
+    <h3 class="text-lg font-bold text-[var(--color-nav)]">
       <span v-if="idea.is_pinned" class="mr-1">📌</span>{{ idea.title }}
     </h3>
-    <p class="text-sm text-gray-700 text-center line-clamp-4">
-      {{ idea.description }}
-    </p>
-    <p>
-      <i>@{{ idea.user.username }}</i>
-    </p>
-    <!-- <span class="text-grey">{{ idea.user.username }}</span> -->
+    <p class="mt-2 text-sm text-gray-600 line-clamp-3">{{ idea.description }}</p>
 
-    <!-- CTA -->
-    <NuxtLink
-      v-if="brand"
-      :to="`/brands/${brand.slug}?idea-id=${idea.id}`"
-      class="cta w-max mx-auto mt-auto mb-3 px-4 py-2 rounded text-white bg-[var(--color-brand)] hover:opacity-90"
-    >
-      Bekijk idee
-    </NuxtLink>
+    <!-- footer -->
+    <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+      <div class="flex items-center gap-3 text-sm text-gray-500">
+        <span class="text-gray-400">@{{ idea.user.username }}</span>
+        <span class="inline-flex items-center gap-1 text-green-600"><i class="fa-solid fa-thumbs-up"></i>{{ idea.likes ?? 0 }}</span>
+        <span class="inline-flex items-center gap-1 text-red-500"><i class="fa-solid fa-thumbs-down"></i>{{ idea.dislikes ?? 0 }}</span>
+      </div>
+      <NuxtLink
+        v-if="brand"
+        :to="`/brands/${brand.slug}?idea-id=${idea.id}`"
+        class="text-sm font-semibold text-[var(--color-brand)] hover:underline"
+      >
+        Bekijk →
+      </NuxtLink>
+    </div>
   </div>
 </template>

@@ -114,33 +114,41 @@ async function submitRating() {
 </script>
 
 <template>
-  <div class="page-block">
+  <div class="max-w-6xl mx-auto px-4 py-8">
     <!-- Header / Brand Hero -->
-    <div v-if="brand" class="flex flex-col gap-4">
-      <div class="flex items-start gap-4">
+    <div v-if="brand" class="flex flex-col gap-6">
+      <div
+        class="relative overflow-hidden rounded-3xl bg-[var(--color-nav)] text-white p-6 md:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-5"
+      >
+        <div class="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-[var(--color-brand)]/20 blur-3xl"></div>
         <img
           v-if="brand.logo_path"
           :src="`${imageBase}/${brand.logo_path}`"
           alt="Logo van merk"
-          class="brand-logo"
+          class="relative w-24 h-24 rounded-2xl object-contain bg-white p-2 shadow-lg"
         />
-        <div class="flex-1">
-          <h1 class="title-lg mb-2">{{ brand.title }}</h1>
-          <p class="muted-text mb-2">{{ brand.intro }}</p>
-          <div class="flex flex-wrap items-center gap-3">
+        <div class="relative flex-1">
+          <span v-if="brand.category" class="inline-block text-xs font-semibold uppercase tracking-wider text-[var(--color-brand)] mb-1">
+            {{ brand.category }}
+          </span>
+          <h1 class="text-3xl md:text-4xl font-extrabold leading-tight">{{ brand.title }}</h1>
+          <p class="text-gray-300 mt-2 max-w-2xl">{{ brand.intro }}</p>
+          <div class="flex flex-wrap items-center gap-3 mt-4">
             <a
+              v-if="brand.website_url"
               :href="brand.website_url"
               target="_blank"
-              class="btn btn--blue btn--sm"
-              >Website</a
-            >
-            <span class="text-sm text-gray-500">Email: {{ brand.email }}</span>
+              class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-sm font-semibold transition"
+            ><i class="fa-solid fa-globe mr-1"></i> Website</a>
+            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--color-brand)] text-sm font-bold">
+              <i class="fa-solid fa-star"></i> {{ averageRating }}/10
+            </span>
           </div>
         </div>
       </div>
 
       <!-- Rating blok -->
-      <div class="card-compact">
+      <div class="card p-5">
         <div
           v-if="auth.token"
           class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
@@ -188,12 +196,12 @@ async function submitRating() {
     >
       <!-- Linker kolom: Hoofdvraag + Quiz -->
       <div class="space-y-6">
-        <div class="card-compact">
+        <div class="card p-6">
           <h2 class="title-md">Hoofdvraag</h2>
           <BrandMainQuestion :brand="brand" />
         </div>
 
-        <div class="card-compact">
+        <div class="card p-6">
           <h2 class="title-md">Doe mee met de quiz</h2>
           <QuizParticipant :brand="brand" />
         </div>
