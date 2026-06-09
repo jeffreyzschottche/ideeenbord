@@ -1,27 +1,30 @@
 <template>
   <NuxtLink
     :to="`/news/${article.slug}`"
-    class="block rounded-2xl overflow-hidden shadow hover:shadow-lg transition h-full"
+    class="group block rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-[0_6px_20px_rgba(31,41,55,0.05)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full"
   >
-    <div class="flex flex-col h-full bg-white">
-      <img
-        v-if="article.image"
-        :src="correctImageUrl(article.image)"
-        class="w-full h-48 object-cover"
-        alt=""
-      />
-      <div class="flex flex-col flex-grow justify-between p-4 space-y-2">
-        <div>
-          <h2 class="text-lg font-bold dark-text line-clamp-2 min-h-[3rem]">
-            {{ article.title }}
-          </h2>
-          <p class="text-sm main-text opacity-80 line-clamp-3 min-h-[3.5rem]">
-            {{ article.excerpt }}
-          </p>
+    <div class="flex flex-col h-full">
+      <div class="w-full h-48 overflow-hidden bg-[var(--color-bg)]">
+        <img
+          v-if="article.image"
+          :src="correctImageUrl(article.image)"
+          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          alt=""
+        />
+        <div v-else class="w-full h-full flex items-center justify-center">
+          <i class="fa-regular fa-newspaper text-4xl text-gray-300"></i>
         </div>
-        <div class="flex justify-center mt-4">
-          <span class="cta font-semibold block">Lees verder →</span>
-        </div>
+      </div>
+      <div class="flex flex-col flex-grow p-5">
+        <h2 class="text-lg font-bold text-[var(--color-nav)] line-clamp-2">
+          {{ article.title }}
+        </h2>
+        <p class="mt-2 text-sm text-gray-600 line-clamp-3 flex-grow">
+          {{ article.excerpt }}
+        </p>
+        <span class="mt-4 text-sm font-semibold text-[var(--color-brand)] group-hover:underline">
+          Lees verder →
+        </span>
       </div>
     </div>
   </NuxtLink>

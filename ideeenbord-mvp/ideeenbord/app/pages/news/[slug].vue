@@ -1,18 +1,23 @@
 <template>
   <div v-if="article" class="py-12">
-    <article class="max-w-3xl mx-auto px-4 md:px-0 space-y-6">
-      <h1 class="text-3xl md:text-4xl font-bold">{{ article.title }}</h1>
+    <article class="max-w-3xl mx-auto px-4">
+      <NuxtLink to="/news" class="inline-flex items-center gap-1 text-sm font-semibold text-[var(--color-brand)] hover:underline mb-6">
+        ← Terug naar nieuws
+      </NuxtLink>
+      <h1 class="text-3xl md:text-5xl font-extrabold text-[var(--color-nav)] leading-tight mb-6">
+        {{ article.title }}
+      </h1>
       <img
         v-if="article.image"
         :src="correctImageUrl(article.image)"
-        class="w-full rounded-xl"
+        class="w-full rounded-2xl shadow-lg mb-8"
         :alt="article.title"
       />
-      <p class="prose max-w-none" v-html="article.excerpt"></p>
-      <p class="prose max-w-none" v-html="article.body"></p>
+      <p class="text-lg text-gray-600 leading-relaxed mb-6" v-html="article.excerpt"></p>
+      <div class="prose max-w-none prose-headings:text-[var(--color-nav)]" v-html="article.body"></div>
     </article>
   </div>
-  <div v-else class="py-20 text-center">Artikel niet gevonden…</div>
+  <div v-else class="py-24 text-center text-gray-500">Artikel niet gevonden…</div>
 </template>
 
 <script setup lang="ts">

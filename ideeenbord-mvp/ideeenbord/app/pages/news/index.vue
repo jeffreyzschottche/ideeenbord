@@ -1,18 +1,14 @@
 <template>
-  <div v-if="ready" class="py-12 font-default">
+  <div v-if="ready" class="container mx-auto px-4 py-12 font-default">
     <!-- ─── HERO / INTRO ─── -->
-    <section class="max-w-4xl mx-auto text-center space-y-6 px-4 mb-16">
-      <img
-        v-if="content['hero-image']"
-        :src="imageUrl(content['hero-image'])"
-        class="mx-auto w-full max-w-md rounded-xl shadow"
-        alt="Nieuws"
-      />
-
-      <h1 class="text-3xl md:text-4xl font-bold dark-text">
-        {{ content["hero-title"] }}
+    <section class="max-w-3xl mx-auto text-center mb-14">
+      <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-brand)] mb-3">
+        Nieuws
+      </span>
+      <h1 class="text-3xl md:text-5xl font-extrabold text-[var(--color-nav)]">
+        {{ content["hero-title"] || "Nieuws & updates" }}
       </h1>
-      <p class="font-alt text-lg main-text">
+      <p v-if="content['hero-paragraph']" class="mt-4 text-lg text-gray-600">
         {{ content["hero-paragraph"] }}
       </p>
     </section>
