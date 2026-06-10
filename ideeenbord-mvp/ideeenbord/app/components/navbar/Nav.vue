@@ -15,7 +15,7 @@
         <img
           src="/ideeenbord-logo-footer-and-nav.png"
           alt="Ideeënbord"
-          class="h-14 md:h-16 w-auto object-contain"
+          class="h-[48px] md:h-[54px] w-auto object-contain"
         />
       </NuxtLink>
 
