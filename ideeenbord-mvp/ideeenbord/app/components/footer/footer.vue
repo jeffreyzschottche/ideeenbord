@@ -8,7 +8,7 @@
           <img
             src="/ideeenbord-logo-footer-and-nav.png"
             alt="Ideeënbord"
-            class="h-16 md:h-20 w-auto object-contain mx-auto md:mx-0"
+            class="h-12 md:h-14 w-auto object-contain mx-auto md:mx-0"
           />
         </NuxtLink>
         <p class="text-sm text-gray-300 mt-3 max-w-xs mx-auto md:mx-0">
