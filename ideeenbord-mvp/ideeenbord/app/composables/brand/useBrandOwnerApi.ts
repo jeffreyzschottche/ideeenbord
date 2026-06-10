@@ -37,15 +37,21 @@ export async function brandOwnerApiFetch<T = any>(
   //   throw new Error(`API error: ${errText}`);
   // }
   if (!res.ok) {
-    let errorBody;
+    // Read the body exactly once; a Response body can't be consumed twice.
+    const raw = await res.text();
+    let errorBody: any = null;
     try {
-      errorBody = await res.json();
-    } catch (e) {
-      const fallback = await res.text();
-      throw new Error(fallback);
+      errorBody = raw ? JSON.parse(raw) : null;
+    } catch {
+      // Not JSON (HTML error page, proxy timeout, empty body, ...)
     }
 
-    const error = new Error(errorBody?.message || "Onbekende fout");
+    const error = new Error(
+      errorBody?.message ||
+        raw ||
+        `API error ${res.status} ${res.statusText}`
+    );
+    (error as any).status = res.status;
     (error as any).validationErrors = errorBody?.errors || null;
     throw error;
   }
