@@ -8,7 +8,7 @@
   >
     <div
       ref="navInner"
-      class="container mx-auto flex justify-between items-center py-3 px-2"
+      class="container mx-auto h-full flex justify-between items-center py-2 px-2"
     >
       <!-- Logo -->
       <NuxtLink to="/" class="flex items-center shrink-0">
