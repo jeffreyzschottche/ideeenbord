@@ -4,7 +4,7 @@ usePageSeo({
   description: "Maak een gratis Ideeënbord-account aan en deel je ideeën met merken.",
   noindex: true,
 });
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import type { RegisterForm } from "~/types/auth";
 import { useRegister } from "~/composables/user/useAuth";
 import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
@@ -29,27 +29,42 @@ const form = ref<RegisterForm>({
 const { register, error } = useRegister();
 const { trigger, triggerByKey } = useResponseDisplay();
 
-/* ---------- helper: haal 1e foutboodschap uit Laravel-payload ---------- */
+/* ---------- Stappen ---------- */
+const step = ref(1);
+const submitting = ref(false);
+
+const step1Valid = computed(
+  () =>
+    form.value.name.trim() &&
+    form.value.username.trim() &&
+    /\S+@\S+\.\S+/.test(form.value.email) &&
+    form.value.password.length >= 8
+);
+
+function goNext() {
+  if (!step1Valid.value) {
+    trigger("Vul eerst je naam, gebruikersnaam, e-mail en wachtwoord (min. 8 tekens) in.", "warning");
+    return;
+  }
+  step.value = 2;
+}
+
 function firstLaravelMessage(raw: unknown): string | null {
   if (!raw) return null;
-
-  // plain string
   if (typeof raw === "string") return raw;
-
-  // { message, errors: { field: [msg,…] } }
   const obj = raw as { message?: string; errors?: Record<string, string[]> };
-
   if (obj.errors && Object.keys(obj.errors).length) {
     const firstField = Object.keys(obj.errors)[0];
     const firstMsg = obj.errors[firstField]?.[0];
     if (firstMsg) return firstMsg;
   }
-
   return obj.message ?? null;
 }
 
 async function handleSubmit() {
+  submitting.value = true;
   const ok = await register(form.value);
+  submitting.value = false;
 
   if (ok) {
     triggerByKey("register-success");
@@ -57,204 +72,117 @@ async function handleSubmit() {
   }
 
   const msg = firstLaravelMessage(error.value);
-
-  if (msg === "profanity-detected") {
-    // ProfanityFree-rule faalde
-    triggerByKey(msg);
-  } else if (msg) {
-    // andere validatiefout → toon bericht letterlijk
-    trigger(msg, "error");
-  } else {
-    // geen details → generieke melding
-    triggerByKey("register-failed");
-  }
+  if (msg === "profanity-detected") triggerByKey(msg);
+  else if (msg) trigger(msg, "error");
+  else triggerByKey("register-failed");
 }
+
+/* Optionele profielvelden, in handzame groepjes */
+const profileFields = [
+  { key: "gender", label: "Geslacht", placeholder: "Bijv. vrouw / man / x" },
+  { key: "birthdate", label: "Geboortedatum", type: "date" },
+  { key: "city", label: "Woonplaats", placeholder: "Stad of dorp" },
+  { key: "postal_code", label: "Postcode", placeholder: "1234 AB" },
+  { key: "education_level", label: "Opleidingsniveau", placeholder: "Bijv. HBO" },
+  { key: "education", label: "Opleiding", placeholder: "Bijv. Communicatie" },
+  { key: "job", label: "Werk", placeholder: "Functie" },
+  { key: "sector", label: "Sector", placeholder: "Bijv. IT" },
+  { key: "relationship_status", label: "Relatiestatus", placeholder: "Bijv. single" },
+  { key: "birth_city", label: "Geboorteplaats", placeholder: "Bijv. Haarlem" },
+] as const;
 </script>
 
 <template>
-  <section class="register-section">
-    <div class="register-container">
-      <div class="register-card">
-        <header>
-          <h1 class="register-title">Account aanmaken</h1>
-          <p class="register-subtitle">
-            Leuk dat je meedoet. Vul je gegevens in en start meteen.
+  <section class="min-h-[80vh] flex items-center justify-center py-12 px-4 bg-[var(--color-bg)]">
+    <div class="w-full max-w-xl">
+      <!-- Logo + intro -->
+      <div class="text-center mb-6">
+        <h1 class="text-2xl md:text-3xl font-extrabold text-[var(--color-nav)]">
+          Maak een gratis account
+        </h1>
+        <p class="text-gray-500 mt-1">Deel je ideeën met merken in een paar stappen.</p>
+      </div>
+
+      <!-- Stappen-indicator -->
+      <div class="flex items-center justify-center gap-3 mb-6">
+        <div class="flex items-center gap-2">
+          <span
+            class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+            :class="step >= 1 ? 'bg-[var(--color-brand)] text-white' : 'bg-gray-200 text-gray-500'"
+          >1</span>
+          <span class="text-sm font-semibold" :class="step >= 1 ? 'text-[var(--color-nav)]' : 'text-gray-400'">Account</span>
+        </div>
+        <div class="w-10 h-0.5" :class="step >= 2 ? 'bg-[var(--color-brand)]' : 'bg-gray-200'"></div>
+        <div class="flex items-center gap-2">
+          <span
+            class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+            :class="step >= 2 ? 'bg-[var(--color-brand)] text-white' : 'bg-gray-200 text-gray-500'"
+          >2</span>
+          <span class="text-sm font-semibold" :class="step >= 2 ? 'text-[var(--color-nav)]' : 'text-gray-400'">Over jou</span>
+        </div>
+      </div>
+
+      <div class="card p-6 md:p-8">
+        <!-- STAP 1 -->
+        <form v-if="step === 1" @submit.prevent="goNext" class="space-y-4">
+          <div>
+            <label class="form-label required-dot">Naam</label>
+            <input v-model="form.name" type="text" class="input" placeholder="Jane Doe" required />
+          </div>
+          <div>
+            <label class="form-label required-dot">Gebruikersnaam</label>
+            <input v-model="form.username" type="text" class="input" placeholder="Kies een unieke naam" required />
+          </div>
+          <div>
+            <label class="form-label required-dot">E-mail</label>
+            <input v-model="form.email" type="email" class="input" placeholder="naam@voorbeeld.nl" required />
+          </div>
+          <div>
+            <label class="form-label required-dot">Wachtwoord</label>
+            <input v-model="form.password" type="password" class="input" placeholder="Min. 8 tekens" required />
+            <p class="form-help">Gebruik minimaal 8 tekens.</p>
+          </div>
+
+          <button type="submit" class="cta w-full py-3 mt-2">Volgende →</button>
+          <p class="text-center text-sm text-gray-500">
+            Al een account? <NuxtLink to="/login" class="font-semibold text-[var(--color-brand)] hover:underline">Inloggen</NuxtLink>
           </p>
-        </header>
+        </form>
 
-        <form @submit.prevent="handleSubmit">
-          <!-- Basisgegevens -->
-          <div class="form-row">
-            <div class="form-field">
-              <label for="name" class="form-label required-dot">Naam</label>
-              <input
-                id="name"
-                v-model="form.name"
-                type="text"
-                class="form-input"
-                placeholder="Bijv. Jane Doe"
-                required
-              />
-            </div>
-            <div class="form-field">
-              <label for="username" class="form-label required-dot"
-                >Gebruikersnaam</label
-              >
-              <input
-                id="username"
-                v-model="form.username"
-                type="text"
-                class="form-input"
-                placeholder="Kies een unieke naam"
-                required
-              />
-            </div>
-            <div class="form-field full-width">
-              <label for="email" class="form-label required-dot">E-mail</label>
-              <input
-                id="email"
-                v-model="form.email"
-                type="email"
-                class="form-input"
-                placeholder="naam@voorbeeld.nl"
-                required
-              />
-            </div>
-            <div class="form-field full-width">
-              <label for="password" class="form-label required-dot"
-                >Wachtwoord</label
-              >
-              <input
-                id="password"
-                v-model="form.password"
-                type="password"
-                class="form-input"
-                placeholder="Min. 8 tekens"
-                required
-              />
-              <p class="form-help">
-                Gebruik minimaal 8 tekens met letters en cijfers.
-              </p>
-            </div>
-          </div>
+        <!-- STAP 2 -->
+        <form v-else @submit.prevent="handleSubmit" class="space-y-5">
+          <p class="text-sm text-gray-500">
+            Deze gegevens zijn <strong>optioneel</strong> en helpen merken hun doelgroep beter te begrijpen. Je kunt ze overslaan.
+          </p>
 
-          <hr class="form-divider" />
-
-          <!-- Profiel -->
-          <div class="form-row">
-            <div class="form-field">
-              <label for="gender" class="form-label">Geslacht</label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div v-for="f in profileFields" :key="f.key">
+              <label class="form-label">{{ f.label }}</label>
               <input
-                id="gender"
-                v-model="form.gender"
-                type="text"
-                class="form-input"
-                placeholder="Bijv. vrouw/man/…"
-              />
-            </div>
-            <div class="form-field">
-              <label for="birthdate" class="form-label">Geboortedatum</label>
-              <input
-                id="birthdate"
-                v-model="form.birthdate"
-                type="date"
-                class="form-input"
-              />
-            </div>
-            <div class="form-field">
-              <label for="education_level" class="form-label"
-                >Opleidingsniveau</label
-              >
-              <input
-                id="education_level"
-                v-model="form.education_level"
-                type="text"
-                class="form-input"
-                placeholder="Bijv. HBO"
-              />
-            </div>
-            <div class="form-field">
-              <label for="education" class="form-label">Opleiding</label>
-              <input
-                id="education"
-                v-model="form.education"
-                type="text"
-                class="form-input"
-                placeholder="Bijv. Communicatie"
-              />
-            </div>
-            <div class="form-field">
-              <label for="job" class="form-label">Werk</label>
-              <input
-                id="job"
-                v-model="form.job"
-                type="text"
-                class="form-input"
-                placeholder="Functie"
-              />
-            </div>
-            <div class="form-field">
-              <label for="sector" class="form-label">Sector</label>
-              <input
-                id="sector"
-                v-model="form.sector"
-                type="text"
-                class="form-input"
-                placeholder="Bijv. IT"
-              />
-            </div>
-            <div class="form-field">
-              <label for="city" class="form-label">Woonplaats</label>
-              <input
-                id="city"
-                v-model="form.city"
-                type="text"
-                class="form-input"
-                placeholder="Stad/dorp"
-              />
-            </div>
-            <div class="form-field">
-              <label for="birth_city" class="form-label">Geboorteplaats</label>
-              <input
-                id="birth_city"
-                v-model="form.birth_city"
-                type="text"
-                class="form-input"
-                placeholder="Bijv. Haarlem"
-              />
-            </div>
-            <div class="form-field">
-              <label for="relationship_status" class="form-label"
-                >Relatiestatus</label
-              >
-              <input
-                id="relationship_status"
-                v-model="form.relationship_status"
-                type="text"
-                class="form-input"
-                placeholder="Bijv. single"
-              />
-            </div>
-            <div class="form-field">
-              <label for="postal_code" class="form-label">Postcode</label>
-              <input
-                id="postal_code"
-                v-model="form.postal_code"
-                type="text"
-                class="form-input"
-                placeholder="1234 AB"
+                v-model="(form as any)[f.key]"
+                :type="(f as any).type || 'text'"
+                class="input"
+                :placeholder="(f as any).placeholder || ''"
               />
             </div>
           </div>
 
-          <div class="form-actions">
-            <button type="submit" class="btn-submit">Registreren</button>
-            <span class="form-note"
-              >Door te registreren ga je akkoord met onze voorwaarden.</span
-            >
+          <div class="flex flex-col sm:flex-row gap-3 pt-2">
+            <button type="button" class="btn--ghost btn px-5 py-3" @click="step = 1">← Terug</button>
+            <button type="submit" :disabled="submitting" class="cta flex-1 py-3 disabled:opacity-60">
+              <span v-if="submitting"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Bezig…</span>
+              <span v-else>Account aanmaken</span>
+            </button>
           </div>
+          <button type="submit" :disabled="submitting" class="w-full text-sm text-gray-500 hover:text-[var(--color-brand)]">
+            Profiel overslaan en account aanmaken
+          </button>
         </form>
       </div>
+
+      <p class="text-center text-xs text-gray-400 mt-4">
+        Door te registreren ga je akkoord met onze voorwaarden.
+      </p>
     </div>
   </section>
 </template>

@@ -13,8 +13,8 @@
         class="w-full rounded-2xl shadow-lg mb-8"
         :alt="article.title"
       />
-      <p class="text-lg text-gray-600 leading-relaxed mb-6" v-html="article.excerpt"></p>
-      <div class="prose max-w-none prose-headings:text-[var(--color-nav)]" v-html="article.body"></div>
+      <p class="text-xl text-gray-500 leading-relaxed mb-8 font-medium" v-html="article.excerpt"></p>
+      <div class="article-prose" v-html="article.body"></div>
     </article>
   </div>
   <div v-else class="py-24 text-center text-gray-500">Artikel niet gevonden…</div>

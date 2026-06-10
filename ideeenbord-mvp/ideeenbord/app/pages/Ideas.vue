@@ -1,35 +1,18 @@
 <template>
-  <div class="container mx-auto py-12 px-4 font-default">
-    <!-- WINACTIE HERO -->
-    <section
-      v-if="ready"
-      class="max-w-4xl mx-auto text-center space-y-6 px-4 pb-16"
-    >
-      <img
-        v-if="content['hero-image']"
-        :src="imageUrl(content['hero-image'])"
-        class="mx-auto w-full max-w-md rounded-xl shadow"
-        alt="Winactie"
-      />
+  <div class="font-default pb-12">
+    <PageHero
+      eyebrow="Ideeën"
+      :title="content['hero-title'] || 'Ontdek ideeën van de community'"
+      :subtitle="content['hero-paragraph'] || 'Bekijk wat anderen aan merken voorstellen en geef jouw favorieten een duwtje.'"
+    />
 
-      <h1 class="text-3xl md:text-4xl font-bold dark-text">
-        {{ content["hero-title"] }}
-      </h1>
-      <p class="font-alt text-lg main-text">
-        {{ content["hero-paragraph"] }}
-      </p>
+    <div class="container mx-auto px-4">
+      <!-- loading / error -->
+      <p v-if="loading" class="text-center animate-pulse">Laden…</p>
+      <p v-else-if="error" class="text-center text-red-600">{{ error }}</p>
 
-      <NuxtLink to="/participants" class="cta inline-block">
-        {{ content["cta-label"] || "Zoek brands" }}
-      </NuxtLink>
-    </section>
-
-    <!-- loading / error -->
-    <p v-if="loading" class="text-center animate-pulse">Laden…</p>
-    <p v-else-if="error" class="text-center text-red-600">{{ error }}</p>
-
-    <!-- layout komt ALTIJD zodra er geen fout/loading is -->
-    <div v-else class="flex flex-col md:flex-row gap-8">
+      <!-- layout komt ALTIJD zodra er geen fout/loading is -->
+      <div v-else class="flex flex-col md:flex-row gap-8">
       <!-- ───────── LINKERKOLUM – filters ───────── -->
       <aside class="md:w-1/4 card p-5 h-fit md:sticky md:top-24">
         <!-- zoekveld -->
@@ -82,6 +65,7 @@
           Geen ideeën gevonden.
         </p>
       </section>
+      </div>
     </div>
   </div>
 </template>

@@ -1,26 +1,17 @@
 <template>
-  <div v-if="ready" class="font-default py-12">
-    <!-- HERO / INTRO -->
-    <section class="max-w-4xl mx-auto text-center space-y-6 px-4">
-      <img
-        v-if="content['hero-image']"
-        :src="imageUrl(content['hero-image'])"
-        class="mx-auto w-full max-w-md rounded-xl shadow"
-        alt="Winactie"
-      />
-
-      <h1 class="text-3xl md:text-4xl font-bold dark-text">
-        {{ content["hero-title"] }}
-      </h1>
-      <p class="font-alt text-lg main-text">
-        {{ content["hero-paragraph"] }}
-      </p>
-
-      <!-- CTA naar deelnemers / brands -->
-      <NuxtLink to="/participants" class="cta inline-block mb-8">
-        {{ content["cta-label"] || "Zoek brands" }}
-      </NuxtLink>
-    </section>
+  <div v-if="ready" class="font-default pb-12">
+    <PageHero
+      eyebrow="Winacties"
+      :title="content['hero-title'] || 'Win mooie prijzen'"
+      :subtitle="content['hero-paragraph']"
+      :image="content['hero-image'] ? imageUrl(content['hero-image']) : ''"
+    >
+      <template #cta>
+        <NuxtLink to="/participants" class="cta px-6 py-3">
+          {{ content["cta-label"] || "Zoek merken" }}
+        </NuxtLink>
+      </template>
+    </PageHero>
 
     <!-- HOE WERKT HET? -->
     <section class="max-w-5xl mx-auto mt-16 px-4">

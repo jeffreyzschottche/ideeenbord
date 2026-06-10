@@ -1,61 +1,78 @@
 <template>
   <div>
-    <div class="flex w-full h-full justify-end md:mt-1 items-center">
-      <button @click="openModal" class="">
-        <i class="fa-solid fa-search text-xl text-gray-300"></i>
-      </button>
-    </div>
+    <!-- Trigger: pill op desktop, icoon op mobiel -->
+    <button
+      @click="openModal"
+      class="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-gray-200 text-sm transition w-48"
+    >
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <span class="opacity-80">Zoeken…</span>
+    </button>
+    <button @click="openModal" class="md:hidden text-gray-200">
+      <i class="fa-solid fa-magnifying-glass text-xl"></i>
+    </button>
 
     <teleport to="body">
-      <transition name="fade" class="">
+      <transition name="fade">
         <div
           v-if="showModal"
-          class="fixed inset-0 bg-black/80 z-100 flex justify-center items-start pt-24 px-4"
+          class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-start pt-24 px-4"
+          @click.self="closeModal"
         >
-          <div
-            class="bg-white border-2 border-grey-900 rounded-lg w-full max-w-lg p-6"
-          >
-            <div class="flex items-center mb-4">
+          <div class="bg-white rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden">
+            <!-- Zoekveld -->
+            <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-100">
+              <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
               <input
                 v-model="query"
                 autofocus
-                @input="onInput"
-                placeholder="Zoek naar merken of pagina’s…"
-                @keyup.enter="directRoute && navigateTo(directRoute)"
-                class="flex-1 border-2 border-orange-500 rounded px-4 py-2"
+                placeholder="Zoek naar merken of pagina's…"
+                class="flex-1 outline-none text-[var(--color-nav)] placeholder-gray-400"
               />
-              <button @click="closeModal" class="ml-3">
-                <i class="fa-solid fa-xmark text-2xl text-orange-500"></i>
+              <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
               </button>
             </div>
 
-            <div class="space-y-6">
+            <div class="max-h-[60vh] overflow-y-auto p-3 space-y-5">
+              <!-- Merken -->
               <div>
-                <h4 class="font-semibold text-orange-500">Merken:</h4>
-                <ul v-if="brands.length">
+                <p class="px-2 text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Merken</p>
+                <ul v-if="brands.length" class="space-y-1">
                   <li v-for="brand in brands" :key="brand.id">
                     <NuxtLink
                       :to="`/brands/${brand.slug}`"
-                      class="text-blue-600 underline"
+                      class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-[var(--color-bg)] transition"
                       @click="closeModal"
                     >
-                      {{ brand.title }}
+                      <span class="w-8 h-8 rounded-lg bg-[var(--color-bg)] flex items-center justify-center text-[var(--color-brand)]">
+                        <i class="fa-solid fa-tag text-xs"></i>
+                      </span>
+                      <span class="font-semibold text-[var(--color-nav)]">{{ brand.title }}</span>
                     </NuxtLink>
                   </li>
                 </ul>
-                <p v-else class="text-gray-400">Geen resultaten</p>
+                <p v-else class="px-3 text-sm text-gray-400">Geen resultaten</p>
               </div>
 
+              <!-- Pagina's -->
               <div>
-                <h4 class="font-semibold text-orange-500">Pagina’s:</h4>
-                <ul v-if="pages.length">
+                <p class="px-2 text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Pagina's</p>
+                <ul v-if="pages.length" class="space-y-1">
                   <li v-for="page in pages" :key="page.id">
-                    <NuxtLink :to="page.route" class="text-blue-600 underline">
-                      {{ page.title }}
+                    <NuxtLink
+                      :to="page.route"
+                      class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-[var(--color-bg)] transition"
+                      @click="closeModal"
+                    >
+                      <span class="w-8 h-8 rounded-lg bg-[var(--color-bg)] flex items-center justify-center text-gray-400">
+                        <i class="fa-regular fa-file text-xs"></i>
+                      </span>
+                      <span class="font-semibold text-[var(--color-nav)]">{{ page.title }}</span>
                     </NuxtLink>
                   </li>
                 </ul>
-                <p v-else class="text-gray-400">Geen resultaten</p>
+                <p v-else class="px-3 text-sm text-gray-400">Geen resultaten</p>
               </div>
             </div>
           </div>

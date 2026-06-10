@@ -38,23 +38,35 @@ onMounted(fetchIdeas);
   <div>
     <!-- CTA-knop voor ingelogden -->
     <div class="mb-6" v-if="auth.token">
-      <button class="cta" @click="showModal = true">Plaats idee</button>
+      <button class="cta px-5 py-2.5" @click="showModal = true">
+        <i class="fa-solid fa-plus mr-1"></i> Plaats idee
+      </button>
     </div>
 
-    <div v-else class="mb-6 text-sm text-gray-600">
-      Login om je idee te plaatsen!
+    <div v-else class="mb-6 text-sm text-gray-500">
+      <NuxtLink to="/login" class="font-semibold text-[var(--color-brand)] hover:underline">Log in</NuxtLink>
+      om je idee te plaatsen.
     </div>
 
-    <!-- Grid met IdeaCards -->
-    <div class="grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
-      <div v-for="idea in sortedIdeas" :key="idea.id" class="w-full h-full">
-        <!-- Sterke wrapper: klipt ALLES binnen de kaart -->
-        <div
-          class="relative isolate overflow-hidden h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
-        >
-          <IdeaCard :idea="idea" @like="likeIdea" @dislike="dislikeIdea" />
-        </div>
-      </div>
+    <!-- Grid met IdeaCards (max 2 koloms; IdeaCard is zelf de kaart) -->
+    <div
+      v-if="sortedIdeas.length"
+      class="grid gap-4 md:gap-5 grid-cols-1 sm:grid-cols-2"
+    >
+      <IdeaCard
+        v-for="idea in sortedIdeas"
+        :key="idea.id"
+        :idea="idea"
+        @like="likeIdea"
+        @dislike="dislikeIdea"
+      />
+    </div>
+    <div
+      v-else
+      class="text-center text-gray-400 py-12 border border-dashed border-gray-200 rounded-2xl"
+    >
+      <p class="text-4xl mb-2">💡</p>
+      <p>Nog geen ideeën. Wees de eerste!</p>
     </div>
 
     <!-- Modal component -->

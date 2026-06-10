@@ -22,8 +22,9 @@
         <p class="mt-2 text-sm text-gray-600 line-clamp-3 flex-grow">
           {{ article.excerpt }}
         </p>
-        <span class="mt-4 text-sm font-semibold text-[var(--color-brand)] group-hover:underline">
-          Lees verder →
+        <span class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--color-brand)]">
+          Lees verder
+          <i class="fa-solid fa-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
         </span>
       </div>
     </div>

@@ -141,10 +141,7 @@ watch(
             </div>
 
             <!-- Content -->
-            <div
-              v-else-if="idea"
-              class="border-color-ideas rounded-2xl p-4 sm:p-5"
-            >
+            <div v-else-if="idea">
               <IdeaCard :idea="idea" />
             </div>
           </div>

@@ -1,20 +1,13 @@
 <template>
-  <div v-if="ready" class="container mx-auto px-4 py-12 font-default">
-    <!-- ─── HERO / INTRO ─── -->
-    <section class="max-w-3xl mx-auto text-center mb-14">
-      <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-brand)] mb-3">
-        Nieuws
-      </span>
-      <h1 class="text-3xl md:text-5xl font-extrabold text-[var(--color-nav)]">
-        {{ content["hero-title"] || "Nieuws & updates" }}
-      </h1>
-      <p v-if="content['hero-paragraph']" class="mt-4 text-lg text-gray-600">
-        {{ content["hero-paragraph"] }}
-      </p>
-    </section>
-
-    <!-- ─── NIEUWS-GRID ─── -->
-    <NewsGrid :articles="articles" />
+  <div v-if="ready" class="font-default pb-16">
+    <PageHero
+      eyebrow="Nieuws"
+      :title="content['hero-title'] || 'Nieuws & updates'"
+      :subtitle="content['hero-paragraph']"
+    />
+    <div class="container mx-auto px-4">
+      <NewsGrid :articles="articles" />
+    </div>
   </div>
 </template>
 

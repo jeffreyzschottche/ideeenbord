@@ -93,9 +93,10 @@ function logoUrl(p?: string | null) {
       <NuxtLink
         v-if="brand"
         :to="`/brands/${brand.slug}?idea-id=${idea.id}`"
-        class="text-sm font-semibold text-[var(--color-brand)] hover:underline"
+        class="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--color-brand)]"
       >
-        Bekijk →
+        Bekijk
+        <i class="fa-solid fa-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
       </NuxtLink>
     </div>
   </div>
