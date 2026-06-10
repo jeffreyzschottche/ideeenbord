@@ -138,10 +138,11 @@ async function updateProfile() {
 
     <button
       type="submit"
-      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      class="cta px-6 py-3 disabled:opacity-60"
       :disabled="saving"
     >
-      {{ saving ? "Opslaan..." : "Opslaan" }}
+      <span v-if="saving"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Opslaan…</span>
+      <span v-else>Opslaan</span>
     </button>
   </form>
 </template>

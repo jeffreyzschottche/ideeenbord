@@ -40,69 +40,99 @@ async function pinIdeaAction(idea: Idea) {
 async function unpinIdeaAction(idea: Idea) {
   await unpinIdea(idea.id);
 }
+
+function statusColor(s?: string) {
+  return (
+    {
+      pending: "bg-orange-100 text-orange-700",
+      rejected: "bg-red-100 text-red-700",
+      in_progress: "bg-blue-100 text-blue-700",
+      completed: "bg-green-100 text-green-700",
+    }[s ?? ""] ?? "bg-gray-100 text-gray-600"
+  );
+}
+function statusLabel(s?: string) {
+  return (
+    {
+      pending: "In afwachting",
+      rejected: "Afgekeurd",
+      in_progress: "In behandeling",
+      completed: "Voltooid",
+    }[s ?? ""] ?? "Onbekend"
+  );
+}
 </script>
 <template>
-  <div class="block-spacer">
-    <h2 class="title-md">Beheer Ideeën</h2>
-
-    <div v-if="ideas.length === 0">
-      <p class="muted-text">Er zijn nog geen ideeën.</p>
+  <div class="space-y-4">
+    <div
+      v-if="ideas.length === 0"
+      class="text-center text-gray-400 py-12 border border-dashed border-gray-200 rounded-2xl"
+    >
+      <p class="text-4xl mb-2">💡</p>
+      <p>Er zijn nog geen ideeën voor dit merk.</p>
     </div>
 
     <div
       v-for="idea in ideas"
       :key="idea.id"
-      class="card-compact"
-      style="margin-bottom: 1rem"
+      class="rounded-2xl border bg-white p-5 shadow-[0_4px_16px_rgba(31,41,55,0.05)]"
+      :class="idea.is_pinned ? 'border-[var(--color-brand)]' : 'border-gray-100'"
     >
-      <h3 class="title-md" style="margin-bottom: 0.25rem">{{ idea.title }}</h3>
-      <p class="muted-text" style="margin-bottom: 0.5rem">
-        {{ idea.description }}
-      </p>
-
-      <div class="muted-text" style="margin-bottom: 0.25rem">
-        <strong>Huidige status:</strong> {{ idea.status || "Nog geen status" }}
+      <!-- Header -->
+      <div class="flex items-start justify-between gap-3">
+        <div class="min-w-0">
+          <h3 class="text-lg font-bold text-[var(--color-nav)]">
+            <span v-if="idea.is_pinned" class="mr-1" title="Vastgezet">📌</span>{{ idea.title }}
+          </h3>
+          <p class="mt-1 text-sm text-gray-500">@{{ idea.user?.username || "anoniem" }}</p>
+        </div>
+        <span class="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full" :class="statusColor(idea.status)">
+          {{ statusLabel(idea.status) }}
+        </span>
       </div>
 
-      <div class="muted-text" style="margin-bottom: 0.5rem">
-        <strong>Is vastgezet:</strong> {{ idea.is_pinned ? "Ja" : "Nee" }}
+      <p class="mt-3 text-sm text-gray-600">{{ idea.description }}</p>
+
+      <div class="mt-3 flex items-center gap-4 text-sm text-gray-500">
+        <span class="inline-flex items-center gap-1 text-green-600"><i class="fa-solid fa-thumbs-up"></i>{{ idea.likes ?? 0 }}</span>
+        <span class="inline-flex items-center gap-1 text-red-500"><i class="fa-solid fa-thumbs-down"></i>{{ idea.dislikes ?? 0 }}</span>
       </div>
 
-      <select
-        v-model="idea.newStatus"
-        class="select-input"
-        style="margin-bottom: 0.5rem"
-      >
-        <option disabled value="">Kies nieuwe status</option>
-        <option value="rejected">Afgekeurd</option>
-        <option value="in_progress">In behandeling genomen</option>
-        <option value="completed">Voltooid</option>
-        <option value="pending">Tijdelijk gepauzeerd</option>
-      </select>
+      <!-- Acties -->
+      <div class="mt-4 pt-4 border-t border-gray-100 flex flex-wrap items-center gap-2">
+        <select v-model="idea.newStatus" class="select-input !w-auto !py-2 text-sm flex-1 min-w-[180px]">
+          <option disabled value="">Wijzig status…</option>
+          <option value="rejected">Afgekeurd</option>
+          <option value="in_progress">In behandeling genomen</option>
+          <option value="completed">Voltooid</option>
+          <option value="pending">Tijdelijk gepauzeerd</option>
+        </select>
 
-      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap">
-        <button @click="updateStatus(idea)" class="btn btn--blue btn--sm">
-          Status opslaan
+        <button @click="updateStatus(idea)" class="btn btn--sm">
+          <i class="fa-solid fa-check mr-1"></i> Opslaan
         </button>
 
         <button
           v-if="!idea.is_pinned"
           @click="pinIdeaAction(idea)"
-          class="btn btn--success btn--sm"
+          class="btn--ghost btn btn--sm"
         >
-          Zet idee vast
+          <i class="fa-solid fa-thumbtack mr-1"></i> Vastzetten
         </button>
-
         <button
           v-else
           @click="unpinIdeaAction(idea)"
-          class="btn btn--warning btn--sm"
+          class="btn--ghost btn btn--sm"
         >
-          Maak idee los
+          <i class="fa-solid fa-thumbtack mr-1"></i> Losmaken
         </button>
 
-        <button @click="deleteIdeaAction(idea)" class="btn btn--danger btn--sm">
-          Verwijder
+        <button
+          @click="deleteIdeaAction(idea)"
+          class="ml-auto text-gray-400 hover:text-red-600 px-2 py-2"
+          title="Verwijder"
+        >
+          <i class="fa-solid fa-trash"></i>
         </button>
       </div>
     </div>
