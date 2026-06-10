@@ -1,27 +1,43 @@
 <template>
-  <div class="w-full flex flex-col items-center py-12 select-none mt-10">
-    <!-- Hero copy -->
-    <div class="text-center max-w-3xl px-4 mb-12">
-      <p ref="eyebrow" class="uppercase tracking-[0.2em] text-sm font-semibold text-[var(--color-brand)] mb-4">
-        {{ content["home-tagline"] || "Jouw stem telt bij merken" }}
-      </p>
-      <h1 ref="heading" class="text-4xl md:text-6xl font-extrabold leading-tight text-[var(--color-nav)]">
-        Jouw idee.<br class="hidden md:block" />
-        <span class="text-[var(--color-brand)]">Direct bij het merk.</span>
-      </h1>
-      <p ref="subline" class="mt-6 text-lg md:text-xl text-gray-600 leading-relaxed">
-        Op Ideeënbord deel je ideeën, wensen en verbeterpunten met merken — en zij
-        luisteren écht. Plaats een idee, stem op dat van anderen en bepaal samen
-        wat merken morgen maken.
-      </p>
-      <div ref="cta" class="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <NuxtLink to="/brands" class="cta px-6 py-3 text-base">Ontdek merken</NuxtLink>
-        <NuxtLink to="/about" class="btn-outline px-6 py-3 text-base">Zo werkt het</NuxtLink>
-      </div>
-    </div>
+  <section class="hero-gradient relative overflow-hidden select-none">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-glow-2" aria-hidden="true"></div>
 
-    <!-- Bord + frame -->
-    <div ref="boardWrap" class="relative w-full max-w-[880px]">
+    <div class="container mx-auto px-4 pt-28 pb-16 md:pt-32 md:pb-24 relative">
+      <div class="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+        <!-- Copy -->
+        <div class="text-center lg:text-left">
+          <p ref="eyebrow" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-gray-200 text-xs font-semibold uppercase tracking-[0.15em] mb-5">
+            <span class="w-2 h-2 rounded-full bg-[var(--color-brand)] animate-pulse"></span>
+            {{ content["home-tagline"] || "Jouw stem telt bij merken" }}
+          </p>
+          <h1 ref="heading" class="text-4xl md:text-6xl font-extrabold leading-[1.05] text-white">
+            Jouw idee.<br />
+            <span class="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">Direct bij het merk.</span>
+          </h1>
+          <p ref="subline" class="mt-6 text-lg text-gray-300 leading-relaxed max-w-xl mx-auto lg:mx-0">
+            Deel ideeën, wensen en verbeterpunten met de merken die jij gebruikt —
+            en zij luisteren écht. Plaats een idee, stem mee en bepaal samen wat
+            merken morgen maken.
+          </p>
+          <div ref="cta" class="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-3">
+            <NuxtLink to="/register" class="cta px-7 py-3.5 text-base">Gratis aanmelden</NuxtLink>
+            <NuxtLink to="/brands" class="px-7 py-3.5 rounded-xl border-2 border-white/25 text-white hover:bg-white/10 font-bold transition">
+              Ontdek merken
+            </NuxtLink>
+          </div>
+          <!-- trust strip -->
+          <div class="mt-9 flex items-center justify-center lg:justify-start gap-6 text-sm text-gray-400">
+            <span><strong class="text-white text-base">42+</strong> merken</span>
+            <span class="w-px h-5 bg-white/15"></span>
+            <span><strong class="text-white text-base">3.1k+</strong> idee-makers</span>
+            <span class="w-px h-5 bg-white/15"></span>
+            <span><strong class="text-white text-base">8.7k+</strong> ideeën</span>
+          </div>
+        </div>
+
+        <!-- Bord + frame -->
+        <div ref="boardWrap" class="relative w-full max-w-[520px] mx-auto">
       <!-- Rode pin -->
       <div class="pin" aria-hidden="true"></div>
 
@@ -36,7 +52,7 @@
         <div class="inner-lip rounded-[22px] p-2 md:p-3">
           <!-- Kurkbord -->
           <div
-            class="cork rounded-2xl relative h-[460px] md:h-[520px] overflow-hidden"
+            class="cork rounded-2xl relative h-[360px] md:h-[430px] overflow-hidden"
           >
             <!-- Licht vignette voor diepte -->
             <div class="absolute inset-0 pointer-events-none vignette"></div>
@@ -177,8 +193,10 @@
           </div>
         </div>
       </div>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -235,6 +253,35 @@ const notes: NoteDef[] = [
 </script>
 
 <style scoped>
+/* Hero achtergrond */
+.hero-gradient {
+  background:
+    radial-gradient(1100px 520px at 75% -10%, #2b3a52 0%, transparent 60%),
+    linear-gradient(180deg, #1f2937 0%, #161e29 100%);
+}
+.hero-glow {
+  position: absolute;
+  top: -120px;
+  right: -80px;
+  width: 520px;
+  height: 520px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(247, 138, 29, 0.35), transparent 65%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+.hero-glow-2 {
+  position: absolute;
+  bottom: -160px;
+  left: -120px;
+  width: 460px;
+  height: 460px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255, 187, 0, 0.18), transparent 65%);
+  filter: blur(50px);
+  pointer-events: none;
+}
+
 /* subtiele glow voor het logo-icoon */
 .lamp-glow {
   text-shadow: 0 0 10px #f97316, 0 0 22px #fb923c, 0 0 40px #fdba74;

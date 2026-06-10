@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-6">
+  <div>
     <HomeBoard />
 
     <!-- In de container -->
