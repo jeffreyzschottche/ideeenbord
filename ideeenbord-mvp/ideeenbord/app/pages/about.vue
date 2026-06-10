@@ -1,24 +1,13 @@
 <template>
-  <div v-if="ready" class="font-default py-12">
-    <!-- ───── HERO ───── -->
-    <section class="max-w-4xl mx-auto text-center space-y-6 px-4">
-      <img
-        v-if="content['hero-image']"
-        :src="imageUrl(content['hero-image'])"
-        class="mx-auto w-full max-w-md rounded-xl shadow"
-        alt="Over ons"
-      />
-
-      <h1 class="text-3xl md:text-4xl font-bold dark-text">
-        {{ content["hero-title"] }}
-      </h1>
-      <p class="text-lg main-text">
-        {{ content["hero-subtitle"] }}
-      </p>
-    </section>
+  <div v-if="ready" class="font-default pb-12">
+    <PageHero
+      eyebrow="Over Ideeënbord"
+      :title="content['hero-title'] || 'Waar jouw stem telt bij merken'"
+      :subtitle="content['hero-subtitle']"
+    />
 
     <!-- ───── BRAND & FAN ───── -->
-    <section class="max-w-6xl mx-auto mt-16 px-4 grid md:grid-cols-2 gap-8">
+    <section class="max-w-6xl mx-auto mt-4 px-4 grid md:grid-cols-2 gap-8">
       <!-- ─── BRAND CARD ─── -->
       <div
         class="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center space-y-6"
