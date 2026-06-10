@@ -1,46 +1,75 @@
 <template>
   <section class="py-16 md:py-24">
-    <div class="grid md:grid-cols-[1fr_auto_1fr] items-center gap-8 md:gap-6">
-      <!-- Nieuwe merken -->
-      <div class="rounded-3xl bg-[var(--color-nav)] p-7 h-full">
-        <h3 class="text-lg md:text-xl font-bold text-white text-center mb-5">
-          {{ content["currentactions-left-title"] || "Nieuwe deelnemende merken" }}
-        </h3>
-        <ul class="space-y-2">
-          <li v-for="(name, idx) in recentBrands" :key="idx">
-            <NuxtLink
-              :to="`/brands/${name}`"
-              class="block px-4 py-2.5 rounded-xl bg-white/5 hover:bg-[var(--color-brand)] text-white text-center transition-colors"
-            >{{ name }}</NuxtLink>
-          </li>
-          <li v-if="!recentBrands.length" class="px-4 py-3 rounded-xl bg-white/5 text-gray-300 text-center">
-            Nog geen nieuwe merken.
-          </li>
-        </ul>
+    <div class="container mx-auto px-4">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-brand)] mb-3">
+          Wat er nu speelt
+        </span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-[var(--color-nav)]">
+          Live op het bord
+        </h2>
       </div>
 
-      <!-- Lamp -->
-      <div class="relative hidden md:flex items-center justify-center w-32 h-32">
-        <i class="fa-regular fa-lightbulb absolute text-[6rem] text-[var(--color-nav)] regular-bulb"></i>
-        <i class="fa-solid fa-lightbulb absolute text-[6rem] text-[var(--color-brand)] solid-bulb"></i>
-      </div>
+      <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        <!-- Nieuwe merken -->
+        <div class="rounded-3xl bg-white border border-gray-100 shadow-[0_8px_30px_rgba(31,41,55,0.06)] overflow-hidden">
+          <div class="flex items-center gap-3 px-6 py-4 bg-[var(--color-nav)] text-white">
+            <span class="w-9 h-9 rounded-xl bg-[var(--color-brand)] flex items-center justify-center">
+              <i class="fa-solid fa-store"></i>
+            </span>
+            <h3 class="font-bold">
+              {{ content["currentactions-left-title"] || "Nieuwe deelnemende merken" }}
+            </h3>
+          </div>
+          <ul class="p-3">
+            <li v-for="(name, idx) in recentBrands" :key="idx">
+              <NuxtLink
+                :to="`/brands/${name}`"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-[var(--color-bg)] transition group"
+              >
+                <span class="w-7 h-7 rounded-lg bg-[var(--color-brand)]/10 text-[var(--color-brand)] text-sm font-bold flex items-center justify-center">
+                  {{ idx + 1 }}
+                </span>
+                <span class="font-semibold text-[var(--color-nav)]">{{ name }}</span>
+                <i class="fa-solid fa-arrow-right ml-auto text-gray-300 group-hover:text-[var(--color-brand)] group-hover:translate-x-1 transition-all"></i>
+              </NuxtLink>
+            </li>
+            <li v-if="!recentBrands.length" class="px-4 py-10 text-center text-gray-400">
+              <i class="fa-regular fa-face-smile text-2xl mb-2 block"></i>
+              Nog geen nieuwe merken.
+            </li>
+          </ul>
+        </div>
 
-      <!-- Quizzes -->
-      <div class="rounded-3xl bg-[var(--color-nav)] p-7 h-full">
-        <h3 class="text-lg md:text-xl font-bold text-white text-center mb-5">
-          {{ content["currentactions-right-title"] || "Laatste winacties & quizzes" }}
-        </h3>
-        <ul class="space-y-2">
-          <li v-for="quiz in recentQuizzes" :key="quiz.id">
-            <NuxtLink
-              :to="`/brands/${quiz.brand.slug}`"
-              class="block px-4 py-2.5 rounded-xl bg-white/5 hover:bg-[var(--color-brand)] text-white text-center transition-colors"
-            >{{ quiz.title }}</NuxtLink>
-          </li>
-          <li v-if="!recentQuizzes.length" class="px-4 py-3 rounded-xl bg-white/5 text-gray-300 text-center">
-            Momenteel geen acties.
-          </li>
-        </ul>
+        <!-- Quizzes -->
+        <div class="rounded-3xl bg-white border border-gray-100 shadow-[0_8px_30px_rgba(31,41,55,0.06)] overflow-hidden">
+          <div class="flex items-center gap-3 px-6 py-4 bg-[var(--color-nav)] text-white">
+            <span class="w-9 h-9 rounded-xl bg-[var(--color-brand)] flex items-center justify-center">
+              <i class="fa-solid fa-gift"></i>
+            </span>
+            <h3 class="font-bold">
+              {{ content["currentactions-right-title"] || "Laatste winacties & quizzes" }}
+            </h3>
+          </div>
+          <ul class="p-3">
+            <li v-for="quiz in recentQuizzes" :key="quiz.id">
+              <NuxtLink
+                :to="`/brands/${quiz.brand.slug}`"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-[var(--color-bg)] transition group"
+              >
+                <span class="w-7 h-7 rounded-lg bg-[var(--color-brand)]/10 text-[var(--color-brand)] flex items-center justify-center">
+                  <i class="fa-solid fa-trophy text-xs"></i>
+                </span>
+                <span class="font-semibold text-[var(--color-nav)]">{{ quiz.title }}</span>
+                <i class="fa-solid fa-arrow-right ml-auto text-gray-300 group-hover:text-[var(--color-brand)] group-hover:translate-x-1 transition-all"></i>
+              </NuxtLink>
+            </li>
+            <li v-if="!recentQuizzes.length" class="px-4 py-10 text-center text-gray-400">
+              <i class="fa-regular fa-clock text-2xl mb-2 block"></i>
+              Momenteel geen acties — kom snel terug!
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
@@ -78,18 +107,3 @@ onMounted(async () => {
   }
 });
 </script>
-
-<style scoped>
-@keyframes blink-off {
-  0%, 45% { opacity: 1; }
-  60%, 90% { opacity: 0; }
-  100% { opacity: 1; }
-}
-@keyframes blink-on {
-  0%, 45% { opacity: 0; filter: drop-shadow(0 0 4px var(--color-brand)); }
-  60%, 90% { opacity: 1; filter: drop-shadow(0 0 16px var(--color-brand)); }
-  100% { opacity: 0; filter: drop-shadow(0 0 4px var(--color-brand)); }
-}
-.regular-bulb { animation: blink-off 3s ease-in-out infinite; }
-.solid-bulb { animation: blink-on 3s ease-in-out infinite; }
-</style>
