@@ -8,14 +8,14 @@
   >
     <div
       ref="navInner"
-      class="container mx-auto flex justify-between items-center py-4 px-2"
+      class="container mx-auto flex justify-between items-center py-2 px-2"
     >
       <!-- Logo -->
       <NuxtLink to="/" class="flex items-center shrink-0">
         <img
           src="/ideeenbord-logo-footer-and-nav.png"
           alt="Ideeënbord"
-          class="h-14 md:h-16 w-auto object-contain"
+          class="h-16 md:h-[76px] w-auto object-contain"
         />
       </NuxtLink>
 
