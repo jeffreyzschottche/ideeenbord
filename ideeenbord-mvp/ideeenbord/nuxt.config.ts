@@ -45,7 +45,11 @@ export default defineNuxtConfig({
       viewport: "width=device-width, initial-scale=1",
       titleTemplate: (title?: string) =>
         title ? `${title} · Ideeënbord` : "Ideeënbord — deel je ideeën met merken",
-      link: [{ rel: "icon", type: "image/png", href: "/favicon.png" }],
+      link: [
+        { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+        { rel: "icon", type: "image/png", href: "/favicon-ideeenbord.png" },
+        { rel: "apple-touch-icon", href: "/favicon-ideeenbord.png" },
+      ],
       meta: [
         {
           name: "description",

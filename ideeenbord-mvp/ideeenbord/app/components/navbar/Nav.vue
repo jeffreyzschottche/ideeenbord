@@ -1,9 +1,9 @@
 <template>
   <header
     :class="[
-      'fixed w-full h-20 z-50 bg-nav text-white transition-all duration-300',
+      'fixed w-full h-20 z-50 bg-[#1c2434] text-white transition-all duration-300',
       { '-translate-y-full': !showHeader, 'translate-y-0': showHeader },
-      scrolled ? 'shadow-xl bg-gray-900/95 backdrop-blur' : '',
+      scrolled ? 'shadow-xl' : '',
     ]"
   >
     <div
@@ -11,11 +11,12 @@
       class="container mx-auto flex justify-between items-center py-4 px-2"
     >
       <!-- Logo -->
-      <NuxtLink to="/" class="relative text-3xl font-bold">
-        IDEEEN<span class="font-light">BORD</span>
-        <i
-          class="fa-solid fa-lightbulb ml-2 absolute text-orange-400 lamp-glow"
-        ></i>
+      <NuxtLink to="/" class="flex items-center shrink-0">
+        <img
+          src="/ideeenbord-logo-footer-and-nav.png"
+          alt="Ideeënbord"
+          class="h-14 md:h-16 w-auto object-contain"
+        />
       </NuxtLink>
 
       <!-- Desktop nav -->

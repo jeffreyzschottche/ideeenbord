@@ -1,13 +1,16 @@
 <template>
-  <footer class="bg-nav text-light py-6 w-full">
+  <footer class="bg-[#1c2434] text-light py-6 w-full">
     <div
       class="container mx-auto px-2 grid grid-cols-1 md:grid-cols-4 gap-6 text-center md:text-left"
     >
       <div>
-        <h2 class="text-3xl font-bold light-text">
-          IDEEËN<span class="font-light">BORD</span>
-          <i class="fa-solid fa-lightbulb ml-1 text-orange-400 lamp-glow"></i>
-        </h2>
+        <NuxtLink to="/" class="inline-block">
+          <img
+            src="/ideeenbord-logo-footer-and-nav.png"
+            alt="Ideeënbord"
+            class="h-14 w-auto object-contain mx-auto md:mx-0"
+          />
+        </NuxtLink>
         <p class="text-sm text-gray-300 mt-3 max-w-xs mx-auto md:mx-0">
           Waar jouw ideeën, wensen en feedback bij merken terechtkomen — en merken
           écht luisteren.
