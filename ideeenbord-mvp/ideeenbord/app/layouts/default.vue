@@ -2,7 +2,7 @@
   <div>
     <NavbarNav />
     <main>
-      <div class="h-20"></div>
+      <div class="h-24"></div>
       <div class="container mx-auto px-4 md:px-8">
         <slot />
       </div>

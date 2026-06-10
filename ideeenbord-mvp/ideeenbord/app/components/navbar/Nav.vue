@@ -1,7 +1,7 @@
 <template>
   <header
     :class="[
-      'fixed w-full h-20 z-50 bg-[#1c2434] text-white transition-all duration-300',
+      'fixed w-full h-24 z-50 bg-[#1c2434] text-white transition-all duration-300',
       { '-translate-y-full': !showHeader, 'translate-y-0': showHeader },
       scrolled ? 'shadow-xl' : '',
     ]"
@@ -15,7 +15,7 @@
         <img
           src="/ideeenbord-logo-footer-and-nav.png"
           alt="Ideeënbord"
-          class="h-11 md:h-12 w-auto object-contain"
+          class="h-14 md:h-16 w-auto object-contain"
         />
       </NuxtLink>
 
@@ -95,7 +95,7 @@
       <transition name="slide">
         <div
           v-if="menuOpen"
-          class="absolute top-16 left-0 w-full bg-gray-800 text-white p-4 flex flex-col space-y-4 md:hidden"
+          class="absolute top-24 left-0 w-full bg-gray-800 text-white p-4 flex flex-col space-y-4 md:hidden"
         >
           <SearchSearchBarNav class="mr-auto nav-link" />
 
