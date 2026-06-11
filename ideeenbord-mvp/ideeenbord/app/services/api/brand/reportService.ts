@@ -1,30 +1,63 @@
 import { brandOwnerApiFetch } from "~/composables/brand/useBrandOwnerApi";
 
+export type ReportPeriodType = "all" | "monthly" | "custom";
+
 export type ReportSummary = {
   id: number;
   title: string;
   status: "processing" | "completed" | "failed";
   provider: string | null;
   model: string | null;
+  period_type: ReportPeriodType | null;
+  period_start: string | null;
+  period_end: string | null;
   generated_at: string | null;
   created_at: string;
 };
 
 export type ReportThemeSentiment = "positief" | "negatief" | "gemengd";
+export type ReportPriority = "hoog" | "middel" | "laag";
+
+export type ReportAi = {
+  executive_summary: string;
+  key_findings: string[];
+  participation_analysis: string;
+  trend_analysis: string;
+  sentiment_analysis: string;
+  idea_themes: {
+    theme: string;
+    description: string;
+    sentiment: ReportThemeSentiment;
+    example_ideas: string[];
+  }[];
+  top_ideas_analysis: string;
+  audience_insight: string;
+  audience_segments: { segment: string; description: string }[];
+  main_question_insights: string;
+  opportunities: string[];
+  risks: string[];
+  strategic_outlook: string;
+  recommendations: {
+    title: string;
+    detail: string;
+    priority: ReportPriority;
+    expected_impact: string;
+  }[];
+  action_plan: { phase: string; timeframe: string; actions: string[] }[];
+  conclusion: string;
+  suggested_main_question: string;
+};
 
 export type BrandReport = ReportSummary & {
   metrics: any;
-  ai: {
-    executive_summary: string;
-    key_findings: string[];
-    idea_themes: { theme: string; description: string; sentiment: ReportThemeSentiment }[];
-    audience_insight: string;
-    opportunities: string[];
-    risks: string[];
-    recommendations: { title: string; detail: string; priority: "hoog" | "middel" | "laag" }[];
-    suggested_main_question: string;
-  } | null;
+  ai: ReportAi | null;
   error?: string | null;
+};
+
+export type GenerateReportPayload = {
+  period_type?: ReportPeriodType;
+  start?: string | null;
+  end?: string | null;
 };
 
 export const reportService = {
@@ -35,10 +68,13 @@ export const reportService = {
     return res.reports;
   },
 
-  async generate(brandId: number): Promise<BrandReport> {
+  async generate(
+    brandId: number,
+    payload: GenerateReportPayload = {}
+  ): Promise<BrandReport> {
     const res = await brandOwnerApiFetch<{ report: BrandReport }>(
       `/brands/${brandId}/reports`,
-      { method: "POST" }
+      { method: "POST", body: JSON.stringify(payload) }
     );
     return res.report;
   },

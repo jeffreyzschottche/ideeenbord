@@ -7,7 +7,9 @@ use App\Models\Brand;
 use App\Models\BrandReport;
 use App\Services\Ai\Contracts\AiClient;
 use App\Services\Reports\BrandReportService;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class BrandReportController extends Controller
 {
@@ -22,13 +24,13 @@ class BrandReportController extends Controller
 
         $reports = $brand->reports()
             ->latest()
-            ->get(['id', 'title', 'status', 'provider', 'model', 'generated_at', 'created_at']);
+            ->get(['id', 'title', 'status', 'provider', 'model', 'period_type', 'period_start', 'period_end', 'generated_at', 'created_at']);
 
         return response()->json(['reports' => $reports]);
     }
 
     /** Generate a new AI report for a brand. */
-    public function store(Brand $brand, AiClient $ai): JsonResponse
+    public function store(Brand $brand, Request $request, AiClient $ai): JsonResponse
     {
         $this->authorizeBrand($brand);
 
@@ -38,7 +40,22 @@ class BrandReportController extends Controller
             ], 422);
         }
 
-        $report = $this->service->generate($brand);
+        $data = $request->validate([
+            'period_type' => 'nullable|in:all,monthly,custom',
+            'start' => 'nullable|date',
+            'end' => 'nullable|date|after_or_equal:start',
+        ]);
+
+        $periodType = $data['period_type'] ?? 'all';
+        [$from, $to] = $this->resolvePeriod($periodType, $data['start'] ?? null, $data['end'] ?? null);
+
+        if ($periodType !== 'all' && (! $from || ! $to)) {
+            return response()->json([
+                'message' => 'Kies een begin- en einddatum voor dit rapport.',
+            ], 422);
+        }
+
+        $report = $this->service->generate($brand, $from, $to, $periodType);
 
         if ($report->status === 'failed') {
             return response()->json([
@@ -56,6 +73,32 @@ class BrandReportController extends Controller
         $this->authorizeBrand($report->brand);
 
         return response()->json(['report' => $report]);
+    }
+
+    /**
+     * Resolve the [from, to] Carbon range for a period type.
+     * monthly snaps to whole months; custom uses the raw dates.
+     *
+     * @return array{0: ?Carbon, 1: ?Carbon}
+     */
+    private function resolvePeriod(string $periodType, ?string $start, ?string $end): array
+    {
+        if ($periodType === 'all' || ! $start || ! $end) {
+            return [null, null];
+        }
+
+        $from = Carbon::parse($start);
+        $to = Carbon::parse($end);
+
+        if ($periodType === 'monthly') {
+            $from = $from->startOfMonth();
+            $to = $to->endOfMonth();
+        } else {
+            $from = $from->startOfDay();
+            $to = $to->endOfDay();
+        }
+
+        return [$from, $to];
     }
 
     private function authorizeBrand(Brand $brand): void

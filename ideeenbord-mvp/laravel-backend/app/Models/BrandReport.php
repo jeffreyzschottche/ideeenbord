@@ -11,6 +11,9 @@ class BrandReport extends Model
         'title',
         'status',
         'provider',
+        'period_type',
+        'period_start',
+        'period_end',
         'model',
         'metrics',
         'ai',
@@ -22,6 +25,8 @@ class BrandReport extends Model
         'metrics' => 'array',
         'ai' => 'array',
         'generated_at' => 'datetime',
+        'period_start' => 'date',
+        'period_end' => 'date',
     ];
 
     public function brand()

@@ -3,7 +3,6 @@
 namespace App\Services\Reports;
 
 use App\Models\Brand;
-use App\Models\Idea;
 use App\Models\MainQuestion;
 use App\Models\MainQuestionResponse;
 use App\Models\Quiz;
@@ -13,27 +12,58 @@ use Illuminate\Support\Collection;
 
 /**
  * Computes the quantitative analytics for a brand report. Pure data — no AI.
+ *
+ * Optionally scoped to a [from, to] period. When a period is given the metrics
+ * for the *previous* equal-length window are computed too, so the report can
+ * show period-over-period deltas.
  */
 class BrandReportAnalytics
 {
-    public function build(Brand $brand): array
+    public function build(Brand $brand, ?Carbon $from = null, ?Carbon $to = null): array
     {
-        $ideas = $brand->ideas()->get();
-        $responses = MainQuestionResponse::where('brand_id', $brand->id)->get();
-        $quizzes = Quiz::where('brand_id', $brand->id)->get();
-        $participants = $this->participants($brand, $ideas, $responses);
+        $current = $this->window($brand, $from, $to);
 
-        return [
+        $comparison = null;
+        if ($from && $to) {
+            $length = $from->diffInDays($to) + 1;
+            $prevTo = (clone $from)->subDay()->endOfDay();
+            $prevFrom = (clone $prevTo)->subDays($length - 1)->startOfDay();
+            $comparison = $this->comparison($brand, $prevFrom, $prevTo, $current['totals']);
+        }
+
+        return array_merge($current, [
             'brand' => [
                 'title' => $brand->title,
                 'category' => $brand->category,
                 'subscription' => $brand->subscription,
             ],
+            'period' => [
+                'type' => $from || $to ? 'range' : 'all',
+                'start' => $from?->toDateString(),
+                'end' => $to?->toDateString(),
+                'label' => $this->periodLabel($from, $to),
+            ],
             'generated_at' => Carbon::now()->toIso8601String(),
+            'comparison' => $comparison,
+        ]);
+    }
+
+    /**
+     * All metrics for a single [from, to] window.
+     */
+    private function window(Brand $brand, ?Carbon $from, ?Carbon $to): array
+    {
+        $ideas = $this->scope($brand->ideas(), $from, $to)->get();
+        $responses = $this->scope(MainQuestionResponse::where('brand_id', $brand->id), $from, $to)->get();
+        $quizzes = $this->scope(Quiz::where('brand_id', $brand->id), $from, $to)->get();
+        $participants = $this->participants($ideas, $responses);
+
+        return [
             'totals' => $this->totals($brand, $ideas, $responses, $quizzes, $participants),
             'status_distribution' => $this->statusDistribution($ideas),
             'top_ideas_by_likes' => $this->topIdeas($ideas, 'likes'),
             'top_ideas_by_dislikes' => $this->topIdeas($ideas, 'dislikes'),
+            'idea_samples' => $this->ideaSamples($ideas),
             'ideas_over_time' => $this->ideasOverTime($ideas),
             'categories' => $this->categories($ideas),
             'main_questions' => $this->mainQuestions($responses),
@@ -42,19 +72,73 @@ class BrandReportAnalytics
         ];
     }
 
+    /**
+     * A trimmed metric set for the previous window plus deltas vs the current totals.
+     */
+    private function comparison(Brand $brand, Carbon $from, Carbon $to, array $currentTotals): array
+    {
+        $ideas = $this->scope($brand->ideas(), $from, $to)->get();
+        $responses = $this->scope(MainQuestionResponse::where('brand_id', $brand->id), $from, $to)->get();
+        $quizzes = $this->scope(Quiz::where('brand_id', $brand->id), $from, $to)->get();
+        $participants = $this->participants($ideas, $responses);
+        $prev = $this->totals($brand, $ideas, $responses, $quizzes, $participants);
+
+        $delta = function (string $key) use ($currentTotals, $prev) {
+            $now = (float) ($currentTotals[$key] ?? 0);
+            $was = (float) ($prev[$key] ?? 0);
+            $pct = $was != 0 ? round((($now - $was) / abs($was)) * 100, 1) : null;
+
+            return ['now' => $now, 'previous' => $was, 'change' => $now - $was, 'change_pct' => $pct];
+        };
+
+        return [
+            'previous_period' => [
+                'start' => $from->toDateString(),
+                'end' => $to->toDateString(),
+            ],
+            'previous_totals' => $prev,
+            'deltas' => [
+                'ideas' => $delta('ideas'),
+                'participants' => $delta('participants'),
+                'net_sentiment' => $delta('net_sentiment'),
+                'main_question_responses' => $delta('main_question_responses'),
+            ],
+        ];
+    }
+
+    /**
+     * Apply a created_at window to a query builder/relation when a range is set.
+     */
+    private function scope($query, ?Carbon $from, ?Carbon $to)
+    {
+        if ($from) {
+            $query->where('created_at', '>=', $from);
+        }
+        if ($to) {
+            $query->where('created_at', '<=', $to);
+        }
+
+        return $query;
+    }
+
     private function totals(Brand $brand, Collection $ideas, Collection $responses, Collection $quizzes, Collection $participants): array
     {
         $likes = (int) $ideas->sum('likes');
         $dislikes = (int) $ideas->sum('dislikes');
         $quizParticipants = $quizzes->sum(fn ($q) => is_array($q->participants) ? count($q->participants) : 0);
+        $engagementRate = $participants->count() > 0
+            ? round(($likes + $dislikes + $responses->count()) / $participants->count(), 2)
+            : 0;
 
         return [
             'ideas' => $ideas->count(),
             'idea_likes' => $likes,
             'idea_dislikes' => $dislikes,
             'net_sentiment' => $likes - $dislikes,
+            'sentiment_ratio' => ($likes + $dislikes) > 0 ? round($likes / ($likes + $dislikes) * 100, 1) : null,
             'participants' => $participants->count(),
             'main_question_responses' => $responses->count(),
+            'engagement_per_participant' => $engagementRate,
             'quizzes' => $quizzes->count(),
             'quiz_participants' => (int) $quizParticipants,
             'rating_count' => (int) ($brand->rating_count ?? 0),
@@ -75,7 +159,7 @@ class BrandReportAnalytics
         return $counts;
     }
 
-    private function topIdeas(Collection $ideas, string $by, int $limit = 5): array
+    private function topIdeas(Collection $ideas, string $by, int $limit = 8): array
     {
         return $ideas->sortByDesc($by)->take($limit)->map(fn ($idea) => [
             'title' => $idea->title,
@@ -83,6 +167,26 @@ class BrandReportAnalytics
             'dislikes' => (int) $idea->dislikes,
             'status' => $idea->status,
         ])->values()->all();
+    }
+
+    /**
+     * Compact, period-scoped idea samples (title + short description) for the AI,
+     * ordered by engagement so the most relevant ideas are included first.
+     */
+    private function ideaSamples(Collection $ideas, int $limit = 40): array
+    {
+        return $ideas
+            ->sortByDesc(fn ($i) => (int) $i->likes + (int) $i->dislikes)
+            ->take($limit)
+            ->map(fn ($i) => [
+                'title' => $i->title,
+                'description' => mb_substr((string) $i->description, 0, 300),
+                'likes' => (int) $i->likes,
+                'dislikes' => (int) $i->dislikes,
+                'status' => $i->status,
+            ])
+            ->values()
+            ->all();
     }
 
     private function ideasOverTime(Collection $ideas): array
@@ -146,7 +250,7 @@ class BrandReportAnalytics
     /**
      * Unique participant users: anyone who posted an idea or answered a main question.
      */
-    private function participants(Brand $brand, Collection $ideas, Collection $responses): Collection
+    private function participants(Collection $ideas, Collection $responses): Collection
     {
         $userIds = $ideas->pluck('user_id')
             ->merge($responses->pluck('user_id'))
@@ -213,5 +317,16 @@ class BrandReportAnalytics
             ->map(fn ($count, $label) => ['label' => $label, 'count' => $count])
             ->values()
             ->all();
+    }
+
+    private function periodLabel(?Carbon $from, ?Carbon $to): string
+    {
+        if (! $from && ! $to) {
+            return 'Volledige historie';
+        }
+
+        $fmt = fn (?Carbon $d) => $d ? $d->translatedFormat('j M Y') : '…';
+
+        return $fmt($from).' – '.$fmt($to);
     }
 }

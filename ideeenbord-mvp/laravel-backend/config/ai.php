@@ -15,7 +15,7 @@ return [
         'report_model' => env('AI_REPORT_MODEL', 'claude-opus-4-8'),
         // Cheaper/faster model used for content seeding & interactions.
         'seed_model' => env('AI_SEED_MODEL', 'claude-haiku-4-5'),
-        'max_tokens' => (int) env('AI_MAX_TOKENS', 8000),
+        'max_tokens' => (int) env('AI_MAX_TOKENS', 16000),
     ],
 
     'openai' => [
@@ -23,7 +23,7 @@ return [
         'base_url' => env('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
         'report_model' => env('OPENAI_MODEL', 'gpt-4o'),
         'seed_model' => env('OPENAI_SEED_MODEL', 'gpt-4o-mini'),
-        'max_tokens' => (int) env('AI_MAX_TOKENS', 8000),
+        'max_tokens' => (int) env('AI_MAX_TOKENS', 16000),
     ],
 
     /*
