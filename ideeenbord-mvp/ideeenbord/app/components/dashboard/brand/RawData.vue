@@ -249,35 +249,26 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="card p-4 md:p-6">
+  <div>
     <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-      <h3 class="title-md">Rauwe gegevens</h3>
+      <p class="font-semibold text-[var(--color-nav)]">
+        <i class="fa-solid fa-box-archive mr-1.5 text-[var(--color-brand)]"></i>
+        Volledige export
+      </p>
 
       <div class="flex items-center gap-2">
         <button class="btn btn--ghost btn--sm" @click="loadAll">
-          ↻ Vernieuwen
+          <i class="fa-solid fa-rotate-right"></i> Vernieuwen
         </button>
         <span class="h-5 w-px bg-neutral-200" />
-        <button
-          class="btn btn--sm"
-          :disabled="!canDownloadAnything"
-          @click="downloadCombinedCSV"
-        >
-          ⬇️ CSV · gecombineerd
+        <button class="btn btn--ghost btn--sm" :disabled="!canDownloadAnything" @click="downloadCombinedCSV">
+          <i class="fa-solid fa-download"></i> CSV
         </button>
-        <button
-          class="btn btn--sm"
-          :disabled="!canDownloadAnything"
-          @click="downloadCombinedJSON"
-        >
-          ⬇️ JSON · gecombineerd
+        <button class="btn btn--ghost btn--sm" :disabled="!canDownloadAnything" @click="downloadCombinedJSON">
+          <i class="fa-solid fa-download"></i> JSON
         </button>
-        <button
-          class="btn btn--sm"
-          :disabled="!canDownloadAnything"
-          @click="downloadCombinedXML"
-        >
-          ⬇️ XML · gecombineerd
+        <button class="btn btn--ghost btn--sm" :disabled="!canDownloadAnything" @click="downloadCombinedXML">
+          <i class="fa-solid fa-download"></i> XML
         </button>
       </div>
     </div>
@@ -343,21 +334,21 @@ onMounted(() => {
           <h4 class="font-semibold">Brand</h4>
           <div class="flex gap-2">
             <button
-              class="btn btn--sm"
+              class="btn btn--ghost btn--sm"
               :disabled="!brandExport"
               @click="downloadJSON('brand', brandExport)"
             >
               Download JSON
             </button>
             <button
-              class="btn btn--sm"
+              class="btn btn--ghost btn--sm"
               :disabled="!brandExport"
               @click="downloadCSV('brand', brandExport ? [brandExport] : [])"
             >
               Download CSV
             </button>
             <button
-              class="btn btn--sm"
+              class="btn btn--ghost btn--sm"
               :disabled="!brandExport"
               @click="downloadXML('brand', brandExport ? [brandExport] : [], 'brand', 'field')"
             >
@@ -399,21 +390,21 @@ onMounted(() => {
           <h4 class="font-semibold">Ideas ({{ ideasExport.length }})</h4>
           <div class="flex gap-2">
             <button
-              class="btn btn--sm"
+              class="btn btn--ghost btn--sm"
               :disabled="!ideasExport.length"
               @click="downloadJSON('ideas', ideasExport)"
             >
               Download JSON
             </button>
             <button
-              class="btn btn--sm"
+              class="btn btn--ghost btn--sm"
               :disabled="!ideasExport.length"
               @click="downloadCSV('ideas', ideasExport)"
             >
               Download CSV
             </button>
             <button
-              class="btn btn--sm"
+              class="btn btn--ghost btn--sm"
               :disabled="!ideasExport.length"
               @click="downloadXML('ideas', ideasExport, 'ideas', 'idea')"
             >
@@ -464,21 +455,21 @@ onMounted(() => {
           </h4>
           <div class="flex gap-2">
             <button
-              class="btn btn--sm"
+              class="btn btn--ghost btn--sm"
               :disabled="!participantsExport.length"
               @click="downloadJSON('participants', participantsExport)"
             >
               Download JSON
             </button>
             <button
-              class="btn btn--sm"
+              class="btn btn--ghost btn--sm"
               :disabled="!participantsExport.length"
               @click="downloadCSV('participants', participantsExport)"
             >
               Download CSV
             </button>
             <button
-              class="btn btn--sm"
+              class="btn btn--ghost btn--sm"
               :disabled="!participantsExport.length"
               @click="downloadXML('participants', participantsExport, 'participants', 'participant')"
             >

@@ -97,7 +97,7 @@ const tabs: Tab[] = [
   { id: "quiz-overview", label: "Quizzes", icon: "fa-list-check", group: "Beheer", desc: "Bekijk en beheer je lopende en afgeronde quizzes." },
   { id: "live-stats", label: "Live statistieken", icon: "fa-chart-line", group: "Inzichten", desc: "Realtime cijfers en grafieken van je merk." },
   { id: "report", label: "AI-rapport", icon: "fa-file-lines", group: "Inzichten", desc: "Genereer een diepgaand adviesrapport per periode." },
-  { id: "raw-data", label: "Rauwe gegevens", icon: "fa-database", group: "Inzichten", desc: "Exporteer je data als CSV, JSON of XML." },
+  { id: "raw-data", label: "Data", icon: "fa-database", group: "Inzichten", desc: "Exporteer je data als CSV, JSON of XML." },
   { id: "account", label: "Account", icon: "fa-gear", group: "Account", desc: "Beheer je accountinstellingen." },
 ];
 
@@ -165,18 +165,30 @@ watch(
         <div class="absolute -bottom-24 -left-10 w-72 h-72 rounded-full bg-white/5 blur-3xl"></div>
 
         <div class="relative flex flex-col lg:flex-row lg:items-center gap-5">
-          <img
-            v-if="owner?.brand?.logo_path"
-            :src="`${imageBase}/${owner.brand.logo_path}`"
-            alt="Logo van merk"
-            class="w-16 h-16 md:w-20 md:h-20 rounded-2xl object-cover bg-white p-1 shadow-lg shrink-0"
-          />
-          <div
-            v-else
-            class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white/10 flex items-center justify-center shrink-0"
+          <button
+            type="button"
+            class="relative group w-16 h-16 md:w-20 md:h-20 shrink-0"
+            title="Logo wijzigen"
+            @click="showBrandEdit = true"
           >
-            <i class="fa-solid fa-lightbulb text-3xl text-[var(--color-brand)]"></i>
-          </div>
+            <img
+              v-if="owner?.brand?.logo_path"
+              :src="`${imageBase}/${owner.brand.logo_path}`"
+              alt="Logo van merk"
+              class="w-full h-full rounded-2xl object-contain bg-white p-2 shadow-lg"
+            />
+            <span
+              v-else
+              class="w-full h-full rounded-2xl bg-white/10 flex items-center justify-center"
+            >
+              <i class="fa-solid fa-lightbulb text-3xl text-[var(--color-brand)]"></i>
+            </span>
+            <span
+              class="absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-full bg-[var(--color-brand)] text-white flex items-center justify-center shadow-md ring-2 ring-[var(--color-nav)] group-hover:scale-110 transition"
+            >
+              <i class="fa-solid fa-pen text-[11px]"></i>
+            </span>
+          </button>
 
           <div class="flex-1 min-w-0">
             <p class="text-sm text-gray-300">Welkom terug,</p>
@@ -319,7 +331,12 @@ watch(
 
               <div v-else-if="activeTab === 'report'">
                 <client-only>
-                  <BrandReport v-if="owner?.brand?.id" :brandId="owner.brand.id" />
+                  <BrandReport
+                    v-if="owner?.brand?.id"
+                    :brandId="owner.brand.id"
+                    :brandName="owner?.brand?.title ?? ''"
+                    :brandLogoUrl="owner?.brand?.logo_path ? `${imageBase}/${owner.brand.logo_path}` : null"
+                  />
                   <div v-else class="muted-text">Merkinformatie wordt geladen…</div>
                 </client-only>
               </div>

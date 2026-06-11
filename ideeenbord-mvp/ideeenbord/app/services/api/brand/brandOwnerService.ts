@@ -49,6 +49,16 @@ export const brandOwnerService = {
     });
   },
 
+  // Upload/replace the brand logo (multipart)
+  async uploadBrandLogo(brandId: number, file: File) {
+    const fd = new FormData();
+    fd.append("logo", file);
+    return await brandOwnerApiFetch(`/brands/${brandId}/logo`, {
+      method: "POST",
+      body: fd,
+    });
+  },
+
   // Retrieve list of available main questions
   async getMainQuestions(): Promise<MainQuestion[]> {
     return await brandOwnerApiFetch("/main-questions");

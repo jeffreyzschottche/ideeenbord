@@ -94,7 +94,7 @@ async function submitQuiz() {
 }
 </script>
 <template>
-  <div class="register-card" style="margin: 0 0 2.5rem 0">
+  <div>
     <h2 class="title-lg">Nieuwe Quiz Aanmaken</h2>
 
     <input

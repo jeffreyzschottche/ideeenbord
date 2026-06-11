@@ -20,11 +20,16 @@ export async function brandOwnerApiFetch<T = any>(
   const store = useBrandOwnerAuthStore();
   const token = store.token || useCookie<string | null>("bo_token").value;
 
-  const headers = {
-    ...(options.headers || {}),
+  // Laat de browser de juiste multipart Content-Type (met boundary) zetten bij FormData.
+  const isFormData =
+    typeof FormData !== "undefined" && options.body instanceof FormData;
+  const headers: Record<string, string> = {
+    ...((options.headers as Record<string, string>) || {}),
     Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
   };
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
 
   const res = await fetch(`${baseUrl}/v1${url}`, {
     ...options,

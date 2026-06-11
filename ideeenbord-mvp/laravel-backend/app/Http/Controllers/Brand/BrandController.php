@@ -257,6 +257,28 @@ class BrandController extends Controller
 
         return response()->json(['message' => 'Merk bijgewerkt.', 'brand' => $brand]);
     }
+    /** Upload/replace a brand's logo. Multipart POST (PATCH doesn't carry files well). */
+    public function uploadLogo(Request $request, Brand $brand)
+    {
+        $user = auth('brand_owner')->user();
+        if (!$user || $brand->brand_owner_id !== $user->id) {
+            return response()->json(['message' => 'Geen toegang tot dit merk.'], 403);
+        }
+
+        $request->validate([
+            'logo' => ['required', 'file', 'mimes:jpeg,png,jpg,gif,webp', 'max:4096'],
+        ]);
+
+        if ($brand->logo_path) {
+            Storage::disk('public')->delete($brand->logo_path);
+        }
+
+        $path = $request->file('logo')->store('brands', 'public');
+        $brand->update(['logo_path' => $path]);
+
+        return response()->json(['message' => 'Logo bijgewerkt.', 'brand' => $brand]);
+    }
+
     public function rawExport(Request $request, Brand $brand)
     {
         // ✅ Alleen de eigenaar van dit brand mag dit ophalen

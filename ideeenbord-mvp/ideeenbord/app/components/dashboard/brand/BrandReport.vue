@@ -9,7 +9,11 @@ import {
   type ReportRange,
 } from "~/services/api/brand/reportService";
 
-const props = defineProps<{ brandId: number }>();
+const props = defineProps<{
+  brandId: number;
+  brandName?: string;
+  brandLogoUrl?: string | null;
+}>();
 
 const reports = ref<ReportSummary[]>([]);
 const current = ref<BrandReport | null>(null);
@@ -28,6 +32,23 @@ const PALETTE = [ORANGE, NAVY, BLUE, GREEN, "#a855f7", RED, "#14b8a6", "#eab308"
 const totals = computed(() => current.value?.metrics?.totals ?? null);
 const comparison = computed(() => current.value?.metrics?.comparison ?? null);
 const ai = computed(() => current.value?.ai ?? null);
+
+const tocChapters = [
+  "Managementsamenvatting",
+  "Deelname & engagement",
+  "Ontwikkeling t.o.v. vorige periode",
+  "Sentimentanalyse",
+  "Analyse van best & slechtst ontvangen ideeën",
+  "Thema's in de ideeën",
+  "Inzicht in de doelgroep",
+  "Doelgroepsegmenten",
+  "Inzichten uit de hoofdvraag",
+  "Kansen & aandachtspunten",
+  "Strategische vooruitblik",
+  "Aanbevelingen",
+  "Actieplan",
+  "Conclusie",
+];
 
 /* ----------------------------- Period controls ---------------------------- */
 
@@ -384,9 +405,11 @@ onMounted(() => {
             />
           </div>
         </template>
+      </div>
 
+      <div class="mt-4">
         <button
-          class="px-4 py-2 rounded-lg text-white text-sm font-semibold bg-gradient-to-b from-orange-400 to-orange-600 disabled:opacity-60"
+          class="px-5 py-2.5 rounded-lg text-white text-sm font-semibold bg-gradient-to-b from-orange-400 to-orange-600 disabled:opacity-60 shadow-sm"
           :disabled="generating"
           @click="generate"
         >
@@ -415,6 +438,32 @@ onMounted(() => {
 
     <!-- Report -->
     <div v-if="current?.status === 'completed'" class="report-printable space-y-10">
+      <!-- PDF voorblad (alleen zichtbaar bij printen) -->
+      <section class="report-cover">
+        <div class="report-cover__bar">
+          <img src="/ideeenbord-logo-footer-and-nav.png" alt="Ideeënbord" class="report-cover__brand" />
+        </div>
+        <div class="report-cover__body">
+          <img v-if="brandLogoUrl" :src="brandLogoUrl" alt="Merklogo" class="report-cover__logo" />
+          <p class="report-cover__eyebrow">Merkrapport</p>
+          <h1 class="report-cover__title">{{ brandName || current.metrics?.brand?.title || "" }}</h1>
+          <p class="report-cover__period">{{ current.metrics?.period?.label }}</p>
+          <p class="report-cover__date">Gegenereerd op {{ fmtDate(current.generated_at) }}</p>
+        </div>
+        <div class="report-cover__footer">
+          <span>Ideeënbord</span>
+          <span>Vertrouwelijk — uitsluitend voor {{ brandName || "het merk" }}</span>
+        </div>
+      </section>
+
+      <!-- Inhoudsopgave (alleen bij printen) -->
+      <section class="report-toc">
+        <h2 class="report-toc__title">Inhoudsopgave</h2>
+        <ol class="report-toc__list">
+          <li v-for="(c, i) in tocChapters" :key="i">{{ c }}</li>
+        </ol>
+      </section>
+
       <header class="border-b border-gray-200 pb-4">
         <h2 class="text-2xl font-bold" style="color: var(--color-nav)">{{ current.title }}</h2>
         <p class="text-sm text-gray-500">
@@ -704,12 +753,107 @@ onMounted(() => {
   margin-bottom: 0.75rem;
   color: var(--color-nav);
 }
+/* Voorblad + inhoudsopgave: alleen bij printen/PDF zichtbaar */
+.report-cover,
+.report-toc {
+  display: none;
+}
+
 @media print {
   .no-print {
     display: none !important;
   }
   section {
     break-inside: avoid;
+  }
+
+  /* Voorblad — volledige pagina, navy met merkaccent */
+  .report-cover {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 96vh;
+    background: var(--color-nav);
+    color: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    border-radius: 16px;
+    overflow: hidden;
+    page-break-after: always;
+    break-after: page;
+  }
+  .report-cover__bar {
+    padding: 2rem 2.5rem;
+  }
+  .report-cover__brand {
+    height: 34px;
+    width: auto;
+  }
+  .report-cover__body {
+    padding: 0 2.5rem;
+  }
+  .report-cover__logo {
+    max-height: 110px;
+    max-width: 55%;
+    object-fit: contain;
+    background: #fff;
+    padding: 12px;
+    border-radius: 16px;
+    margin-bottom: 1.75rem;
+  }
+  .report-cover__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--color-brand);
+  }
+  .report-cover__title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1.08;
+    margin: 0.4rem 0;
+  }
+  .report-cover__period {
+    font-size: 1.2rem;
+    opacity: 0.85;
+  }
+  .report-cover__date {
+    opacity: 0.6;
+    margin-top: 0.4rem;
+  }
+  .report-cover__footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.75rem 2.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 0.78rem;
+    opacity: 0.7;
+  }
+
+  /* Inhoudsopgave */
+  .report-toc {
+    display: block;
+    page-break-after: always;
+    break-after: page;
+  }
+  .report-toc__title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--color-nav);
+    margin-bottom: 1rem;
+  }
+  .report-toc__list {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+  .report-toc__list li {
+    list-style: decimal;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed #e5e7eb;
+    color: #374151;
+    font-weight: 600;
   }
 }
 </style>

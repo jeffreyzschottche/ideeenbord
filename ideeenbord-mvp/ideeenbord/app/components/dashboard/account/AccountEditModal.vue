@@ -52,9 +52,7 @@ async function handleSubmit() {
 }
 </script>
 <template>
-  <div class="page-block" style="max-width: 40rem">
-    <h1 class="title-lg">Accountinstellingen</h1>
-
+  <div style="max-width: 40rem">
     <form @submit.prevent="handleSubmit">
       <div style="display: flex; flex-direction: column; gap: 1rem">
         <div>

@@ -40,6 +40,7 @@ Route::middleware('auth:brand_owner')->group(function () {
     Route::patch('/brands/{brand}/main-questions', [BrandController::class, 'setMainQuestion']);
     Route::patch('/brands/{brand}', [BrandController::class, 'update']);
     Route::get('/brands/{brand}/raw-export', [BrandController::class, 'rawExport']);
+    Route::post('/brands/{brand}/logo', [BrandController::class, 'uploadLogo']);
 
     // Live statistics (no AI) — current analytics for the dashboard
     Route::get('/brands/{brand}/stats', [BrandReportController::class, 'stats']);

@@ -74,7 +74,7 @@ async function selectWinner(quizId: number, userId: number) {
 }
 </script>
 <template>
-  <div class="register-card">
+  <div>
     <h2 class="title-md">Jouw Quizzen</h2>
 
     <div v-if="quizzes.length === 0" class="muted-text">
