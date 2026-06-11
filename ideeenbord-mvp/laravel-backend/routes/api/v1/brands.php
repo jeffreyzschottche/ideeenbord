@@ -41,6 +41,11 @@ Route::middleware('auth:brand_owner')->group(function () {
     Route::patch('/brands/{brand}', [BrandController::class, 'update']);
     Route::get('/brands/{brand}/raw-export', [BrandController::class, 'rawExport']);
 
+    // Live statistics (no AI) — current analytics for the dashboard
+    Route::get('/brands/{brand}/stats', [BrandReportController::class, 'stats']);
+    // Available months/date-bounds with data (drives the period pickers)
+    Route::get('/brands/{brand}/report-range', [BrandReportController::class, 'range']);
+
     // AI brand reports
     Route::get('/brands/{brand}/reports', [BrandReportController::class, 'index']);
     Route::post('/brands/{brand}/reports', [BrandReportController::class, 'store']);

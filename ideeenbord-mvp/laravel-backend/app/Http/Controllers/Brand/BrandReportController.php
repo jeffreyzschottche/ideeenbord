@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\BrandReport;
 use App\Services\Ai\Contracts\AiClient;
+use App\Services\Reports\BrandReportAnalytics;
 use App\Services\Reports\BrandReportService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -27,6 +28,22 @@ class BrandReportController extends Controller
             ->get(['id', 'title', 'status', 'provider', 'model', 'period_type', 'period_start', 'period_end', 'generated_at', 'created_at']);
 
         return response()->json(['reports' => $reports]);
+    }
+
+    /** Live statistics for a brand — the same analytics the report uses, no AI, always current. */
+    public function stats(Brand $brand, BrandReportAnalytics $analytics): JsonResponse
+    {
+        $this->authorizeBrand($brand);
+
+        return response()->json(['stats' => $analytics->build($brand)]);
+    }
+
+    /** Months/date-bounds that actually contain data, so the UI offers real choices. */
+    public function range(Brand $brand, BrandReportAnalytics $analytics): JsonResponse
+    {
+        $this->authorizeBrand($brand);
+
+        return response()->json($analytics->availableMonths($brand));
     }
 
     /** Generate a new AI report for a brand. */

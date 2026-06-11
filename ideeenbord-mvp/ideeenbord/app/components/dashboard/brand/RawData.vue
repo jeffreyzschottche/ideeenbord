@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 import { brandOwnerApiFetch } from "~/composables/brand/useBrandOwnerApi";
+import { reportService, type ReportRange, type ReportPeriodType } from "~/services/api/brand/reportService";
 import type { Idea } from "~/types/idea";
 
 type RawUser = {
@@ -34,12 +35,57 @@ const loading = ref(true);
 const error = ref<string | null>(null);
 const raw = ref<RawExportResponse | null>(null);
 
+// ===== periode-selectie (zelfde idee als het rapport) =====
+const period = reactive<{ type: ReportPeriodType; start: string; end: string }>({
+  type: "all",
+  start: "",
+  end: "",
+});
+const range = ref<ReportRange | null>(null);
+const months = computed(() => range.value?.months ?? []);
+const periodModes: { value: ReportPeriodType; label: string }[] = [
+  { value: "all", label: "Alles" },
+  { value: "monthly", label: "Maandelijks" },
+  { value: "custom", label: "Aangepast" },
+];
+
+function lastDayOfMonth(ym: string): string {
+  const [y, m] = ym.split("-").map(Number);
+  return new Date(y, m, 0).toISOString().slice(0, 10); // dag 0 van volgende maand = laatste dag
+}
+
+function setMode(mode: ReportPeriodType) {
+  period.type = mode;
+  if (mode === "monthly" && months.value.length) {
+    period.start = period.start || months.value[months.value.length - 1].value;
+    period.end = period.end || months.value[0].value;
+  } else if (mode === "custom" && range.value?.first) {
+    period.start = period.start || range.value.first;
+    period.end = period.end || (range.value.last ?? "");
+  }
+}
+
+const periodQuery = computed(() => {
+  if (period.type === "all" || !period.start || !period.end) return "";
+  const start = period.type === "monthly" ? `${period.start}-01` : period.start;
+  const end = period.type === "monthly" ? lastDayOfMonth(period.end) : period.end;
+  return `?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+});
+
+async function loadRange() {
+  try {
+    range.value = await reportService.range(props.brandId);
+  } catch {
+    /* niet kritisch */
+  }
+}
+
 async function loadAll() {
   loading.value = true;
   error.value = null;
   try {
     raw.value = await brandOwnerApiFetch<RawExportResponse>(
-      `/brands/${props.brandId}/raw-export`
+      `/brands/${props.brandId}/raw-export${periodQuery.value}`
     );
   } catch (e: any) {
     error.value = e?.message || "Raw export ophalen mislukt.";
@@ -51,12 +97,15 @@ async function loadAll() {
 
 // ===== helpers =====
 function escapeCSV(value: any): string {
-  const v =
+  let v =
     value === null || value === undefined
       ? ""
       : typeof value === "object"
       ? JSON.stringify(value)
       : String(value);
+  // Voorkom CSV/formule-injectie: waarden die met =, +, -, @, tab of CR beginnen
+  // worden door Excel/Sheets als formule uitgevoerd. Prefix met een apostrof.
+  if (/^[=+\-@\t\r]/.test(v)) v = `'${v}`;
   if (/[",\r\n]/.test(v)) return `"${v.replace(/"/g, '""')}"`;
   return v;
 }
@@ -193,7 +242,10 @@ function downloadCombinedXML() {
   downloadXML(`${filenameBase.value}-raw-export-combined`, rows, "export", "record");
 }
 
-onMounted(loadAll);
+onMounted(() => {
+  loadRange();
+  loadAll();
+});
 </script>
 
 <template>
@@ -230,10 +282,56 @@ onMounted(loadAll);
       </div>
     </div>
 
-    <p class="muted-text mb-4">
+    <p class="muted-text mb-3">
       Exporteer alle data die bij jouw merk hoort. E-mails en andere privévelden
       van gebruikers worden niet meegestuurd.
     </p>
+
+    <!-- Periode-selectie -->
+    <div class="flex flex-wrap items-end gap-3 mb-4 p-3 rounded-xl bg-neutral-50 border border-neutral-200">
+      <div>
+        <p class="text-xs text-neutral-500 mb-1">Periode</p>
+        <div class="inline-flex rounded-lg border border-neutral-300 overflow-hidden">
+          <button
+            v-for="m in periodModes"
+            :key="m.value"
+            class="px-3 py-1.5 text-sm font-medium"
+            :class="period.type === m.value ? 'bg-[var(--color-nav)] text-white' : 'bg-white text-neutral-600 hover:bg-neutral-50'"
+            @click="setMode(m.value)"
+          >
+            {{ m.label }}
+          </button>
+        </div>
+      </div>
+
+      <template v-if="period.type === 'monthly' && months.length">
+        <div>
+          <p class="text-xs text-neutral-500 mb-1">Van maand</p>
+          <select v-model="period.start" class="border border-neutral-300 rounded-lg px-3 py-1.5 text-sm">
+            <option v-for="m in months" :key="m.value" :value="m.value">{{ m.label }}</option>
+          </select>
+        </div>
+        <div>
+          <p class="text-xs text-neutral-500 mb-1">Tot maand</p>
+          <select v-model="period.end" class="border border-neutral-300 rounded-lg px-3 py-1.5 text-sm">
+            <option v-for="m in months" :key="m.value" :value="m.value">{{ m.label }}</option>
+          </select>
+        </div>
+      </template>
+
+      <template v-else-if="period.type === 'custom'">
+        <div>
+          <p class="text-xs text-neutral-500 mb-1">Van datum</p>
+          <input v-model="period.start" type="date" :min="range?.first ?? undefined" :max="range?.last ?? undefined" class="border border-neutral-300 rounded-lg px-3 py-1.5 text-sm" />
+        </div>
+        <div>
+          <p class="text-xs text-neutral-500 mb-1">Tot datum</p>
+          <input v-model="period.end" type="date" :min="range?.first ?? undefined" :max="range?.last ?? undefined" class="border border-neutral-300 rounded-lg px-3 py-1.5 text-sm" />
+        </div>
+      </template>
+
+      <button class="btn btn--sm" @click="loadAll">Toepassen</button>
+    </div>
 
     <div v-if="loading" class="muted-text">Gegevens laden…</div>
     <div v-else-if="error" class="text-red-600">{{ error }}</div>

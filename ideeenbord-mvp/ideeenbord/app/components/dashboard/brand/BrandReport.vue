@@ -6,6 +6,7 @@ import {
   type ReportSummary,
   type BrandReport,
   type ReportPeriodType,
+  type ReportRange,
 } from "~/services/api/brand/reportService";
 
 const props = defineProps<{ brandId: number }>();
@@ -36,11 +37,34 @@ const period = reactive<{ type: ReportPeriodType; start: string; end: string }>(
   end: "",
 });
 
+const range = ref<ReportRange | null>(null);
+const months = computed(() => range.value?.months ?? []);
+
 const periodModes: { value: ReportPeriodType; label: string }[] = [
   { value: "all", label: "Volledig" },
   { value: "monthly", label: "Maandelijks" },
   { value: "custom", label: "Aangepast" },
 ];
+
+// Schakel modus en vul echte standaarddata uit de beschikbare periode in.
+function setMode(mode: ReportPeriodType) {
+  period.type = mode;
+  if (mode === "monthly" && months.value.length) {
+    period.start = period.start || months.value[months.value.length - 1].value;
+    period.end = period.end || months.value[0].value;
+  } else if (mode === "custom" && range.value?.first) {
+    period.start = period.start || range.value.first;
+    period.end = period.end || (range.value.last ?? "");
+  }
+}
+
+async function loadRange() {
+  try {
+    range.value = await reportService.range(props.brandId);
+  } catch {
+    /* niet kritisch — pickers vallen terug op vrije invoer */
+  }
+}
 
 function buildPayload() {
   if (period.type === "all") return { period_type: "all" as const };
@@ -270,7 +294,10 @@ const hasDemographics = computed(() => {
   return d && (d.gender?.length || d.age_brackets?.some((b: any) => b.count > 0));
 });
 
-onMounted(loadList);
+onMounted(() => {
+  loadList();
+  loadRange();
+});
 </script>
 
 <template>
@@ -310,7 +337,7 @@ onMounted(loadList);
               :key="m.value"
               class="px-3 py-2 text-sm font-medium"
               :class="period.type === m.value ? 'bg-[var(--color-nav)] text-white' : 'bg-white text-gray-600 hover:bg-gray-50'"
-              @click="period.type = m.value"
+              @click="setMode(m.value)"
             >
               {{ m.label }}
             </button>
@@ -318,24 +345,43 @@ onMounted(loadList);
         </div>
 
         <template v-if="period.type === 'monthly'">
-          <div>
-            <p class="text-xs text-gray-500 mb-1">Van maand</p>
-            <input v-model="period.start" type="month" class="border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <p class="text-xs text-gray-500 mb-1">Tot maand</p>
-            <input v-model="period.end" type="month" class="border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-          </div>
+          <template v-if="months.length">
+            <div>
+              <p class="text-xs text-gray-500 mb-1">Van maand</p>
+              <select v-model="period.start" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                <option v-for="m in months" :key="m.value" :value="m.value">{{ m.label }} ({{ m.ideas }} ideeën)</option>
+              </select>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 mb-1">Tot maand</p>
+              <select v-model="period.end" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                <option v-for="m in months" :key="m.value" :value="m.value">{{ m.label }} ({{ m.ideas }} ideeën)</option>
+              </select>
+            </div>
+          </template>
+          <p v-else class="text-xs text-gray-400 self-center">Nog geen data om een maand te kiezen.</p>
         </template>
 
         <template v-else-if="period.type === 'custom'">
           <div>
             <p class="text-xs text-gray-500 mb-1">Van datum</p>
-            <input v-model="period.start" type="date" class="border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+            <input
+              v-model="period.start"
+              type="date"
+              :min="range?.first ?? undefined"
+              :max="range?.last ?? undefined"
+              class="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+            />
           </div>
           <div>
             <p class="text-xs text-gray-500 mb-1">Tot datum</p>
-            <input v-model="period.end" type="date" class="border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+            <input
+              v-model="period.end"
+              type="date"
+              :min="range?.first ?? undefined"
+              :max="range?.last ?? undefined"
+              class="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+            />
           </div>
         </template>
 

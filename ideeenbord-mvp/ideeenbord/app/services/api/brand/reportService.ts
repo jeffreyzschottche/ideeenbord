@@ -60,6 +60,12 @@ export type GenerateReportPayload = {
   end?: string | null;
 };
 
+export type ReportRange = {
+  first: string | null;
+  last: string | null;
+  months: { value: string; label: string; ideas: number }[];
+};
+
 export const reportService = {
   async list(brandId: number): Promise<ReportSummary[]> {
     const res = await brandOwnerApiFetch<{ reports: ReportSummary[] }>(
@@ -84,5 +90,18 @@ export const reportService = {
       `/reports/${reportId}`
     );
     return res.report;
+  },
+
+  /** Live statistics (no AI) — same analytics shape as a report's `metrics`. */
+  async stats(brandId: number): Promise<any> {
+    const res = await brandOwnerApiFetch<{ stats: any }>(
+      `/brands/${brandId}/stats`
+    );
+    return res.stats;
+  },
+
+  /** Months/date-bounds with actual data, to drive the period pickers. */
+  async range(brandId: number): Promise<ReportRange> {
+    return brandOwnerApiFetch<ReportRange>(`/brands/${brandId}/report-range`);
   },
 };

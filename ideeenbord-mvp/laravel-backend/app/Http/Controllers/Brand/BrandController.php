@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Rules\ProfanityFree;
 use App\Models\User;
+use App\Models\MainQuestionResponse;
+use Carbon\Carbon;
 
 /**
  * Class BrandController
@@ -263,29 +265,52 @@ class BrandController extends Controller
             return response()->json(['message' => 'Geen toegang tot dit merk.'], 403);
         }
 
+        // Optioneel periode-filter (created_at) — zelfde idee als bij het rapport.
+        $from = $request->query('start') ? Carbon::parse($request->query('start'))->startOfDay() : null;
+        $to = $request->query('end') ? Carbon::parse($request->query('end'))->endOfDay() : null;
+
         // 1) Brand data
         $brandData = $brand->toArray();
 
         // 2) Ideas (met minimal user info)
-        $ideas = $brand->ideas()
+        $ideasQuery = $brand->ideas()
             ->with(['user:id,username'])
-            ->orderByDesc('id')
-            ->get([
-                'id',
-                'brand_id',
-                'user_id',
-                'title',
-                'description',
-                'likes',
-                'dislikes',
-                'is_pinned',
-                'status',
-                'created_at',
-                'updated_at'
-            ]);
+            ->orderByDesc('id');
+        if ($from) {
+            $ideasQuery->where('created_at', '>=', $from);
+        }
+        if ($to) {
+            $ideasQuery->where('created_at', '<=', $to);
+        }
+        $ideas = $ideasQuery->get([
+            'id',
+            'brand_id',
+            'user_id',
+            'title',
+            'description',
+            'likes',
+            'dislikes',
+            'is_pinned',
+            'status',
+            'created_at',
+            'updated_at',
+        ]);
 
-        // 3) Participants: unieke user_ids uit ideas
-        $userIds = $ideas->pluck('user_id')->filter()->unique()->values();
+        // 3) Participants: unieke user_ids uit ideas én hoofdvraag-antwoorden
+        //    (binnen dezelfde periode), zodat de export overeenkomt met het rapport.
+        $responderQuery = MainQuestionResponse::where('brand_id', $brand->id);
+        if ($from) {
+            $responderQuery->where('created_at', '>=', $from);
+        }
+        if ($to) {
+            $responderQuery->where('created_at', '<=', $to);
+        }
+        $responderIds = $responderQuery->pluck('user_id');
+        $userIds = $ideas->pluck('user_id')
+            ->merge($responderIds)
+            ->filter()
+            ->unique()
+            ->values();
 
         // Alleen whitelisted velden (géén email)
         $participants = User::whereIn('id', $userIds)->get([

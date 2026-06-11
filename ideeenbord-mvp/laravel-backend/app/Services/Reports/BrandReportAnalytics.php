@@ -222,9 +222,12 @@ class BrandReportAnalytics
         $questions = MainQuestion::whereIn('id', $byQuestion->keys()->filter())->get()->keyBy('id');
 
         return $byQuestion->map(function ($group, $questionId) use ($questions) {
+            // Begrens het aantal unieke antwoorden zodat de AI-payload begrensd
+            // blijft als het aantal reacties groeit (context window).
             $answers = $group->groupBy('answer')
                 ->map(fn ($g, $answer) => ['answer' => (string) $answer, 'count' => $g->count()])
                 ->sortByDesc('count')
+                ->take(25)
                 ->values()
                 ->all();
 
@@ -317,6 +320,47 @@ class BrandReportAnalytics
             ->map(fn ($count, $label) => ['label' => $label, 'count' => $count])
             ->values()
             ->all();
+    }
+
+    /**
+     * The months/date-bounds that actually contain activity for this brand, so
+     * the UI can offer real choices instead of empty inputs. Combines idea and
+     * main-question-response timestamps.
+     *
+     * @return array{first: ?string, last: ?string, months: array<int, array{value:string,label:string,ideas:int}>}
+     */
+    public function availableMonths(Brand $brand): array
+    {
+        $ideaDates = $brand->ideas()->pluck('created_at')->filter();
+        $responseDates = MainQuestionResponse::where('brand_id', $brand->id)->pluck('created_at')->filter();
+        $all = $ideaDates->merge($responseDates);
+
+        if ($all->isEmpty()) {
+            return ['first' => null, 'last' => null, 'months' => []];
+        }
+
+        $parsed = $all->map(fn ($d) => Carbon::parse($d));
+        $ideaByMonth = $ideaDates
+            ->map(fn ($d) => Carbon::parse($d)->format('Y-m'))
+            ->countBy();
+
+        $months = $parsed
+            ->map(fn ($d) => $d->format('Y-m'))
+            ->unique()
+            ->sortDesc()
+            ->map(fn ($ym) => [
+                'value' => $ym,
+                'label' => Carbon::createFromFormat('Y-m', $ym)->translatedFormat('F Y'),
+                'ideas' => (int) ($ideaByMonth[$ym] ?? 0),
+            ])
+            ->values()
+            ->all();
+
+        return [
+            'first' => $parsed->min()->toDateString(),
+            'last' => $parsed->max()->toDateString(),
+            'months' => $months,
+        ];
     }
 
     private function periodLabel(?Carbon $from, ?Carbon $to): string
