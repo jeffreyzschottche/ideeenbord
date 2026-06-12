@@ -29,17 +29,22 @@ class ContentBotService
     {
         $username = config('ai.bots.account_username', 'ideeenbord-bot');
 
-        return User::firstOrCreate(
+        $bot = User::firstOrCreate(
             ['username' => $username],
             [
                 'name' => 'Ideeënbord',
                 'email' => $username.'@bots.ideeenbord.nl',
                 'password' => Hash::make(Str::random(40)),
                 'email_verified_at' => now(),
-                'role' => 'user',
-                'is_bot' => true,
             ]
         );
+
+        // role/is_bot zijn niet fillable (anti privilege-escalation) — expliciet zetten.
+        if (! $bot->is_bot) {
+            $bot->forceFill(['role' => 'user', 'is_bot' => true])->save();
+        }
+
+        return $bot;
     }
 
     /**

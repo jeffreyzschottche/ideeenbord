@@ -84,9 +84,10 @@ Route::post('/email/verification-notification', function (Request $request) {
     return response()->json(['message' => 'Verificatie-email verstuurd']);
 });
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/brand-owner/login', [BrandOwnerAuthController::class, 'login']);
+// Rate limiting tegen brute-force / credential stuffing / spam-accounts.
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
+Route::post('/brand-owner/login', [BrandOwnerAuthController::class, 'login'])->middleware('throttle:10,1');
 
 Route::middleware('auth:brand_owner')->group(function () {
     Route::post('/brand-owner/logout', [BrandOwnerAuthController::class, 'logout']);

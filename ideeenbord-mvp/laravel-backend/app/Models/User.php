@@ -47,8 +47,8 @@ class User extends Authenticatable implements MustVerifyEmail
     'disliked_posts',
     'created_posts',
     'quiz_submissions',
-    'role',
-    'is_bot',
+    // 'role' en 'is_bot' bewust NIET fillable — voorkomt privilege escalation
+    // via mass assignment. Worden alleen expliciet via forceFill gezet.
     ];
 
 

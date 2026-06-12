@@ -25,8 +25,8 @@ Route::prefix('brands')->group(function () {
     Route::get('/{slug}', [BrandController::class, 'show']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/request', [BrandController::class, 'store']);
-        Route::post('/claim', [BrandOwnerController::class, 'store']);
+        Route::post('/request', [BrandController::class, 'store'])->middleware('throttle:10,1');
+        Route::post('/claim', [BrandOwnerController::class, 'store'])->middleware('throttle:5,1');
     });
 });
 

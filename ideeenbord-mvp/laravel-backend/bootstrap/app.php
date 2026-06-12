@@ -14,6 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Achter de Coolify/Traefik reverse proxy: vertrouw de proxy zodat de
+        // echte client-IP (X-Forwarded-For) wordt gebruikt — cruciaal voor
+        // correcte rate limiting en https-detectie.
+        $middleware->trustProxies(at: '*');
+
         $middleware->alias([
             'auth:sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'auth' => Authenticate::class,

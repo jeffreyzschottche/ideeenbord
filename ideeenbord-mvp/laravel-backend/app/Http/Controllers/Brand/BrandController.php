@@ -347,7 +347,10 @@ class BrandController extends Controller
             'birth_city',
             'relationship_status',
             'postal_code',
-            'political_preference',
+            // Let op: 'political_preference' wordt bewust NIET per gebruiker
+            // geëxporteerd (AVG bijzondere categorie). Het zit alleen geaggregeerd
+            // in het rapport. De overige datavoorkeuren wel, maar zonder direct
+            // herleidbare identificatie.
             'household_role',
             'purchase_decision',
             'order_frequency',

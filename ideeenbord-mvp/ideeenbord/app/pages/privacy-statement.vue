@@ -29,7 +29,7 @@
         <h2 class="text-xl font-bold mb-3 text-[var(--color-brand)]">
           {{ sec.title }}
         </h2>
-        <div class="prose max-w-none" v-html="sec.body"></div>
+        <div class="prose max-w-none" v-html="sanitizeHtml(sec.body)"></div>
       </article>
 
       <!-- CONTACT -->
@@ -40,7 +40,7 @@
         <h2 class="text-xl font-bold mb-3 text-[var(--color-brand)]">
           {{ c["contact-title"] }}
         </h2>
-        <div class="prose max-w-none" v-html="c['contact-body']"></div>
+        <div class="prose max-w-none" v-html="sanitizeHtml(c['contact-body'])"></div>
       </article>
     </section>
   </div>
@@ -60,6 +60,7 @@ useJsonLd(
 import { computed } from "vue";
 import { useRuntimeConfig } from "nuxt/app";
 import { useCmsContent } from "~/composables/content/useCmsContent";
+import { sanitizeHtml } from "~/utils/sanitizeHtml";
 
 const { content: c, isLoading } = useCmsContent("privacy");
 const ready = computed(
