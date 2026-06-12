@@ -7,7 +7,7 @@ export interface BrandOwner {
   email: string;
   phone?: string;
   url?: string;
-  subscription_plan: "Brons" | "Zilver" | "Goud";
+  subscription_plan?: string;
   verified_owner?: boolean;
   brand: BrandSummary;
 }
@@ -21,7 +21,6 @@ export interface BrandOwnerLoginResponse {
 export interface UpdateBrandOwnerForm {
   email: string;
   phone: string;
-  subscription_plan: "Brons" | "Zilver" | "Goud";
   password?: string;
   password_confirmation?: string;
 }

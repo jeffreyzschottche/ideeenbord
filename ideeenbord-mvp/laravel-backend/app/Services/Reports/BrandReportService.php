@@ -164,6 +164,11 @@ class BrandReportService
             'Gem. beoordeling: '.($t['avg_rating'] ?? 'onbekend').", quizzes: {$t['quizzes']}.",
         ];
 
+        if (! empty($metrics['health'])) {
+            $h = $metrics['health'];
+            $lines[] = "Merkgezondheid: {$h['score']}/100 ({$h['label']}).";
+        }
+
         if (! empty($metrics['comparison']['deltas'])) {
             $d = $metrics['comparison']['deltas'];
             $fmt = fn ($x) => $x['change_pct'] === null ? 'n.v.t.' : ($x['change'] >= 0 ? '+' : '').$x['change_pct'].'%';
@@ -302,13 +307,22 @@ class BrandReportService
                 ]),
             ],
 
-            // Doelgroep + segmenten (beschrijvend → goedkoop)
+            // Doelgroep + segmenten + koopgedrag (beschrijvend → goedkoop)
             [
                 'model' => 'seed',
-                'data' => fn ($m) => ['demografie' => $m['demographics'], 'kerncijfers' => $m['totals']],
+                'data' => fn ($m) => [
+                    'demografie' => $m['demographics'],
+                    'datavoorkeuren' => $m['data_profile'] ?? null,
+                    'kerncijfers' => $m['totals'],
+                ],
                 'instruction' => 'Schrijf audience_insight: een diepgaand profiel van de doelgroep op basis '
-                    .'van leeftijd, geslacht, opleiding, sector en woonplaats. Definieer daarnaast '
-                    .'audience_segments: 2-4 herkenbare doelgroepsegmenten met een korte beschrijving per segment.',
+                    .'van leeftijd, geslacht, opleiding, sector en woonplaats. Definieer audience_segments: '
+                    .'2-4 herkenbare doelgroepsegmenten met een korte beschrijving per segment. Schrijf ten slotte '
+                    .'buying_behavior_insight: wat zeggen de optionele datavoorkeuren (politieke voorkeur, wie de '
+                    .'boodschappen doet en over aankopen beslist, bestelfrequentie, en uitgaven aan technologie en '
+                    .'boodschappen, huishoudgrootte) over het koopgedrag en de besteedbaarheid van deze doelgroep? '
+                    .'Wees voorzichtig met kleine aantallen: noem expliciet als slechts weinig deelnemers deze data '
+                    .'deelden (zie datavoorkeuren.shared_count) en trek dan geen harde conclusies.',
                 'schema' => $obj([
                     'audience_insight' => ['type' => 'string'],
                     'audience_segments' => [
@@ -316,6 +330,33 @@ class BrandReportService
                         'items' => $obj([
                             'segment' => ['type' => 'string'],
                             'description' => ['type' => 'string'],
+                        ]),
+                    ],
+                    'buying_behavior_insight' => ['type' => 'string'],
+                ]),
+            ],
+
+            // Persona's (beschrijvend → goedkoop)
+            [
+                'model' => 'seed',
+                'data' => fn ($m) => [
+                    'demografie' => $m['demographics'],
+                    'datavoorkeuren' => $m['data_profile'] ?? null,
+                    'idee_voorbeelden' => $m['idea_samples'],
+                ],
+                'instruction' => 'Stel 2 tot 3 concrete persona\'s op die representatief zijn voor dit publiek. '
+                    .'Geef per persona: name (herkenbare naam + leeftijd, bv. "Bewuste Bo (28)"), description '
+                    .'(korte achtergrondschets), demographics (bondige opsomming van leeftijd/opleiding/woonplaats/'
+                    .'sector), motivation (wat drijft deze persona om ideeën te delen en wat verwacht die van het merk). '
+                    .'Baseer je strikt op de data; bij dunne data: minder of bredere persona\'s en benoem de onzekerheid.',
+                'schema' => $obj([
+                    'personas' => [
+                        'type' => 'array',
+                        'items' => $obj([
+                            'name' => ['type' => 'string'],
+                            'description' => ['type' => 'string'],
+                            'demographics' => ['type' => 'string'],
+                            'motivation' => ['type' => 'string'],
                         ]),
                     ],
                 ]),
@@ -354,9 +395,12 @@ class BrandReportService
                 'use_digest' => true,
                 'data' => fn ($m) => [],
                 'instruction' => 'Op basis van alle voorgaande hoofdstukken: lever recommendations (4-6 concrete '
-                    .'aanbevelingen met titel, uitleg, prioriteit hoog/middel/laag en verwachte impact) en een '
-                    .'action_plan: 2-4 fasen met elk een titel, tijdsindicatie en een lijst concrete acties.',
+                    .'aanbevelingen met titel, uitleg, prioriteit hoog/middel/laag en verwachte impact), een '
+                    .'action_plan (2-4 fasen met elk een titel, tijdsindicatie en een lijst concrete acties) en '
+                    .'quick_wins: 3 concrete acties die het merk binnen één à twee weken kan uitvoeren voor '
+                    .'directe impact.',
                 'schema' => $obj([
+                    'quick_wins' => $stringArray,
                     'recommendations' => [
                         'type' => 'array',
                         'items' => $obj([

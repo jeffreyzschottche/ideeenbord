@@ -21,7 +21,6 @@ const owner = computed<BrandOwner | null>(() => authStore.owner);
 const form = ref<UpdateBrandOwnerForm>({
   email: "",
   phone: "",
-  subscription_plan: "Brons",
   password: "",
   password_confirmation: "",
 });
@@ -31,7 +30,6 @@ onMounted(() => {
   if (owner.value) {
     form.value.email = owner.value.email;
     form.value.phone = owner.value.phone || "";
-    form.value.subscription_plan = owner.value.subscription_plan;
   }
 });
 
@@ -65,13 +63,11 @@ async function handleSubmit() {
           <input v-model="form.phone" type="text" class="input" />
         </div>
 
-        <div>
-          <label class="form-label">Abonnement</label>
-          <select v-model="form.subscription_plan" class="select-input">
-            <option>Brons</option>
-            <option>Zilver</option>
-            <option>Goud</option>
-          </select>
+        <div class="rounded-xl bg-[var(--color-bg)] p-3 flex items-center gap-2">
+          <i class="fa-solid fa-circle-check text-[var(--color-success)]"></i>
+          <p class="text-sm text-gray-600">
+            <strong>Abonnement actief</strong> — je hebt volledige toegang tot het dashboard.
+          </p>
         </div>
 
         <div>

@@ -213,6 +213,9 @@ async function submitRating() {
         <IdeaGrid :brandId="brand.id" />
       </div>
     </div>
+
+    <!-- Advertentie (toont alleen als AdSense is ingeschakeld via env) -->
+    <AdBanner v-if="brand" />
   </div>
 
   <IdeasIdeaPopup />

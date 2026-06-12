@@ -26,8 +26,7 @@ const uploadingLogo = ref(false);
 const fileInput = ref<HTMLInputElement | null>(null);
 const logoPath = ref<string | null>(null);
 
-const subscriptions = ["Brons", "Zilver", "Goud"];
-const socialPlatforms = ["instagram", "facebook", "x", "linkedin", "tiktok", "youtube", "website"];
+const socialPlatforms =["instagram", "facebook", "x", "linkedin", "tiktok", "youtube", "website"];
 
 const form = ref({
   title: "",
@@ -36,7 +35,6 @@ const form = ref({
   intro: "",
   intro_short: "",
   email: "",
-  subscription: "",
 });
 const socialRows = ref<SocialItem[]>([]);
 
@@ -53,7 +51,6 @@ watch(
       intro: b.intro || "",
       intro_short: b.intro_short || "",
       email: b.email || "",
-      subscription: b.subscription || "Brons",
     };
     socialRows.value = Array.isArray(b.socials)
       ? b.socials.map((s) => ({ platform: s.platform, url: s.url }))
@@ -193,12 +190,6 @@ async function submitForm() {
             <div>
               <label class="form-label">E-mail</label>
               <input v-model="form.email" type="email" class="input" />
-            </div>
-            <div>
-              <label class="form-label">Abonnement</label>
-              <select v-model="form.subscription" class="select-input">
-                <option v-for="s in subscriptions" :key="s" :value="s">{{ s }}</option>
-              </select>
             </div>
             <div>
               <label class="form-label">Korte introductie</label>

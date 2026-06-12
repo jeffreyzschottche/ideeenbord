@@ -100,13 +100,23 @@ class AuthController extends Controller
             'password' => 'sometimes|string|min:6',
             'username' => ['sometimes', 'string', 'unique:users,username,' . $user->id, new ProfanityFree()],
             'gender' => 'nullable|string',
+            'birthdate' => 'nullable|date',
             'education_level' => 'nullable|string',
             'education' => ['nullable', 'string', new ProfanityFree()],
             'job' => ['nullable', 'string', new ProfanityFree()],
             'sector' => 'nullable|string',
             'city' => 'nullable|string',
+            'birth_city' => 'nullable|string',
             'relationship_status' => 'nullable|string',
             'postal_code' => 'nullable|string',
+            // Optionele datavoorkeuren
+            'political_preference' => 'nullable|string',
+            'household_role' => 'nullable|string',
+            'purchase_decision' => 'nullable|string',
+            'order_frequency' => 'nullable|string',
+            'tech_spend' => 'nullable|string',
+            'grocery_spend' => 'nullable|string',
+            'household_size' => 'nullable|string',
         ];
 
         $validator = Validator::make($request->all(), $rules);

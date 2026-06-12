@@ -27,7 +27,32 @@ class BrandReportController extends Controller
             ->latest()
             ->get(['id', 'title', 'status', 'provider', 'model', 'period_type', 'period_start', 'period_end', 'generated_at', 'created_at']);
 
-        return response()->json(['reports' => $reports]);
+        return response()->json([
+            'reports' => $reports,
+            'quota' => $this->quota($brand),
+        ]);
+    }
+
+    /**
+     * Maandelijkse rapportlimiet voor een merk. Telt geslaagde/lopende rapporten
+     * in de huidige kalendermaand — reset automatisch, stapelt niet op.
+     *
+     * @return array{limit:int, used:int, remaining:int, resets_at:string}
+     */
+    private function quota(Brand $brand): array
+    {
+        $limit = (int) config('ai.report_monthly_limit', 10);
+        $used = $brand->reports()
+            ->where('status', '!=', 'failed')
+            ->where('created_at', '>=', Carbon::now()->startOfMonth())
+            ->count();
+
+        return [
+            'limit' => $limit,
+            'used' => $used,
+            'remaining' => max(0, $limit - $used),
+            'resets_at' => Carbon::now()->startOfMonth()->addMonth()->toDateString(),
+        ];
     }
 
     /** Live statistics for a brand — the same analytics the report uses, no AI, always current. */
@@ -55,6 +80,17 @@ class BrandReportController extends Controller
             return response()->json([
                 'message' => 'De AI-provider is nog niet geconfigureerd. Voeg een API-key toe in de serverinstellingen.',
             ], 422);
+        }
+
+        // Maandlimiet: max X rapporten per kalendermaand (reset elke maand, stapelt niet op).
+        $quota = $this->quota($brand);
+        if ($quota['remaining'] <= 0) {
+            $resets = Carbon::parse($quota['resets_at'])->translatedFormat('j F');
+
+            return response()->json([
+                'message' => "Je hebt je maandlimiet van {$quota['limit']} rapporten bereikt. Je kunt op {$resets} weer nieuwe rapporten genereren.",
+                'quota' => $quota,
+            ], 429);
         }
 
         $data = $request->validate([

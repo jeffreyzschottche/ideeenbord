@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import Inbox from "~/components/user/notifications/Inbox.vue";
 import UserIdeasPosted from "~/components/user/ideas/UserIdeasPosted.vue";
 import UserProfileEdit from "~/components/user/profile/UserProfileEdit.vue";
+import UserDataPreferences from "~/components/user/profile/UserDataPreferences.vue";
 import UserRatingsInsights from "~/components/user/ideas/UserRatingsInsights.vue";
 import UserQuizzes from "~/components/user/quiz/UserQuizzes.vue";
 import { useUserAuthStore } from "~/store/useUserAuthStore";
@@ -32,6 +33,7 @@ onMounted(async () => {
 /* Tab Logica */
 const tabs = [
   { key: "profile", label: "Profiel" },
+  { key: "data", label: "Datavoorkeuren" },
   { key: "ideas", label: "Ideeën" },
   { key: "ratings", label: "Ratings" },
   { key: "quizzes", label: "Quizzes" },
@@ -87,6 +89,7 @@ const isActive = (key: string) => activeTab.value === key;
       <!-- Inhoud -->
       <section class="md:col-span-8 lg:col-span-9 card p-5 md:p-7 min-h-[500px]">
         <UserProfileEdit v-if="isActive('profile')" />
+        <UserDataPreferences v-if="isActive('data')" />
         <UserIdeasPosted v-if="isActive('ideas')" />
         <UserRatingsInsights v-if="isActive('ratings')" />
         <UserQuizzes v-if="isActive('quizzes')" />

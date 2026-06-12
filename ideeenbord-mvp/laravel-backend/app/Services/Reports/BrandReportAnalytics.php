@@ -58,9 +58,13 @@ class BrandReportAnalytics
         $quizzes = $this->scope(Quiz::where('brand_id', $brand->id), $from, $to)->get();
         $participants = $this->participants($ideas, $responses);
 
+        $totals = $this->totals($brand, $ideas, $responses, $quizzes, $participants);
+        $status = $this->statusDistribution($ideas);
+
         return [
-            'totals' => $this->totals($brand, $ideas, $responses, $quizzes, $participants),
-            'status_distribution' => $this->statusDistribution($ideas),
+            'totals' => $totals,
+            'health' => $this->health($totals, $status),
+            'status_distribution' => $status,
             'top_ideas_by_likes' => $this->topIdeas($ideas, 'likes'),
             'top_ideas_by_dislikes' => $this->topIdeas($ideas, 'dislikes'),
             'idea_samples' => $this->ideaSamples($ideas),
@@ -69,6 +73,7 @@ class BrandReportAnalytics
             'main_questions' => $this->mainQuestions($responses),
             'quizzes' => $this->quizzes($quizzes),
             'demographics' => $this->demographics($participants),
+            'data_profile' => $this->dataProfile($participants),
         ];
     }
 
@@ -145,6 +150,40 @@ class BrandReportAnalytics
             'avg_rating' => $brand->rating_count > 0
                 ? round($brand->rating_sum / $brand->rating_count, 2)
                 : null,
+        ];
+    }
+
+    /**
+     * Merkgezondheid-score (0-100), samengesteld uit sentiment, opvolging
+     * (worden ideeën opgepakt?) en betrokkenheid per deelnemer.
+     */
+    private function health(array $t, array $status): ?array
+    {
+        if (($t['ideas'] ?? 0) < 1) {
+            return null;
+        }
+
+        $sentiment = $t['sentiment_ratio'] !== null ? $t['sentiment_ratio'] / 100 : 0.5;
+        $acted = (int) ($status['in_progress'] ?? 0) + (int) ($status['completed'] ?? 0);
+        $responsiveness = $t['ideas'] > 0 ? min(1, $acted / $t['ideas']) : 0;
+        $engagement = min(1, (float) ($t['engagement_per_participant'] ?? 0) / 5);
+
+        $score = (int) round(($sentiment * 0.40 + $responsiveness * 0.35 + $engagement * 0.25) * 100);
+        $label = match (true) {
+            $score >= 75 => 'Sterk',
+            $score >= 50 => 'Gezond',
+            $score >= 30 => 'Aandacht nodig',
+            default => 'Kwetsbaar',
+        };
+
+        return [
+            'score' => $score,
+            'label' => $label,
+            'components' => [
+                ['label' => 'Sentiment', 'value' => (int) round($sentiment * 100)],
+                ['label' => 'Opvolging', 'value' => (int) round($responsiveness * 100)],
+                ['label' => 'Betrokkenheid', 'value' => (int) round($engagement * 100)],
+            ],
         ];
     }
 
@@ -268,6 +307,8 @@ class BrandReportAnalytics
         return User::whereIn('id', $userIds)->get([
             'id', 'gender', 'birthdate', 'education_level', 'education',
             'job', 'sector', 'city', 'relationship_status',
+            'political_preference', 'household_role', 'purchase_decision',
+            'order_frequency', 'tech_spend', 'grocery_spend', 'household_size',
         ]);
     }
 
@@ -280,6 +321,26 @@ class BrandReportAnalytics
             'sector' => $this->distribution($participants, 'sector', 8),
             'cities' => $this->distribution($participants, 'city', 8),
             'relationship' => $this->distribution($participants, 'relationship_status'),
+        ];
+    }
+
+    /**
+     * Optionele datavoorkeuren (politiek, huishouden, koopgedrag, uitgaven).
+     * Alleen ingevulde waarden tellen mee; lege keys betekenen "niet gedeeld".
+     */
+    private function dataProfile(Collection $participants): array
+    {
+        return [
+            'political_preference' => $this->distribution($participants, 'political_preference'),
+            'household_role' => $this->distribution($participants, 'household_role'),
+            'purchase_decision' => $this->distribution($participants, 'purchase_decision'),
+            'order_frequency' => $this->distribution($participants, 'order_frequency'),
+            'tech_spend' => $this->distribution($participants, 'tech_spend'),
+            'grocery_spend' => $this->distribution($participants, 'grocery_spend'),
+            'household_size' => $this->distribution($participants, 'household_size'),
+            'shared_count' => $participants->filter(fn ($p) => $p->political_preference
+                || $p->order_frequency || $p->tech_spend || $p->grocery_spend
+                || $p->household_role || $p->purchase_decision || $p->household_size)->count(),
         ];
     }
 

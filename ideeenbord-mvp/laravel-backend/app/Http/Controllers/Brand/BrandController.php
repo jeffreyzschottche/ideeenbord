@@ -347,6 +347,13 @@ class BrandController extends Controller
             'birth_city',
             'relationship_status',
             'postal_code',
+            'political_preference',
+            'household_role',
+            'purchase_decision',
+            'order_frequency',
+            'tech_spend',
+            'grocery_spend',
+            'household_size',
             'ratings_given',
             'created_posts',
         ]);

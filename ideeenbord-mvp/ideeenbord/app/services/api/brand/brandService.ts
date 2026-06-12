@@ -38,7 +38,6 @@ export const brandService = {
         email: form.email,
         phone: form.phone,
         url: form.url,
-        subscription_plan: form.subscriptionPlan,
         password: form.password,
       },
     });

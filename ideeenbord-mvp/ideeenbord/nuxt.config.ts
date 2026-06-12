@@ -37,6 +37,10 @@ export default defineNuxtConfig({
     public: {
       apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL,
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || "https://ideeenbord.nl",
+      // Google AdSense — alleen tonen op publieke pagina's wanneer ingeschakeld.
+      adsenseEnabled: process.env.NUXT_PUBLIC_ADSENSE_ENABLED || "0", // "1" = tonen, "0" = niet
+      adsenseClient: process.env.NUXT_PUBLIC_ADSENSE_CLIENT || "", // bv. ca-pub-1234567890123456
+      adsenseSlot: process.env.NUXT_PUBLIC_ADSENSE_SLOT || "", // standaard ad-slot id
     },
   },
   app: {

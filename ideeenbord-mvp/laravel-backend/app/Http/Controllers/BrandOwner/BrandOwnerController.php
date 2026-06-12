@@ -37,12 +37,12 @@ class BrandOwnerController extends Controller
             'email' => 'required|email|unique:brand_owners,email',
             'phone' => 'nullable|string',
             'url' => 'nullable|url',
-            'subscription_plan' => 'required|string|in:Brons,Zilver,Goud',
             'password' => 'required|string|min:6',
         ]);
 
         $brandOwner = BrandOwner::create([
             ...$data,
+            'subscription_plan' => 'Actief', // één abonnement = volledige toegang
             'verified_owner' => false,
         ]);
 

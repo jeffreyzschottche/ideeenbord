@@ -67,9 +67,9 @@
 
 <script setup lang="ts">
 usePageSeo({
-  title: "Abonnementen",
+  title: "Abonnement",
   description:
-    "Bekijk de abonnementen voor merken op Ideeënbord: Brons, Zilver en Goud — elk met eigen voordelen.",
+    "Eén abonnement voor merken op Ideeënbord: volledige toegang tot je dashboard, statistieken, AI-rapporten en data-export.",
 });
 useJsonLd(
   breadcrumbLd([

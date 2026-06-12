@@ -33,6 +33,8 @@ export type ReportAi = {
   top_ideas_analysis: string;
   audience_insight: string;
   audience_segments: { segment: string; description: string }[];
+  buying_behavior_insight: string;
+  personas: { name: string; description: string; demographics: string; motivation: string }[];
   main_question_insights: string;
   opportunities: string[];
   risks: string[];
@@ -44,6 +46,7 @@ export type ReportAi = {
     expected_impact: string;
   }[];
   action_plan: { phase: string; timeframe: string; actions: string[] }[];
+  quick_wins: string[];
   conclusion: string;
   suggested_main_question: string;
 };
@@ -66,12 +69,19 @@ export type ReportRange = {
   months: { value: string; label: string; ideas: number }[];
 };
 
+export type ReportQuota = {
+  limit: number;
+  used: number;
+  remaining: number;
+  resets_at: string;
+};
+
 export const reportService = {
-  async list(brandId: number): Promise<ReportSummary[]> {
-    const res = await brandOwnerApiFetch<{ reports: ReportSummary[] }>(
+  async list(brandId: number): Promise<{ reports: ReportSummary[]; quota: ReportQuota | null }> {
+    const res = await brandOwnerApiFetch<{ reports: ReportSummary[]; quota?: ReportQuota }>(
       `/brands/${brandId}/reports`
     );
-    return res.reports;
+    return { reports: res.reports, quota: res.quota ?? null };
   },
 
   async generate(

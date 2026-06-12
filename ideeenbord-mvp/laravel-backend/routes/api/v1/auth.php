@@ -97,7 +97,6 @@ Route::middleware('auth:brand_owner')->group(function () {
         $data = $request->validate([
             'email' => 'required|email|unique:brand_owners,email,' . $owner->id,
             'phone' => 'nullable|string',
-            'subscription_plan' => 'required|in:Brons,Zilver,Goud',
             'password' => 'nullable|confirmed|min:6',
         ]);
 

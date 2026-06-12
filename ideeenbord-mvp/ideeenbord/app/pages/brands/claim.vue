@@ -20,7 +20,6 @@ const form = ref<ClaimForm>({
   email: "",
   phone: "",
   url: "",
-  subscriptionPlan: "Brons",
   password: "",
 });
 
@@ -165,15 +164,6 @@ async function handleSubmit() {
       <div class="form-field">
         <label class="form-label">Website</label>
         <input v-model="form.url" placeholder="Website" class="form-input" />
-      </div>
-
-      <div class="form-field">
-        <label class="form-label required-dot">Abonnement</label>
-        <select v-model="form.subscriptionPlan" required class="select-input">
-          <option>Brons</option>
-          <option>Zilver</option>
-          <option>Goud</option>
-        </select>
       </div>
 
       <div class="form-field">

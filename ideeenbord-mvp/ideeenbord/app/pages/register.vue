@@ -8,6 +8,13 @@ import { ref, computed } from "vue";
 import type { RegisterForm } from "~/types/auth";
 import { useRegister } from "~/composables/user/useAuth";
 import { useResponseDisplay } from "~/composables/notifications/useResponseDisplay";
+import CityAutocomplete from "~/components/form/CityAutocomplete.vue";
+import {
+  genderOptions,
+  educationLevelOptions,
+  relationshipOptions,
+  sectorOptions,
+} from "~/constants/profileOptions";
 
 const form = ref<RegisterForm>({
   name: "",
@@ -77,19 +84,6 @@ async function handleSubmit() {
   else triggerByKey("register-failed");
 }
 
-/* Optionele profielvelden, in handzame groepjes */
-const profileFields = [
-  { key: "gender", label: "Geslacht", placeholder: "Bijv. vrouw / man / x" },
-  { key: "birthdate", label: "Geboortedatum", type: "date" },
-  { key: "city", label: "Woonplaats", placeholder: "Stad of dorp" },
-  { key: "postal_code", label: "Postcode", placeholder: "1234 AB" },
-  { key: "education_level", label: "Opleidingsniveau", placeholder: "Bijv. HBO" },
-  { key: "education", label: "Opleiding", placeholder: "Bijv. Communicatie" },
-  { key: "job", label: "Werk", placeholder: "Functie" },
-  { key: "sector", label: "Sector", placeholder: "Bijv. IT" },
-  { key: "relationship_status", label: "Relatiestatus", placeholder: "Bijv. single" },
-  { key: "birth_city", label: "Geboorteplaats", placeholder: "Bijv. Haarlem" },
-] as const;
 </script>
 
 <template>
@@ -156,14 +150,57 @@ const profileFields = [
           </p>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div v-for="f in profileFields" :key="f.key">
-              <label class="form-label">{{ f.label }}</label>
-              <input
-                v-model="(form as any)[f.key]"
-                :type="(f as any).type || 'text'"
-                class="input"
-                :placeholder="(f as any).placeholder || ''"
-              />
+            <div>
+              <label class="form-label">Geslacht</label>
+              <select v-model="form.gender" class="select-input">
+                <option value="">Kies…</option>
+                <option v-for="o in genderOptions" :key="o" :value="o">{{ o }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Geboortedatum</label>
+              <input v-model="form.birthdate" type="date" class="input" />
+            </div>
+            <div>
+              <label class="form-label">Woonplaats</label>
+              <CityAutocomplete v-model="form.city" placeholder="Bijv. Haarlem" />
+            </div>
+            <div>
+              <label class="form-label">Postcode</label>
+              <input v-model="form.postal_code" type="text" class="input" placeholder="1234 AB" />
+            </div>
+            <div>
+              <label class="form-label">Opleidingsniveau</label>
+              <select v-model="form.education_level" class="select-input">
+                <option value="">Kies…</option>
+                <option v-for="o in educationLevelOptions" :key="o" :value="o">{{ o }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Opleiding</label>
+              <input v-model="form.education" type="text" class="input" placeholder="Bijv. Communicatie" />
+            </div>
+            <div>
+              <label class="form-label">Functie</label>
+              <input v-model="form.job" type="text" class="input" placeholder="Bijv. marketeer" />
+            </div>
+            <div>
+              <label class="form-label">Sector</label>
+              <select v-model="form.sector" class="select-input">
+                <option value="">Kies…</option>
+                <option v-for="o in sectorOptions" :key="o" :value="o">{{ o }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Relatiestatus</label>
+              <select v-model="form.relationship_status" class="select-input">
+                <option value="">Kies…</option>
+                <option v-for="o in relationshipOptions" :key="o" :value="o">{{ o }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Geboorteplaats</label>
+              <CityAutocomplete v-model="form.birth_city" placeholder="Bijv. Haarlem" />
             </div>
           </div>
 

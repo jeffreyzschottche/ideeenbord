@@ -9,6 +9,15 @@ return [
     */
     'provider' => env('AI_PROVIDER', 'claude'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Rapportlimiet per merk per kalendermaand
+    |--------------------------------------------------------------------------
+    | Maximaal aantal (geslaagde) rapporten dat een merk per maand mag genereren.
+    | Reset automatisch elke maand — niet-gebruikte rapporten stapelen niet op.
+    */
+    'report_monthly_limit' => (int) env('AI_REPORT_MONTHLY_LIMIT', 10),
+
     'claude' => [
         'api_key' => env('ANTHROPIC_API_KEY'),
         // Model used for the heavy analytical work (brand reports).

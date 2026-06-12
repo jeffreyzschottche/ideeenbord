@@ -20,7 +20,6 @@ export interface ClaimForm {
   email: string;
   phone: string;
   url: string;
-  subscriptionPlan: "Brons" | "Zilver" | "Goud";
   password: string;
 }
 
