@@ -256,7 +256,7 @@ onMounted(() => {
         Volledige export
       </p>
 
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap">
         <button class="btn btn--ghost btn--sm" @click="loadAll">
           <i class="fa-solid fa-rotate-right"></i> Vernieuwen
         </button>
@@ -332,7 +332,7 @@ onMounted(() => {
       <section>
         <div class="flex items-center justify-between mb-2">
           <h4 class="font-semibold">Brand</h4>
-          <div class="flex gap-2">
+          <div class="flex gap-2 flex-wrap">
             <button
               class="btn btn--ghost btn--sm"
               :disabled="!brandExport"
@@ -388,7 +388,7 @@ onMounted(() => {
       <section>
         <div class="flex items-center justify-between mb-2">
           <h4 class="font-semibold">Ideas ({{ ideasExport.length }})</h4>
-          <div class="flex gap-2">
+          <div class="flex gap-2 flex-wrap">
             <button
               class="btn btn--ghost btn--sm"
               :disabled="!ideasExport.length"
@@ -453,7 +453,7 @@ onMounted(() => {
           <h4 class="font-semibold">
             Deelnemers / Users ({{ participantsExport.length }})
           </h4>
-          <div class="flex gap-2">
+          <div class="flex gap-2 flex-wrap">
             <button
               class="btn btn--ghost btn--sm"
               :disabled="!participantsExport.length"
