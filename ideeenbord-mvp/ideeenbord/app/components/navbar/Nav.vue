@@ -51,9 +51,9 @@
           <button @click="handleLogout" class="nav-link">Uitloggen</button>
         </template>
 
-        <Button class="cta w-35 text-center" @click="openModal"
-          >+ Plaats idee</Button
-        >
+        <button class="cta w-35 text-center" @click="openModal">
+          + Plaats idee
+        </button>
         <IdeasIdeaSubmitModal v-if="showModal" @close="closeModal" />
       </nav>
 
@@ -97,7 +97,7 @@
           v-if="menuOpen"
           class="absolute top-24 left-0 w-full bg-gray-800 text-white p-4 flex flex-col space-y-4 md:hidden"
         >
-          <SearchSearchBarNav class="mr-auto nav-link" />
+          <SearchSearchbarnav class="mr-auto nav-link" />
 
           <NuxtLink to="/about" class="nav-link" @click="toggleMenu"
             >Uitleg</NuxtLink

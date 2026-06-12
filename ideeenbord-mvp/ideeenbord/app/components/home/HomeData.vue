@@ -7,13 +7,13 @@
           <!-- subtiele accent-cirkel -->
           <div class="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-[var(--color-brand)]/20 blur-2xl"></div>
 
-          <div class="relative grid grid-cols-2 gap-6 md:gap-8">
+          <div class="relative grid grid-cols-2 gap-6 md:gap-8" v-reveal="{ stagger: 0.1, y: 24 }">
             <div
               v-for="stat in stats"
               :key="stat.key"
               class="rounded-2xl bg-white/5 border border-white/10 p-5 text-center"
             >
-              <span class="block text-3xl md:text-4xl font-extrabold text-[var(--color-brand)]">
+              <span v-countup class="block text-3xl md:text-4xl font-extrabold text-[var(--color-brand)]">
                 +{{ content[stat.key] || "0" }}
               </span>
               <span class="mt-1 block text-sm text-gray-300">

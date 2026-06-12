@@ -7,7 +7,7 @@
         {{ content["become-title"] }}
       </h1>
 
-      <ol class="space-y-6">
+      <ol class="space-y-6" v-reveal="{ stagger: 0.12, y: 28 }">
         <li v-for="step in steps" :key="step.id" class="about-card">
           <h2 class="text-xl font-bold mb-2 text-[var(--color-brand)]">
             {{ step.title }}
