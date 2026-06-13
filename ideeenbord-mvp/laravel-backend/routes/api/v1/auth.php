@@ -4,9 +4,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\BrandOwner;
 use App\Http\Controllers\User\AuthController;
@@ -88,6 +91,46 @@ Route::post('/email/verification-notification', function (Request $request) {
 Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
 Route::post('/brand-owner/login', [BrandOwnerAuthController::class, 'login'])->middleware('throttle:10,1');
+
+Route::post('/forgot-password', function (Request $request) {
+    $request->validate(['email' => ['required', 'email']]);
+
+    $status = Password::sendResetLink($request->only('email'));
+
+    if ($status === Password::RESET_THROTTLED) {
+        return response()->json(['message' => __($status)], 429);
+    }
+
+    return response()->json([
+        'message' => 'Als dit e-mailadres bestaat, sturen we een resetlink.',
+    ]);
+})->middleware('throttle:5,1');
+
+Route::post('/reset-password', function (Request $request) {
+    $request->validate([
+        'token' => ['required'],
+        'email' => ['required', 'email'],
+        'password' => ['required', 'confirmed', 'min:6'],
+    ]);
+
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function (User $user, string $password) {
+            $user->forceFill([
+                'password' => Hash::make($password),
+                'remember_token' => Str::random(60),
+            ])->save();
+
+            event(new PasswordReset($user));
+        }
+    );
+
+    if ($status !== Password::PASSWORD_RESET) {
+        return response()->json(['message' => __($status)], 422);
+    }
+
+    return response()->json(['message' => 'Je wachtwoord is aangepast. Je kunt nu inloggen.']);
+})->middleware('throttle:5,1');
 
 Route::middleware('auth:brand_owner')->group(function () {
     Route::post('/brand-owner/logout', [BrandOwnerAuthController::class, 'logout']);

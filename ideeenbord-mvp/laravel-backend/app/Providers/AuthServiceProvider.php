@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Config;
@@ -30,6 +31,15 @@ class AuthServiceProvider extends ServiceProvider
             $query = parse_url($temporarySignedURL, PHP_URL_QUERY);
 
             return "{$frontendUrl}/email-verification?id={$notifiable->getKey()}&hash=" . sha1($notifiable->getEmailForVerification()) . "&{$query}";
+        });
+
+        ResetPassword::createUrlUsing(function ($notifiable, string $token) {
+            $frontendUrl = Config::get('app.frontend_url');
+
+            return "{$frontendUrl}/reset-password?" . http_build_query([
+                'token' => $token,
+                'email' => $notifiable->getEmailForPasswordReset(),
+            ]);
         });
     }
 }
