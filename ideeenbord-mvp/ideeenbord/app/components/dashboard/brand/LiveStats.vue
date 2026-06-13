@@ -153,29 +153,29 @@ onMounted(load);
 
     <div v-if="!loading && totals" class="space-y-8">
       <!-- KPI cards -->
-      <section class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <section class="grid grid-cols-2 md:grid-cols-4 gap-3" :key="`kpi-${totals.ideas}-${totals.participants}`">
         <div class="rounded-xl bg-[var(--color-bg)] p-4">
-          <p class="text-2xl font-bold" style="color: var(--color-brand)">{{ totals.ideas }}</p>
+          <p class="text-2xl font-bold" style="color: var(--color-brand)" v-countup>{{ totals.ideas }}</p>
           <p class="text-xs text-gray-600">Ideeën</p>
         </div>
         <div class="rounded-xl bg-[var(--color-bg)] p-4">
-          <p class="text-2xl font-bold" style="color: var(--color-nav)">{{ totals.participants }}</p>
+          <p class="text-2xl font-bold" style="color: var(--color-nav)" v-countup>{{ totals.participants }}</p>
           <p class="text-xs text-gray-600">Deelnemers</p>
         </div>
         <div class="rounded-xl bg-[var(--color-bg)] p-4">
-          <p class="text-2xl font-bold text-green-600">{{ totals.net_sentiment >= 0 ? "+" : "" }}{{ totals.net_sentiment }}</p>
+          <p class="text-2xl font-bold text-green-600" v-countup>{{ totals.net_sentiment >= 0 ? "+" : "" }}{{ totals.net_sentiment }}</p>
           <p class="text-xs text-gray-600">Netto sentiment</p>
         </div>
         <div class="rounded-xl bg-[var(--color-bg)] p-4">
-          <p class="text-2xl font-bold" style="color: var(--color-nav)">{{ totals.main_question_responses }}</p>
+          <p class="text-2xl font-bold" style="color: var(--color-nav)" v-countup>{{ totals.main_question_responses }}</p>
           <p class="text-xs text-gray-600">Hoofdvraag-antwoorden</p>
         </div>
         <div class="rounded-xl bg-[var(--color-bg)] p-4">
-          <p class="text-2xl font-bold text-green-600">{{ totals.idea_likes }}</p>
+          <p class="text-2xl font-bold text-green-600" v-countup>{{ totals.idea_likes }}</p>
           <p class="text-xs text-gray-600">Likes</p>
         </div>
         <div class="rounded-xl bg-[var(--color-bg)] p-4">
-          <p class="text-2xl font-bold text-red-600">{{ totals.idea_dislikes }}</p>
+          <p class="text-2xl font-bold text-red-600" v-countup>{{ totals.idea_dislikes }}</p>
           <p class="text-xs text-gray-600">Dislikes</p>
         </div>
         <div class="rounded-xl bg-[var(--color-bg)] p-4">

@@ -39,6 +39,7 @@ const initAuth = brandOwnerAuth.initAuth;
 const loading = ref(true);
 const showBrandEdit = ref(false);
 const sidebarOpen = ref(false);
+const onboardingDismissed = ref(false);
 
 const rawApiBase = useRuntimeConfig().public.apiBaseUrl as string;
 const imageBase = storageBaseFromApiBase(rawApiBase);
@@ -75,6 +76,60 @@ async function loadStats() {
   } finally {
     statsLoading.value = false;
   }
+}
+
+// ---- Onboarding (aan de slag) ----
+const onboardingSteps = computed(() => {
+  const t = stats.value?.totals;
+  return [
+    {
+      key: "profile",
+      icon: "fa-store",
+      title: "Maak je merkprofiel compleet",
+      text: "Voeg je logo en gegevens toe via 'Merk bewerken'.",
+      done: !!brand.value?.logo_path,
+      run: () => (showBrandEdit.value = true),
+    },
+    {
+      key: "mq",
+      icon: "fa-circle-question",
+      title: "Stel je hoofdvraag in",
+      text: "Kies dé vraag die je publiek beantwoordt.",
+      done: !!brand.value?.main_question_id,
+      run: () => setTab("main-question"),
+    },
+    {
+      key: "ideas",
+      icon: "fa-lightbulb",
+      title: "Verzamel je eerste ideeën",
+      text: "Beheer en reageer op binnenkomende ideeën.",
+      done: !!(t && t.ideas > 0),
+      run: () => setTab("ideas"),
+    },
+    {
+      key: "report",
+      icon: "fa-file-lines",
+      title: "Genereer je eerste AI-rapport",
+      text: "Zet je klantdata om in concrete adviezen.",
+      done: false,
+      run: () => setTab("report"),
+    },
+  ];
+});
+const onboardingDoneCount = computed(
+  () => onboardingSteps.value.filter((s) => s.done).length
+);
+// Verberg zodra de kernstappen (hoofdvraag + eerste ideeën) klaar zijn.
+const coreOnboardingDone = computed(
+  () => !!brand.value?.main_question_id && !!(stats.value?.totals?.ideas > 0)
+);
+const showOnboarding = computed(
+  () => !onboardingDismissed.value && !loading.value && !coreOnboardingDone.value
+);
+function dismissOnboarding() {
+  onboardingDismissed.value = true;
+  const id = owner.value?.brand?.id;
+  if (import.meta.client && id) localStorage.setItem(`ib-onboarding-${id}`, "1");
 }
 
 // ---- Tabs ----
@@ -144,6 +199,10 @@ async function reloadData() {
 
 onMounted(async () => {
   await reloadData();
+  const id = owner.value?.brand?.id;
+  if (import.meta.client && id && localStorage.getItem(`ib-onboarding-${id}`)) {
+    onboardingDismissed.value = true;
+  }
   syncTabFromHash();
   loadStats();
 });
@@ -247,6 +306,62 @@ watch(
         @close="showBrandEdit = false"
         @updated="() => { reloadData(); loadStats(); }"
       />
+
+      <!-- Aan de slag — onboarding -->
+      <div
+        v-if="showOnboarding"
+        class="card p-5 md:p-6 mt-5 relative overflow-hidden"
+        v-reveal="{ y: 16 }"
+      >
+        <button
+          class="absolute top-4 right-4 w-8 h-8 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition"
+          title="Verbergen"
+          @click="dismissOnboarding"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="flex items-center gap-3 mb-1">
+          <span class="w-10 h-10 rounded-2xl bg-[var(--color-brand)]/12 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-rocket text-[var(--color-brand)]"></i>
+          </span>
+          <div>
+            <h2 class="text-lg font-extrabold text-[var(--color-nav)] leading-tight">Aan de slag</h2>
+            <p class="muted-text text-sm">
+              {{ onboardingDoneCount }} van {{ onboardingSteps.length }} stappen voltooid
+            </p>
+          </div>
+        </div>
+
+        <!-- Voortgangsbalk -->
+        <div class="h-2 rounded-full bg-gray-100 overflow-hidden my-4">
+          <div
+            class="h-full rounded-full bg-[var(--color-brand)] transition-all duration-500"
+            :style="{ width: `${(onboardingDoneCount / onboardingSteps.length) * 100}%` }"
+          ></div>
+        </div>
+
+        <ul class="grid sm:grid-cols-2 gap-3">
+          <li v-for="s in onboardingSteps" :key="s.key">
+            <button
+              class="w-full text-left flex items-start gap-3 rounded-2xl border p-3.5 transition hover:shadow-sm"
+              :class="s.done ? 'border-green-200 bg-green-50/60' : 'border-gray-100 hover:border-[var(--color-brand)]/40'"
+              @click="s.run"
+            >
+              <span
+                class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                :class="s.done ? 'bg-green-500 text-white' : 'bg-[var(--color-brand)]/10 text-[var(--color-brand)]'"
+              >
+                <i class="fa-solid" :class="s.done ? 'fa-check' : s.icon"></i>
+              </span>
+              <span class="min-w-0">
+                <span class="block font-semibold text-[var(--color-nav)] text-sm leading-snug">{{ s.title }}</span>
+                <span class="block muted-text text-xs mt-0.5">{{ s.text }}</span>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
 
       <!-- Mobile tab opener -->
       <button
