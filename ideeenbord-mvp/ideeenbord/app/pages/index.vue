@@ -9,6 +9,9 @@
       <div v-reveal><HomeHowTo /></div>
     </div>
 
+    <!-- Wat kun je doen — showcase voor users + merken -->
+    <HomePlatformShowcase />
+
     <!-- Merken-slider op getinte band -->
     <div class="bg-[var(--color-bg)] px-4" v-reveal><HomeBrandSlider /></div>
 

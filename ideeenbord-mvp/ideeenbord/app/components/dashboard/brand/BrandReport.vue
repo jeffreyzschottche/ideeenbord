@@ -557,6 +557,13 @@ onMounted(() => {
       <p class="text-gray-500 text-sm">
         Genereer een AI-rapport met analyses en aanbevelingen op basis van jouw merkdata.
       </p>
+      <NuxtLink
+        to="/voorbeeld-rapport"
+        target="_blank"
+        class="inline-flex items-center gap-1.5 mt-4 text-sm font-semibold text-[var(--color-brand)] hover:underline"
+      >
+        <i class="fa-solid fa-eye"></i> Bekijk eerst een voorbeeldrapport
+      </NuxtLink>
     </div>
 
     <!-- Report -->
