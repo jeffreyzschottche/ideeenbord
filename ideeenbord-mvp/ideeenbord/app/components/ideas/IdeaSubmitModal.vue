@@ -58,20 +58,34 @@
           </div>
 
           <!-- 3. Titel & beschrijving -->
-          <input
-            v-model="title"
-            placeholder="Titel van je idee"
-            class="block w-full p-2 rounded brandColorBorder"
-            required
-          />
-          <textarea
-            v-model="description"
-            placeholder="Beschrijving"
-            class="block w-full p-2 rounded brandColorBorder"
-            rows="4"
-          />
+          <div>
+            <input
+              v-model="title"
+              placeholder="Titel van je idee (min. 5 karakters)"
+              class="block w-full p-2 rounded brandColorBorder"
+              :class="{ 'border-red-500': titleError }"
+              required
+              minlength="5"
+              maxlength="100"
+            />
+            <p v-if="titleError" class="text-red-500 text-xs mt-1">{{ titleError }}</p>
+            <p class="text-gray-400 text-xs mt-1 text-right">{{ title.length }}/100</p>
+          </div>
+          <div>
+            <textarea
+              v-model="description"
+              placeholder="Beschrijving (min. 20 karakters)"
+              class="block w-full p-2 rounded brandColorBorder"
+              :class="{ 'border-red-500': descriptionError }"
+              rows="4"
+              minlength="20"
+              maxlength="1000"
+            />
+            <p v-if="descriptionError" class="text-red-500 text-xs mt-1">{{ descriptionError }}</p>
+            <p class="text-gray-400 text-xs mt-1 text-right">{{ description.length }}/1000</p>
+          </div>
 
-          <button type="submit" class="cta w-full">Plaats idee</button>
+          <button type="submit" class="cta w-full" :disabled="!isFormValid">Plaats idee</button>
 
           <p
             class="text-center text-sm text-gray-500 cursor-pointer bg-nav text-white p-2 font-bold rounded-xl"
@@ -142,9 +156,45 @@ function selectBrand(b: Brand) {
 const title = ref("");
 const description = ref("");
 
+/* Validatie */
+const MIN_TITLE_LENGTH = 5;
+const MAX_TITLE_LENGTH = 100;
+const MIN_DESC_LENGTH = 20;
+const MAX_DESC_LENGTH = 1000;
+
+const titleError = computed(() => {
+  if (title.value.length === 0) return "";
+  if (title.value.length < MIN_TITLE_LENGTH) return `Titel moet minimaal ${MIN_TITLE_LENGTH} karakters zijn`;
+  return "";
+});
+
+const descriptionError = computed(() => {
+  if (description.value.length === 0) return "";
+  if (description.value.length < MIN_DESC_LENGTH) return `Beschrijving moet minimaal ${MIN_DESC_LENGTH} karakters zijn`;
+  return "";
+});
+
+const isFormValid = computed(() => {
+  return (
+    title.value.length >= MIN_TITLE_LENGTH &&
+    title.value.length <= MAX_TITLE_LENGTH &&
+    description.value.length >= MIN_DESC_LENGTH &&
+    description.value.length <= MAX_DESC_LENGTH &&
+    selectedBrand.value !== null
+  );
+});
+
 async function submitNewIdea() {
   if (!selectedBrand.value) {
-    trigger("Kies eerst een merk 😅", "warning");
+    trigger("Kies eerst een merk", "warning");
+    return;
+  }
+  if (title.value.length < MIN_TITLE_LENGTH) {
+    trigger(`Titel moet minimaal ${MIN_TITLE_LENGTH} karakters zijn`, "warning");
+    return;
+  }
+  if (description.value.length < MIN_DESC_LENGTH) {
+    trigger(`Beschrijving moet minimaal ${MIN_DESC_LENGTH} karakters zijn`, "warning");
     return;
   }
   if (!validate(title.value, description.value)) {

@@ -78,10 +78,12 @@ function logoUrl(p?: string | null) {
     </div>
 
     <!-- titel & beschrijving -->
-    <h3 class="text-lg font-bold text-[var(--color-nav)]">
-      <span v-if="idea.is_pinned" class="mr-1">📌</span>{{ idea.title }}
-    </h3>
-    <p class="mt-2 text-sm text-gray-600 line-clamp-3">{{ idea.description }}</p>
+    <div class="flex-1">
+      <h3 class="text-lg font-bold text-[var(--color-nav)]">
+        <span v-if="idea.is_pinned" class="mr-1">📌</span>{{ idea.title }}
+      </h3>
+      <p class="mt-2 text-sm text-gray-600 line-clamp-3">{{ idea.description }}</p>
+    </div>
 
     <!-- footer -->
     <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">

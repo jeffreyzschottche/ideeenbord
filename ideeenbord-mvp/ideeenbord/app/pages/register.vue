@@ -14,6 +14,7 @@ import {
   educationLevelOptions,
   relationshipOptions,
   sectorOptions,
+  dataProfileFields,
 } from "~/constants/profileOptions";
 
 const form = ref<RegisterForm>({
@@ -31,6 +32,14 @@ const form = ref<RegisterForm>({
   birth_city: "",
   relationship_status: "",
   postal_code: "",
+  // Step 3
+  political_preference: "",
+  household_role: "",
+  purchase_decision: "",
+  order_frequency: "",
+  tech_spend: "",
+  grocery_spend: "",
+  household_size: "",
 });
 
 const { register, error } = useRegister();
@@ -49,11 +58,11 @@ const step1Valid = computed(
 );
 
 function goNext() {
-  if (!step1Valid.value) {
+  if (step.value === 1 && !step1Valid.value) {
     trigger("Vul eerst je naam, gebruikersnaam, e-mail en wachtwoord (min. 8 tekens) in.", "warning");
     return;
   }
-  step.value = 2;
+  step.value++;
 }
 
 function firstLaravelMessage(raw: unknown): string | null {
@@ -98,21 +107,29 @@ async function handleSubmit() {
       </div>
 
       <!-- Stappen-indicator -->
-      <div class="flex items-center justify-center gap-3 mb-6">
-        <div class="flex items-center gap-2">
+      <div class="flex items-center justify-center gap-2 mb-6">
+        <div class="flex items-center gap-1.5">
           <span
-            class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+            class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
             :class="step >= 1 ? 'bg-[var(--color-brand)] text-white' : 'bg-gray-200 text-gray-500'"
           >1</span>
-          <span class="text-sm font-semibold" :class="step >= 1 ? 'text-[var(--color-nav)]' : 'text-gray-400'">Account</span>
+          <span class="text-xs font-semibold hidden sm:inline" :class="step >= 1 ? 'text-[var(--color-nav)]' : 'text-gray-400'">Account</span>
         </div>
-        <div class="w-10 h-0.5" :class="step >= 2 ? 'bg-[var(--color-brand)]' : 'bg-gray-200'"></div>
-        <div class="flex items-center gap-2">
+        <div class="w-6 h-0.5" :class="step >= 2 ? 'bg-[var(--color-brand)]' : 'bg-gray-200'"></div>
+        <div class="flex items-center gap-1.5">
           <span
-            class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+            class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
             :class="step >= 2 ? 'bg-[var(--color-brand)] text-white' : 'bg-gray-200 text-gray-500'"
           >2</span>
-          <span class="text-sm font-semibold" :class="step >= 2 ? 'text-[var(--color-nav)]' : 'text-gray-400'">Over jou</span>
+          <span class="text-xs font-semibold hidden sm:inline" :class="step >= 2 ? 'text-[var(--color-nav)]' : 'text-gray-400'">Over jou</span>
+        </div>
+        <div class="w-6 h-0.5" :class="step >= 3 ? 'bg-[var(--color-brand)]' : 'bg-gray-200'"></div>
+        <div class="flex items-center gap-1.5">
+          <span
+            class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
+            :class="step >= 3 ? 'bg-[var(--color-brand)] text-white' : 'bg-gray-200 text-gray-500'"
+          >3</span>
+          <span class="text-xs font-semibold hidden sm:inline" :class="step >= 3 ? 'text-[var(--color-nav)]' : 'text-gray-400'">Huishouden</span>
         </div>
       </div>
 
@@ -144,9 +161,9 @@ async function handleSubmit() {
         </form>
 
         <!-- STAP 2 -->
-        <form v-else @submit.prevent="handleSubmit" class="space-y-5">
+        <form v-else-if="step === 2" @submit.prevent="goNext" class="space-y-5">
           <p class="text-sm text-gray-500">
-            Deze gegevens zijn <strong>optioneel</strong> en helpen merken hun doelgroep beter te begrijpen. Je kunt ze overslaan.
+            Deze gegevens zijn <strong>optioneel</strong> en helpen merken hun doelgroep beter te begrijpen.
           </p>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -206,13 +223,41 @@ async function handleSubmit() {
 
           <div class="flex flex-col sm:flex-row gap-3 pt-2">
             <button type="button" class="btn--ghost btn px-5 py-3" @click="step = 1">← Terug</button>
+            <button type="submit" class="cta flex-1 py-3">Volgende →</button>
+          </div>
+          <button type="button" @click="handleSubmit" :disabled="submitting" class="w-full text-sm text-gray-500 hover:text-[var(--color-brand)]">
+            Overslaan en account aanmaken
+          </button>
+        </form>
+
+        <!-- STAP 3 - Huishoud & Koopgedrag -->
+        <form v-else @submit.prevent="handleSubmit" class="space-y-5">
+          <p class="text-sm text-gray-500">
+            Laatste stap! Deze vragen helpen merken jouw voorkeuren beter te begrijpen. <strong>Optioneel</strong>.
+          </p>
+
+          <div class="space-y-4">
+            <div v-for="field in dataProfileFields" :key="field.key" class="relative">
+              <label class="form-label flex items-center gap-2">
+                <i :class="['fa-solid', field.icon, 'text-[var(--color-brand)]']"></i>
+                {{ field.label }}
+              </label>
+              <select v-model="(form as any)[field.key]" class="select-input">
+                <option value="">Kies…</option>
+                <option v-for="opt in field.options" :key="opt" :value="opt">{{ opt }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 pt-2">
+            <button type="button" class="btn--ghost btn px-5 py-3" @click="step = 2">← Terug</button>
             <button type="submit" :disabled="submitting" class="cta flex-1 py-3 disabled:opacity-60">
               <span v-if="submitting"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Bezig…</span>
               <span v-else>Account aanmaken</span>
             </button>
           </div>
-          <button type="submit" :disabled="submitting" class="w-full text-sm text-gray-500 hover:text-[var(--color-brand)]">
-            Profiel overslaan en account aanmaken
+          <button type="button" @click="handleSubmit" :disabled="submitting" class="w-full text-sm text-gray-500 hover:text-[var(--color-brand)]">
+            Overslaan en account aanmaken
           </button>
         </form>
       </div>

@@ -9,192 +9,102 @@
         <div class="text-center lg:text-left">
           <p ref="eyebrow" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-gray-200 text-xs font-semibold uppercase tracking-[0.15em] mb-5">
             <span class="w-2 h-2 rounded-full bg-[var(--color-brand)] animate-pulse"></span>
-            {{ content["home-tagline"] || "Jouw stem telt bij merken" }}
+            {{ content["home-tagline"] || "Consumenten en merken verbonden" }}
           </p>
-          <h1 ref="heading" class="text-4xl md:text-6xl font-extrabold leading-[1.05] text-white">
-            Jouw idee.<br />
-            <span class="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">Direct bij het merk.</span>
+          <h1 ref="heading" class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.08] text-white">
+            Jouw stem.<br />
+            <span class="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">Hun volgende stap.</span>
           </h1>
-          <p ref="subline" class="mt-6 text-lg text-gray-300 leading-relaxed max-w-xl mx-auto lg:mx-0">
-            Deel ideeën, wensen en verbeterpunten met de merken die jij gebruikt —
-            en zij luisteren écht. Plaats een idee, stem mee en bepaal samen wat
-            merken morgen maken.
+          <p ref="subline" class="mt-6 text-lg md:text-xl text-gray-300 leading-relaxed max-w-xl mx-auto lg:mx-0">
+            Vertel merken wat jij wilt zien. Duurzamere verpakkingen? Langere openingstijden?
+            Een vegan optie? <strong class="text-white">Jouw idee kan realiteit worden.</strong>
           </p>
           <div ref="cta" class="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-3">
             <NuxtLink to="/register" class="cta px-7 py-3.5 text-base">Gratis aanmelden</NuxtLink>
-            <NuxtLink to="/brands" class="px-7 py-3.5 rounded-xl border-2 border-white/25 text-white hover:bg-white/10 font-bold transition">
-              Ontdek merken
+            <NuxtLink to="/about" class="px-7 py-3.5 rounded-xl border-2 border-white/25 text-white hover:bg-white/10 font-bold transition">
+              Hoe werkt het?
             </NuxtLink>
           </div>
-          <!-- trust strip -->
-          <div class="mt-9 flex items-center justify-center lg:justify-start gap-6 text-sm text-gray-400">
-            <span><strong class="text-white text-base">42+</strong> merken</span>
-            <span class="w-px h-5 bg-white/15"></span>
-            <span><strong class="text-white text-base">3.1k+</strong> idee-makers</span>
-            <span class="w-px h-5 bg-white/15"></span>
-            <span><strong class="text-white text-base">8.7k+</strong> ideeën</span>
+          <!-- Trust strip with real impact -->
+          <div ref="trustStrip" class="mt-9 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6">
+            <div class="flex items-center gap-6 text-sm text-gray-400">
+              <span><strong class="text-white text-base">42+</strong> merken</span>
+              <span class="w-px h-5 bg-white/15"></span>
+              <span><strong class="text-white text-base">3.1k+</strong> gebruikers</span>
+              <span class="w-px h-5 bg-white/15"></span>
+              <span><strong class="text-white text-base">8.7k+</strong> ideeën</span>
+            </div>
+          </div>
+          <!-- Social proof -->
+          <div class="mt-4 text-sm text-gray-400 flex items-center gap-2 justify-center lg:justify-start">
+            <i class="fa-solid fa-check-circle text-green-400"></i>
+            <span>127 ideeën al gerealiseerd door merken</span>
           </div>
         </div>
 
-        <!-- Bord + frame -->
-        <div ref="boardWrap" class="relative w-full max-w-[520px] mx-auto">
-      <!-- Rode pin -->
-      <div class="pin" aria-hidden="true"></div>
+        <!-- Modern floating cards visual -->
+        <div ref="boardWrap" class="relative w-full max-w-[540px] mx-auto h-[400px] md:h-[480px]">
+          <!-- Glow achter de cards -->
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="w-72 h-72 rounded-full bg-gradient-to-br from-orange-500/30 to-amber-400/20 blur-[80px]"></div>
+          </div>
 
-      <!-- Schaduw van het hele bord -->
-      <div
-        class="absolute inset-0 -z-10 blur-[18px] opacity-50 shadow-bg"
-      ></div>
-
-      <!-- Frame -->
-      <div class="frame rounded-[28px] p-3 md:p-4">
-        <!-- Binnenrand (lip) -->
-        <div class="inner-lip rounded-[22px] p-2 md:p-3">
-          <!-- Kurkbord -->
+          <!-- Floating idea cards -->
           <div
-            class="cork rounded-2xl relative h-[360px] md:h-[430px] overflow-hidden"
+            v-for="(card, i) in cards"
+            :key="i"
+            :ref="el => cardRefs[i] = el"
+            class="idea-card absolute"
+            :class="card.size"
+            :style="{ left: card.x, top: card.y, zIndex: card.z }"
           >
-            <!-- Licht vignette voor diepte -->
-            <div class="absolute inset-0 pointer-events-none vignette"></div>
+            <div class="card-inner">
+              <!-- Header met avatar en merk -->
+              <div class="card-header">
+                <div class="card-avatar" :style="{ background: card.avatarGradient }">
+                  {{ card.initials }}
+                </div>
+                <div class="card-meta">
+                  <span class="card-author">{{ card.author }}</span>
+                  <span class="card-brand">{{ card.brand }}</span>
+                </div>
+              </div>
 
-            <!-- Grote lamp in het midden -->
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="bulb-wrap">
-                <svg
-                  class="bulb-svg"
-                  viewBox="0 0 220 220"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <!-- Glow -->
-                  <defs>
-                    <radialGradient id="g1" cx="50%" cy="45%" r="55%">
-                      <stop offset="0%" stop-color="#ffe08a" stop-opacity="1" />
-                      <stop
-                        offset="60%"
-                        stop-color="#ffbf47"
-                        stop-opacity="0.6"
-                      />
-                      <stop
-                        offset="100%"
-                        stop-color="#ffbf47"
-                        stop-opacity="0"
-                      />
-                    </radialGradient>
-                    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0" stop-color="#fff4c5" />
-                      <stop offset="1" stop-color="#ffd36a" />
-                    </linearGradient>
-                    <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0" stop-color="#444" />
-                      <stop offset="1" stop-color="#1f1f1f" />
-                    </linearGradient>
-                  </defs>
+              <!-- Idee tekst -->
+              <p class="card-text">{{ card.text }}</p>
 
-                  <!-- ambient glow -->
-                  <circle cx="110" cy="102" r="96" fill="url(#g1)" />
-
-                  <!-- rays -->
-                  <g
-                    stroke="#ffb020"
-                    stroke-width="8"
-                    stroke-linecap="round"
-                    opacity="0.9"
-                  >
-                    <line x1="110" y1="14" x2="110" y2="0" />
-                    <line x1="110" y1="206" x2="110" y2="220" />
-                    <line x1="24" y1="100" x2="6" y2="100" />
-                    <line x1="204" y1="100" x2="220" y2="100" />
-                    <line x1="38" y1="42" x2="26" y2="28" />
-                    <line x1="182" y1="42" x2="194" y2="28" />
-                    <line x1="38" y1="158" x2="26" y2="172" />
-                    <line x1="182" y1="158" x2="194" y2="172" />
-                  </g>
-
-                  <!-- bulb glass -->
-                  <ellipse
-                    cx="110"
-                    cy="98"
-                    rx="58"
-                    ry="66"
-                    fill="url(#glass)"
-                    stroke="#cc8a00"
-                    stroke-width="6"
-                  />
-                  <!-- highlight -->
-                  <path
-                    d="M90 54c-16 8-24 26-22 44"
-                    fill="none"
-                    stroke="#fff"
-                    stroke-opacity="0.7"
-                    stroke-width="6"
-                    stroke-linecap="round"
-                  />
-                  <!-- filament -->
-                  <path
-                    d="M86 114c8-18 40-18 48 0"
-                    fill="none"
-                    stroke="#7a4b00"
-                    stroke-width="6"
-                    stroke-linecap="round"
-                  />
-                  <!-- socket -->
-                  <g transform="translate(80,148)">
-                    <rect
-                      x="0"
-                      y="0"
-                      width="60"
-                      height="24"
-                      rx="6"
-                      fill="url(#metal)"
-                    />
-                    <rect
-                      x="4"
-                      y="8"
-                      width="52"
-                      height="6"
-                      rx="3"
-                      fill="#2a2a2a"
-                    />
-                    <rect
-                      x="4"
-                      y="14"
-                      width="52"
-                      height="6"
-                      rx="3"
-                      fill="#2f2f2f"
-                    />
-                  </g>
-                  <!-- base -->
-                  <rect
-                    x="92"
-                    y="172"
-                    width="36"
-                    height="18"
-                    rx="8"
-                    fill="#111"
-                  />
-                </svg>
-                <div class="bulb-pulse"></div>
+              <!-- Footer met votes -->
+              <div class="card-footer">
+                <div class="card-votes">
+                  <i class="fa-solid fa-arrow-up"></i>
+                  <span>{{ card.votes.toLocaleString() }}</span>
+                </div>
+                <div class="card-status" :class="card.statusClass">
+                  {{ card.status }}
+                </div>
               </div>
             </div>
+          </div>
 
-            <!-- Sticky notes (zonder JSX, gewoon v-for) -->
-            <div
-              v-for="(n, i) in notes"
-              :key="i"
-              class="note absolute bg-white rounded-md shadow-md flex items-center justify-center"
-              :class="n.small ? 'w-20 h-20' : 'w-24 h-24'"
-              :style="{ left: n.x, top: n.y, transform: `rotate(${n.r}deg)` }"
-            >
-              <i class="fa-regular fa-lightbulb text-2xl text-orange-400"></i>
-              <span class="note-pin" />
+          <!-- Centrale lightbulb accent -->
+          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+            <div ref="centralIcon" class="central-icon">
+              <i class="fa-solid fa-lightbulb"></i>
             </div>
           </div>
+
+          <!-- Decorative elements -->
+          <div class="sparkle sparkle-1" aria-hidden="true"></div>
+          <div class="sparkle sparkle-2" aria-hidden="true"></div>
+          <div class="sparkle sparkle-3" aria-hidden="true"></div>
         </div>
       </div>
-        </div>
-      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 text-white/40">
+      <span class="text-xs uppercase tracking-widest">Scroll</span>
+      <i class="fa-solid fa-chevron-down text-sm animate-bounce"></i>
     </div>
   </section>
 </template>
@@ -210,45 +120,169 @@ const eyebrow = ref<HTMLElement | null>(null);
 const heading = ref<HTMLElement | null>(null);
 const subline = ref<HTMLElement | null>(null);
 const cta = ref<HTMLElement | null>(null);
+const trustStrip = ref<HTMLElement | null>(null);
 const boardWrap = ref<HTMLElement | null>(null);
+const cardRefs = ref<(HTMLElement | null)[]>([]);
+const centralIcon = ref<HTMLElement | null>(null);
 
 onMounted(() => {
   const { gsap, prefersReducedMotion } = useGsap();
   if (prefersReducedMotion.value || !gsap) return;
 
   const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-  tl.from([eyebrow.value, heading.value, subline.value, cta.value], {
+  tl.from([eyebrow.value, heading.value, subline.value, cta.value, trustStrip.value], {
     y: 30,
     opacity: 0,
     duration: 0.7,
     stagger: 0.12,
-  }).from(
-    boardWrap.value,
-    { y: 40, opacity: 0, scale: 0.96, duration: 0.8 },
-    "-=0.3"
-  );
+  });
 
-  if (boardWrap.value) {
-    gsap.from(boardWrap.value.querySelectorAll(".note"), {
-      scale: 0,
+  // Cards staggered entrance
+  const cardElements = cardRefs.value.filter(Boolean);
+  if (cardElements.length) {
+    gsap.from(cardElements, {
+      y: 60,
       opacity: 0,
-      duration: 0.5,
-      stagger: 0.08,
-      ease: "back.out(1.7)",
-      delay: 0.6,
+      scale: 0.9,
+      duration: 0.8,
+      stagger: 0.12,
+      ease: "power3.out",
+      delay: 0.4,
+    });
+
+    // Floating animation per card
+    cardElements.forEach((card, i) => {
+      const yOffset = 8 + Math.random() * 8;
+      const xOffset = 3 + Math.random() * 4;
+      const duration = 4 + Math.random() * 2;
+      const delay = Math.random() * 2;
+
+      gsap.to(card, {
+        y: `+=${yOffset}`,
+        x: `+=${i % 2 === 0 ? xOffset : -xOffset}`,
+        duration: duration,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        delay: 1.5 + delay,
+      });
+    });
+  }
+
+  // Central icon pulse
+  if (centralIcon.value) {
+    gsap.to(centralIcon.value, {
+      scale: 1.1,
+      duration: 2.5,
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true,
+    });
+  }
+
+  // Sparkles animation
+  const sparkles = boardWrap.value?.querySelectorAll(".sparkle");
+  if (sparkles?.length) {
+    sparkles.forEach((sparkle, i) => {
+      gsap.to(sparkle, {
+        opacity: 0.3 + Math.random() * 0.4,
+        scale: 0.8 + Math.random() * 0.4,
+        duration: 1.5 + Math.random(),
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        delay: i * 0.3,
+      });
     });
   }
 });
 
-type NoteDef = { x: string; y: string; r?: number | string; small?: boolean };
+type CardDef = {
+  x: string;
+  y: string;
+  z: number;
+  size: string;
+  text: string;
+  author: string;
+  initials: string;
+  avatarGradient: string;
+  brand: string;
+  votes: number;
+  status: string;
+  statusClass: string;
+};
 
-const notes: NoteDef[] = [
-  { x: "6%", y: "6%", r: -6 },
-  { x: "74%", y: "8%", r: 5 },
-  { x: "10%", y: "68%", r: 4 },
-  { x: "72%", y: "70%", r: -4 },
-  { x: "38%", y: "12%", r: 2, small: true },
-  { x: "40%", y: "72%", r: -2, small: true },
+const cards: CardDef[] = [
+  {
+    x: "0%",
+    y: "8%",
+    z: 3,
+    size: "card-lg",
+    text: "Duurzame verpakkingen voor alle producten - minder plastic, meer recyclebaar materiaal",
+    author: "Emma",
+    initials: "E",
+    avatarGradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    brand: "Albert Heijn",
+    votes: 2847,
+    status: "Gerealiseerd",
+    statusClass: "status-done",
+  },
+  {
+    x: "55%",
+    y: "0%",
+    z: 2,
+    size: "card-md",
+    text: "Loyaliteitspunten ook inzetten voor bezorgkosten",
+    author: "Thijs",
+    initials: "T",
+    avatarGradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+    brand: "Bol",
+    votes: 1523,
+    status: "In ontwikkeling",
+    statusClass: "status-progress",
+  },
+  {
+    x: "5%",
+    y: "55%",
+    z: 2,
+    size: "card-md",
+    text: "Meer vegan opties in kant-en-klaar maaltijden",
+    author: "Lisa",
+    initials: "L",
+    avatarGradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+    brand: "Jumbo",
+    votes: 891,
+    status: "Bekeken",
+    statusClass: "status-review",
+  },
+  {
+    x: "52%",
+    y: "48%",
+    z: 4,
+    size: "card-lg",
+    text: "Bezorging op zaterdag en zondag als optie toevoegen",
+    author: "Mark",
+    initials: "M",
+    avatarGradient: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+    brand: "Coolblue",
+    votes: 3201,
+    status: "Gerealiseerd",
+    statusClass: "status-done",
+  },
+  {
+    x: "30%",
+    y: "30%",
+    z: 1,
+    size: "card-sm",
+    text: "Studentenkorting!",
+    author: "Noah",
+    initials: "N",
+    avatarGradient: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+    brand: "HEMA",
+    votes: 456,
+    status: "Nieuw",
+    statusClass: "status-new",
+  },
 ];
 </script>
 
@@ -258,6 +292,9 @@ const notes: NoteDef[] = [
   background:
     radial-gradient(1100px 520px at 75% -10%, #2b3a52 0%, transparent 60%),
     linear-gradient(180deg, #1f2937 0%, #161e29 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
 }
 .hero-glow {
   position: absolute;
@@ -282,163 +319,231 @@ const notes: NoteDef[] = [
   pointer-events: none;
 }
 
-/* subtiele glow voor het logo-icoon */
-.lamp-glow {
-  text-shadow: 0 0 10px #f97316, 0 0 22px #fb923c, 0 0 40px #fdba74;
-}
-
-/* zachte drop op de muur */
-.shadow-bg {
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
-}
-
-/* FRAME: warme oranje/rode rand met diepte */
-.frame {
-  background: linear-gradient(180deg, #ff9e4a, #ff6a3d 60%, #d84a2a);
-  box-shadow: inset 0 8px 14px rgba(255, 255, 255, 0.35),
-    inset 0 -10px 16px rgba(0, 0, 0, 0.25), 0 10px 24px rgba(0, 0, 0, 0.25);
-}
-
-/* Binnenlip voor extra relief */
-.inner-lip {
-  background: linear-gradient(180deg, #ffd2a1, #ffb36b 55%, #f48a45);
-  box-shadow: inset 0 10px 16px rgba(255, 255, 255, 0.45),
-    inset 0 -10px 18px rgba(0, 0, 0, 0.2);
-}
-
-/* KURK: basis + stippenpatroon voor textuur (pure CSS) */
-.cork {
-  background: radial-gradient(
-      120px 90px at 30% 25%,
-      rgba(255, 255, 255, 0.08),
-      rgba(0, 0, 0, 0)
-    ),
-    radial-gradient(
-      100px 80px at 70% 75%,
-      rgba(0, 0, 0, 0.07),
-      rgba(0, 0, 0, 0)
-    ),
-    repeating-radial-gradient(
-      circle at 20% 30%,
-      rgba(0, 0, 0, 0.12) 0 1px,
-      rgba(0, 0, 0, 0) 1px 6px
-    ),
-    repeating-radial-gradient(
-      circle at 80% 60%,
-      rgba(255, 255, 255, 0.12) 0 1px,
-      rgba(0, 0, 0, 0) 1px 6px
-    ),
-    linear-gradient(180deg, #e3b179, #c78f5a 45%, #b97e49);
-}
-
-/* vignette */
-.vignette {
-  background: radial-gradient(
-    80% 70% at 50% 45%,
-    rgba(0, 0, 0, 0) 60%,
-    rgba(0, 0, 0, 0.18) 100%
-  );
-  mix-blend-mode: multiply;
-}
-
-/* Rode pin + naald */
-.pin {
+/* ============================================
+   IDEA CARDS - Modern glassmorphism design
+   ============================================ */
+.idea-card {
   position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 34px;
-  height: 34px;
+  will-change: transform;
+}
+
+.card-inner {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.idea-card:hover .card-inner {
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Card sizes */
+.card-sm .card-inner {
+  width: 140px;
+  padding: 12px;
+}
+.card-md .card-inner {
+  width: 180px;
+}
+.card-lg .card-inner {
+  width: 220px;
+}
+
+/* Card header */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.card-avatar {
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #ffb0b0, #ff3b3b 60%, #b41414);
-  box-shadow: 0 10px 14px rgba(0, 0, 0, 0.35),
-    inset 2px 3px 8px rgba(255, 255, 255, 0.65),
-    inset -4px -6px 10px rgba(0, 0, 0, 0.35);
-  z-index: 20;
-}
-.pin::before {
-  /* highlight */
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 35% 35%,
-    rgba(255, 255, 255, 0.75),
-    rgba(255, 255, 255, 0) 40%
-  );
-  mix-blend-mode: screen;
-}
-.pin::after {
-  /* naald in de muur */
-  content: "";
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 30px;
-  width: 2px;
-  height: 28px;
-  background: linear-gradient(180deg, #999, #555);
-  box-shadow: 0 16px 6px -4px rgba(0, 0, 0, 0.35);
-  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Note pin */
-.note {
-  position: absolute;
-}
-.note::before {
-  /* schaduw */
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 8px;
-  filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.18));
-}
-.note-pin {
-  position: absolute;
-  top: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #ffd0d0, #ff6b6b 60%, #c03333);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
+.card-sm .card-avatar {
+  width: 26px;
+  height: 26px;
+  font-size: 11px;
 }
 
-/* BULB container + pulse */
-.bulb-wrap {
-  position: relative;
-  width: clamp(140px, 26vw, 220px);
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.25));
+.card-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
-.bulb-svg {
-  display: block;
-  width: 100%;
-  height: auto;
+
+.card-author {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1f2937;
+  line-height: 1.2;
 }
-.bulb-pulse {
+
+.card-brand {
+  font-size: 10px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Card text */
+.card-text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #374151;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-sm .card-text {
+  font-size: 12px;
+  -webkit-line-clamp: 2;
+  margin-bottom: 10px;
+}
+
+/* Card footer */
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.card-votes {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #f97316;
+}
+
+.card-votes i {
+  font-size: 11px;
+}
+
+/* Status badges */
+.card-status {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.status-new {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1d4ed8;
+}
+
+.status-review {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #b45309;
+}
+
+.status-progress {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  color: #047857;
+}
+
+.status-done {
+  background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+  color: #7c3aed;
+}
+
+/* ============================================
+   CENTRAL ICON
+   ============================================ */
+.central-icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, rgba(251, 146, 60, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.central-icon i {
+  font-size: 40px;
+  background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 4px 12px rgba(249, 115, 22, 0.4));
+}
+
+/* ============================================
+   SPARKLES - Decorative floating dots
+   ============================================ */
+.sparkle {
   position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  background: radial-gradient(
-    circle at 50% 45%,
-    rgba(255, 200, 80, 0.45),
-    rgba(255, 200, 80, 0) 60%
-  );
-  animation: pulse 3s ease-in-out infinite;
-  pointer-events: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
+  opacity: 0.5;
 }
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.5;
-    transform: scale(1);
+
+.sparkle-1 {
+  top: 15%;
+  right: 12%;
+}
+
+.sparkle-2 {
+  bottom: 25%;
+  left: 8%;
+}
+
+.sparkle-3 {
+  top: 45%;
+  right: 5%;
+  width: 4px;
+  height: 4px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .hero-gradient {
+    min-height: auto;
   }
-  50% {
-    opacity: 0.85;
-    transform: scale(1.04);
+}
+
+@media (max-width: 768px) {
+  .card-lg .card-inner {
+    width: 180px;
+  }
+  .card-md .card-inner {
+    width: 150px;
+  }
+  .card-sm .card-inner {
+    width: 120px;
   }
 }
 </style>

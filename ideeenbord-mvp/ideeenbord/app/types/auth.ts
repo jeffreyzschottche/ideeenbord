@@ -13,6 +13,14 @@ export interface RegisterForm {
   birth_city?: string;
   relationship_status?: string;
   postal_code?: string;
+  // Step 3 - Huishoud/koopgedrag
+  political_preference?: string;
+  household_role?: string;
+  purchase_decision?: string;
+  order_frequency?: string;
+  tech_spend?: string;
+  grocery_spend?: string;
+  household_size?: string;
 }
 
 export interface LoginForm {
